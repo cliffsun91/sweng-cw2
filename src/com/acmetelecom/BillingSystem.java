@@ -75,27 +75,31 @@ public class BillingSystem {
         MoneyFormatter.penceToPounds(totalBill));
   }
 
-  // TODO The function to edit
   private BigDecimal calculateCost(final Call call,
       final DaytimePeakPeriod peakPeriod, final Tariff tariff) {
 
-    // Only charge peak rate during peak times
-    final int durationOffPeak = peakPeriod.calcOffPeakTime(call.startTime(),
-        call.endTime(), call.durationSeconds());
-    final int durationPeak = peakPeriod.calcPeakTime(call.startTime(),
-        call.endTime(), call.durationSeconds());
-
-    return new BigDecimal(durationOffPeak).multiply(tariff.offPeakRate()).add(
-        new BigDecimal(durationPeak).multiply(tariff.peakRate()));
-
-    // Old code for reference
     /*
-     * if (peakPeriod.offPeak(call.startTime()) &&
-     * peakPeriod.offPeak(call.endTime()) && call.durationSeconds() < 12 * 60 *
-     * 60) { return new BigDecimal(call.durationSeconds()).multiply(tariff
-     * .offPeakRate()); } else { return new
-     * BigDecimal(call.durationSeconds()).multiply(tariff.peakRate()); }
+     * NEW FUNCTIONALITY - let's look at old functionality first... // Only
+     * charge peak rate during peak times final int durationOffPeak =
+     * peakPeriod.calcOffPeakTime(call.startTime(), call.endTime(),
+     * call.durationSeconds()); final int durationPeak =
+     * peakPeriod.calcPeakTime(call.startTime(), call.endTime(),
+     * call.durationSeconds());
+     * 
+     * return new
+     * BigDecimal(durationOffPeak).multiply(tariff.offPeakRate()).add( new
+     * BigDecimal(durationPeak).multiply(tariff.peakRate()));
      */
+
+    if (peakPeriod.offPeak(call.startTime())
+        && peakPeriod.offPeak(call.endTime())
+        && call.durationSeconds() < 12 * 60 * 60) {
+      return new BigDecimal(call.durationSeconds()).multiply(tariff
+          .offPeakRate());
+    } else {
+      return new BigDecimal(call.durationSeconds()).multiply(tariff.peakRate());
+    }
+
   }
 
   static class LineItem {
