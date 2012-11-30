@@ -7,5 +7,10 @@
 .idea/
 SWE.iml
 target/
-# Backup file, typically made by emacs #
+
+# To prevent ignoring external.jar (the pre-given library)
+
+!src/main/resources/external.jar
+
+# Backup file, typically made by emacs
 *~
