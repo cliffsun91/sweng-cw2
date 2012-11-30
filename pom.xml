@@ -14,47 +14,39 @@
       <artifactId>customer</artifactId>
       <version>1.0-supplied</version>
       <scope>system</scope>
-      <systemPath>${project.basedir}/lib/external.jar</systemPath>
+      <systemPath>${project.basedir}/src/main/resources/external.jar</systemPath>
     </dependency>
+
+    <dependency>
+      <scope>test</scope>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.4</version>
+    </dependency>
+    
   </dependencies>
-  
   
   <build>
     <plugins>
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-compiler-plugin</artifactId>
-	<version>3.0</version>
 	<configuration>
-	  <source>1.5</source>
-	  <target>1.5</target>
+	  <source>1.6</source>
+	  <target>1.6</target>
 	</configuration>
       </plugin>
       <plugin>
-	<groupId>org.codehaus.mojo</groupId>
-	<artifactId>appassembler-maven-plugin</artifactId>
-	<version>1.1.1</version>
-	<executions>
-	  <execution>
-	    <phase>package</phase>
-	    <goals>
-	      <goal>assemble</goal>
-	    </goals>
-	    <configuration>
-	      <assembleDirectory>target</assembleDirectory>
-	      <programs>
-		<program>
-		  <mainClass>com.develogical.WebServer</mainClass>
-		  <name>TheApp</name>
-		</program>
-	      </programs>
-	    </configuration>
-	  </execution>
-	</executions>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-jar-plugin</artifactId>
+	<configuration>
+	  <archive>
+	    <manifest>
+	      <mainClass>com.acmetelecom.test</mainClass>
+	    </manifest>
+	  </archive>
+	</configuration>
       </plugin>
     </plugins>
-  </build>
-  
-
-
+  </build>  
 </project>

@@ -4,6 +4,8 @@
 *.jar
 *.war
 *.ear
-
+.idea/
+SWE.iml
+target/
 # Backup file, typically made by emacs #
 *~
