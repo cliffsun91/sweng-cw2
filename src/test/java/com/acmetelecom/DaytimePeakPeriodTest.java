@@ -1,6 +1,7 @@
 package com.acmetelecom;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 
@@ -20,50 +21,24 @@ public class DaytimePeakPeriodTest {
   }
 
   @Test
-  public void testIsOffPeak() {
+  public void testThat5amIsOffPeak() {
     calendar.set(Calendar.HOUR_OF_DAY, 5);
-    assert (peakPeriod.offPeak(calendar.getTime()));
+    assertTrue(peakPeriod.offPeak(calendar.getTime()));
+  }
+  
+  @Test
+  public void testThat10amIsNotOffPeak(){
+	calendar.set(Calendar.HOUR_OF_DAY, 10);
+	assertFalse(peakPeriod.offPeak(calendar.getTime()));
   }
 
   @Test
   public void testIsOffPeakBoundaryTime() {
     // Check what happens on the limit of peak -> offpeak
     calendar.set(Calendar.HOUR_OF_DAY, DaytimePeakPeriod.OFFPEAK_START);
-    assert (peakPeriod.offPeak(calendar.getTime()));
+    assertTrue (peakPeriod.offPeak(calendar.getTime()));
     calendar.set(Calendar.HOUR_OF_DAY, DaytimePeakPeriod.OFFPEAK_END);
-    assert (!peakPeriod.offPeak(calendar.getTime()));
+    assertFalse (peakPeriod.offPeak(calendar.getTime()));
   }
-
-  @Test
-  public void testGetTimeOffPeakOverlap() {
-    fail("Not yet implemented");
-  }
-
-  @Test
-  public void testGetTimeOffPeakJustOffPeak() {
-    fail("Not yet implemented");
-  }
-
-  @Test
-  public void testGetTimeOffPeakJustOnPeak() {
-    fail("Not yet implemented");
-  }
-
-  @Test
-  public void testGetTimeOffPeakNoTime() {
-    // Check what happens for zero-length calls
-    fail("Not yet implemented");
-  }
-
-  @Test
-  public void testGetTimePeak() {
-    fail("Not yet implemented");
-  }
-
-  @Test
-  public void testGetTimePeakNoTime() {
-    // Check what happens for zero-length calls
-    fail("Not yet implemented");
-  }
-
+  
 }

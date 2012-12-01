@@ -7,5 +7,14 @@
 .idea/
 SWE.iml
 target/
-# Backup file, typically made by emacs #
+
+# Eclipse things
+.classpath
+.settings/
+
+# To prevent ignoring external.jar (the pre-given library)
+
+!src/main/resources/external.jar
+
+# Backup file, typically made by emacs
 *~
