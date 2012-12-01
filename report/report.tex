@@ -3,6 +3,14 @@
 \documentclass[english]{article}
 \usepackage[T1]{fontenc}
 \usepackage[latin9]{inputenc}
+
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{babel}
+
+
+\makeatother
+
 \usepackage{babel}
 \begin{document}
 
@@ -21,20 +29,122 @@
 
 \section*{Process}
 
+Acting as a small team tackling a completely unfamiliar codebase,
+we took several steps towards implementing the desired goal, keeping
+in mind extra aims to improve the existing code, make it maintainable
+and make it extendable. 
+
 
 \subsection*{Adding unit tests for existing functionality}
 
 
+\paragraph*{What}
+
+Whilst we had many ideas for improving the code itself, the most important
+part was to make sure that we did not affect the existing functionality
+beyond what we were asked to change. To do this, we began adding unit
+tests that tested the existing functionality, so that we could easily
+verify that our changes were not breaking anything. This was the first
+step to making the code maintainable, much like we did in the first
+lecture tutorial (Legacy Code). We decided to use $JUnit4$ to do
+our unit testing.
+
+
+\paragraph*{How}
+
+We had aspirations to restructure the project to make it more easily
+maintainable - this meant that we had to add tests for all of the
+areas that we were planning to touch. As an example, the project specification
+had us editing the $BillingSystem$ class. Upon inspection, we decided
+what responsibilities this class had:
+\begin{itemize}
+\item Registers calls starting and ending between numbers
+\item Processes these calls and applies them as bills to the corresponding
+customers from the customer database
+
+\begin{itemize}
+\item In doing so, it calculates the tariff rates and uses some algorithm
+(which we were changing in the specification) to decide the final
+cost of the call.
+\end{itemize}
+\end{itemize}
+Judging from these responsibilities, we added a variety of unit tests
+covering basic and edge cases for each responsibility. For instance,
+for $callInitiated$ and $callCompleted$, we added tests to make
+sure that the specified events were added to the log. Additionally,
+we fabricated some customer calls, with predefined times, and tested
+these making sure that the resulting bill was equivalent to what we
+expected. These calls were designed to cover all of the edge cases
+as well, such as calls over peak time to off peak time and vice versa,
+and calls of zero length, as well as extremely long calls. 
+
+
 \subsection*{Forming specifications for new functionality}
+
+In our project with Stephen, our entire project goals have been specified
+by mouth only! As we saw in week 5 of the lecture (Spec by Example),
+this is quite risky - we might completely misinterpret what Stephen
+meant, and end up wasting time in the process. To remedy this, we
+decided to create some Specifications, using the Fit framework.
+
+
+\paragraph*{How}
+
+We emulated a couple of customer calls, much like we did in the unit
+tests, except as an HTML document using Fit. These showed when the
+calls were made, and how long for, and what the resulting bill looked
+like. (Of course we couldn't actually show these to Stephen, being
+fictional after all. We assumed that these reflected the functionality
+defined in the specification).
 
 
 \subsection*{Adding unit tests for new functionality}
+
+Before we could implement the required changes, we wanted to add unit
+tests to cover what the expected outcome was going to be, an example
+of Test-Driven Development. This meant that we could repeatedly test
+the code as we implemented it to ensure that the desired goal was
+being fulfilled. 
+
+
+\paragraph*{How}
 
 
 \subsection*{Implementing new functionality}
 
 
+\paragraph*{What}
+
+
+\paragraph*{How}
+
+
 \subsection*{Refactoring code to improve maintainability and code health}
+
+The existing code had multiple problems that we aimed to fix over
+the course of the project. These were not all related to the goals
+set out by Stephen, but as we would be looking after the codebase
+for the forseeable future we decided that it would be wise to improve
+the general health of the codebase to reduce headaches later. Some
+examples:
+\begin{itemize}
+\item The $DaytimePeakPeriod$ class, which handled deciding whether calls
+were onpeak or offpeak, was very rigidly implemented. The times for
+the boundary between offpeak and peak were defined as ``magic numbers''
+inside the code (in this case as 7 and 19, representing 7am and 7pm
+respectively). This left no room for providing flexible peak and offpeak
+times without directly editing the class itself. Additionally, if
+different tariffs could have different peak times, perhaps changing
+more than once throughout the day, it would require a whole overhaul
+of the class. 
+\item The $CallerStart$ and $CallerEnd$ classes, used $System.currentTimeMillis$
+to get the time of call and end. This made testing difficult - to
+construct a call using this implementation would require the test
+to $sleep$ inbetween calling and ending the call, which would make
+the testing process very slow indeed! 
+\end{itemize}
+
+\paragraph*{How}
 
 
 \section*{Considerations}
@@ -42,7 +152,13 @@
 
 \subsection*{Source control}
 
-(The code starts life as a tar ball)
+When we first received the code from Stephen, it was simply emailed
+as a tarball. Keeping the code like this was definitely sub-optimal,
+so we decided to host it in some form of source control (in our project
+we used GitHub for ease of use - but in the context of Acme Telecom
+we would most likely have used a private version!). This made collaboration
+between the team members much easier, as well as keeping a timeline
+of changes made to allow rollbacks.
 
 
 \subsection*{Architecture changes}
