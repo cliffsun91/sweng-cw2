@@ -49,4 +49,11 @@
       </plugin>
     </plugins>
   </build>  
+
+  <scm>
+    <connection>scm:git:git@github.com:cliffsun91/sweng-cw2.git</connection>
+    <url>scm:git:git@github.com:cliffsun91/sweng-cw2.git</url>
+    <developerConnection>scm:git:git@github.com:cliffsun91/sweng-cw2.git</developerConnection>
+    
+  </scm>
 </project>
