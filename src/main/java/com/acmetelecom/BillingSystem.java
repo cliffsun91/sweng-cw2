@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.acmetelecom.call.Call;
-import com.acmetelecom.call.Call;
 import com.acmetelecom.callevent.AbstractCallEvent;
 import com.acmetelecom.callevent.CallEnd;
 import com.acmetelecom.callevent.CallEvent;
@@ -74,11 +73,12 @@ public class BillingSystem {
       cost = cost.setScale(0, RoundingMode.HALF_UP);
       final BigDecimal callCost = cost;
       totalBill = totalBill.add(callCost);
-      items.add(new LineItem(call, callCost));
+      items.add(new DefaultLineItem(call, callCost));
     }
 
-    new BillGenerator().send(customer, items,
-        MoneyFormatter.penceToPounds(totalBill));
+    String totalBillString = new MoneyFormatter().penceToPounds(totalBill);
+    new BillPrinter(new MoneyFormatter()).print(customer, items,
+            totalBillString, HtmlPrinter.getInstance());
   }
 
   private BigDecimal calculateCost(final Call call,
@@ -87,9 +87,9 @@ public class BillingSystem {
     /*
      * NEW FUNCTIONALITY - let's look at old functionality first... // Only
      * charge peak rate during peak times final int durationOffPeak =
-     * peakPeriod.calcOffPeakTime(call.startTime(), call.endTime(),
+     * peakPeriod.calculateOffPeakTime(call.startTime(), call.endTime(),
      * call.durationSeconds()); final int durationPeak =
-     * peakPeriod.calcPeakTime(call.startTime(), call.endTime(),
+     * peakPeriod.calculatePeakTime(call.startTime(), call.endTime(),
      * call.durationSeconds());
      * 
      * return new
@@ -108,30 +108,4 @@ public class BillingSystem {
 
   }
 
-  static class LineItem {
-    private final Call call;
-    private final BigDecimal callCost;
-
-    public LineItem(final Call call, final BigDecimal callCost) {
-      this.call = call;
-      this.callCost = callCost;
-    }
-
-    public String date() {
-      return call.date();
-    }
-
-    public String callee() {
-      return call.callee();
-    }
-
-    public String durationMinutes() {
-      return "" + call.durationSeconds() / 60 + ":"
-          + String.format("%02d", call.durationSeconds() % 60);
-    }
-
-    public BigDecimal cost() {
-      return callCost;
-    }
-  }
 }

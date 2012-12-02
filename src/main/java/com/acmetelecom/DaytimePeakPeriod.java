@@ -18,17 +18,18 @@ class DaytimePeakPeriod {
     return hour < OFFPEAK_END || hour >= OFFPEAK_START;
   }
 
-  public int calcOffPeakTime(final Date startTime, final Date endTime,
-      final int durationSeconds) {
+  private int calculateOffPeakTime(final Date startTime, final Date endTime,
+                                  final int durationSeconds) {
     // Assuming no phone call lasts longer than 24 hours
     // Offpeak time is time outside peak period.
     // TODO
     return 0;
   }
 
-  public int calcPeakTime(final Date startTime, final Date endTime,
-      final int durationSeconds) {
+
+  public int calculatePeakTime(final Date startTime, final Date endTime,
+                               final int durationSeconds) {
     return durationSeconds
-        - calcOffPeakTime(startTime, endTime, durationSeconds);
+        - calculateOffPeakTime(startTime, endTime, durationSeconds);
   }
 }

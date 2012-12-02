@@ -48,7 +48,7 @@
 	<configuration>
 	  <archive>
 	    <manifest>
-	      <mainClass>com.acmetelecom.test</mainClass>
+	      <mainClass>com.acmetelecom.runner</mainClass>
 	    </manifest>
 	  </archive>
 	</configuration>
