@@ -1,0 +1,11 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1187\cocoasubrtf340
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\f0\fs24 \cf0 Cliffs part on DSLs and acceptance tests -\
+\
+Writing acceptance tests is crucial for both development and the business. For developers it provides validation that a particular feature works across the whole system. For the business it tells them that the feature has been successfully implemented and can be released to production. In our case, it is important to write acceptance tests for the new functionality that we are required to implement, it allows our customer Stephen to see whether new functionality works and lets him know the progress of development. However we are also trying to add tests to the legacy code and so it is also important to write acceptance tests for the current functionality as well. \
+We can choose a variety of acceptance test frameworks to write out tests with. Frameworks like Behave, FIT and Cucumber are well supported and widely used but often come with a lot of setting up and have features that are not necessary. Especially in our case as we only need to test that we charge the correct amount depending on the peak period. So in our case it would be beneficial to write out own DSL to create acceptance tests with. We can also use the JUnit framework to create our internal Domain Specific Language which we will then use to write the acceptance tests. The advantage is that we can run the acceptance tests along with the unit tests and means it works well if we were to use continuous integration. Also, as we doing this in an IDE, we have the advantages of auto-complete / content assist and syntax checking. \
+}
