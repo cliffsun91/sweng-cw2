@@ -3,8 +3,9 @@
 \documentclass[english]{article}
 \usepackage[T1]{fontenc}
 \usepackage[latin9]{inputenc}
+\usepackage{listings}
 \usepackage{geometry}
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm}
+\geometry{verbose,tmargin=4cm,bmargin=4cm,lmargin=2cm,rmargin=2cm}
 
 \makeatletter
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
@@ -24,7 +25,10 @@
 \title{Software Engineering CW2}
 
 
-\author{Abhijit Chandgadkar, Osama Javed, Joseph Slade, Cliff Sun, Luke Tomlin}
+\author{Abhijit Chandgadkar, Osama Javed, }
+
+
+\author{Joseph Slade, Cliff Sun, Luke Tomlin}
 
 
 \date{27/11/12}
@@ -80,10 +84,19 @@ we fabricated some customer calls, with predefined times, and tested
 these making sure that the resulting bill was equivalent to what we
 expected. These calls were designed to cover all of the edge cases
 as well, such as calls over peak time to off peak time and vice versa,
-and calls of zero length, as well as extremely long calls. 
-\[
-EXAMPLE\, OF\, UNIT\, TEST
-\]
+and calls of zero length, as well as extremely long calls. As an example,
+here is where we check the edge case of the boundary times between
+peak and offpeak: 
+\begin{lstlisting}[language=Java]
+@Test   
+public void testIsOffPeakBoundaryTime() {     
+	// Check what happens on the limit of peak -> offpeak     
+	calendar.set(Calendar.HOUR_OF_DAY, DaytimePeakPeriod.OFFPEAK_START);     
+	assertTrue (peakPeriod.offPeak(calendar.getTime()));     
+	calendar.set(Calendar.HOUR_OF_DAY, DaytimePeakPeriod.OFFPEAK_END);     
+	assertFalse (peakPeriod.offPeak(calendar.getTime()));   
+}
+\end{lstlisting}
 
 
 
@@ -184,15 +197,32 @@ of the class.
 to get the time of call and end. This made testing difficult - to
 construct a call using this implementation would require the test
 to $sleep$ inbetween calling and ending the call, which would make
-the testing process very slow indeed! 
+the testing process very slow indeed! This occurs in the $Runner$
+example provided in the specification - it takes a full 1 minute and
+50 seconds to complete!
 \end{itemize}
 
 \paragraph*{How}
 
 We added an $AbstractCallEvent$ as an abstract interface implementing
-the $CallEvent$ interface. This let us write tests a lot easier (rather
-than having to rely on $sleep$!), by letting us fabricate times as
-we wanted and then test it using the standard functions. 
+the $CallEvent$ interface, and then changed $CallStart$ and $CallEnd$
+to implement this. This let us write tests a lot easier (rather than
+having to rely on $sleep$!), by letting us fabricate times as we
+wanted and then test it using the standard functions. Additionally,
+we implemented the common $getCaller$ and $getCallee$ methods that
+were being duplicated in both $CallStart$ and $CallEnd$ inside the
+$AbstractCallEvent$ class, reducing the code size and making it easier
+to read. As an example, this reduced the $CallStart$ class to simply
+being 
+
+\begin{lstlisting}[language=Java]
+public class CallEnd extends AbstractCallEvent {
+    public CallEnd(String caller, String callee) {
+        super(caller, callee, System.currentTimeMillis());
+    }
+}
+\end{lstlisting}
+
 
 
 \section*{Considerations}
@@ -228,7 +258,18 @@ areas of the program.
 
 \subsection*{Licensing}
 
-Care about propogating licenses
+Some care needed to be used when thinking about what OpenSource software
+we wanted to use. If any of these had a 'viral' license (such as the
+GNU General Public License), which require all derivative works to
+also be licensed with the GPL, then the whole project itself would
+have to be licensed with the GPL! This might prove to be problematic
+in a private company with proprietary software, as they most likely
+do not want competitors to be able to freely use their software. We
+had to consider this risk when deciding to use Joda Time, for instance.
+Fortunately, Joda Time uses the Apache 2 license, which is not 'viral'
+and only requires that derivative work contains notifications of what
+was changed, as well as retaining all other copyright, patent, trademark
+notices etc. that existed in the original. 
 
 
 \subsection*{Building}
@@ -239,4 +280,16 @@ Maven
 \subsection*{Deployment}
 
 Continuous integration - git push / TeamCity linked to pom.xml
+
+Whilst we did not actually implement any deployment mechanisms, we
+did consider what deployment mechanisms would be appropriate for Acme
+Telecom in the case of this product. Given the suite of tests that
+we created testing for both the new and the old functionality, and
+our use of Maven and git for source control and building, we thought
+that it would be best to use TeamCity, much like we did in week 7's
+tutorial (Release). It would be fairly simple to set up as we already
+had git and Maven configured, and assuming that management was happy
+with the quality of the tests that we put in place, would make releasing
+very simple and quick. We assumed that the Acme company has access
+to its own set of servers, and we would use those to deploy on. 
 \end{document}
