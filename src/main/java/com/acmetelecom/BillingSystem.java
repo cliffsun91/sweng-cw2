@@ -18,20 +18,34 @@ public class BillingSystem {
 
   private final List<AbstractCallEvent> callLog = new ArrayList<AbstractCallEvent>();
 
-  public void callInitiated(CallStart startCall) {
+  public void callInitiated(final CallStart startCall) {
     callLog.add(startCall);
   }
 
-  public void callCompleted(CallEnd endCall) {
+  public void callCompleted(final CallEnd endCall) {
     callLog.add(endCall);
   }
 
-  public void createCustomerBills(List<Customer> customers) {
+  public void createCustomerBills(final List<Customer> customers) {
     for (final Customer customer : customers) {
       createBillFor(customer);
     }
     callLog.clear();
   }
+
+  /*
+   * TODO We should change the way this is implemented entirely. We should
+   * receive the calls from the system after they happen (as an assembled call).
+   * When we receive a call, we should calculate the time spent in peak and
+   * offpeak for that singular call, and the cost, then append the bill to the
+   * existing bill for that customer in a hashmap (hashing to customer number or
+   * something). This way we accrue the resulting bill log (which is all we
+   * need) as time goes on, and when we eventually want to produce the bill it's
+   * just a constant access for the bill for that customer.
+   * 
+   * Currently the system would perform around 200 million iterations for a
+   * customer base of only 1000, who make 100 calls per month!
+   */
 
   private void createBillFor(final Customer customer) {
     final List<AbstractCallEvent> customerEvents = new ArrayList<AbstractCallEvent>();
@@ -51,8 +65,8 @@ public class BillingSystem {
       if (event instanceof CallEnd && start != null) {
         calls.add(new Call(start, event));
         start = null;
-        //this isn't very nice. Also if we have a start event and not an end, 
-        //it means we have an active call going on. 
+        // this isn't very nice. Also if we have a start event and not an end,
+        // it means we have an active call going on.
       }
     }
 
@@ -61,7 +75,8 @@ public class BillingSystem {
 
     for (final Call call : calls) {
 
-      final Tariff tariff = CentralTariffDatabase.getInstance().tarriffFor(customer);
+      final Tariff tariff = CentralTariffDatabase.getInstance().tarriffFor(
+          customer);
 
       BigDecimal cost;
 
@@ -74,9 +89,10 @@ public class BillingSystem {
       items.add(new DefaultLineItem(call, callCost));
     }
 
-    String totalBillString = new MoneyFormatter().penceToPounds(totalBill);
+    final String totalBillString = new MoneyFormatter()
+        .penceToPounds(totalBill);
     new BillPrinter(new MoneyFormatter()).print(customer, items,
-            totalBillString, HtmlPrinter.getInstance());
+        totalBillString, HtmlPrinter.getInstance());
   }
 
   private BigDecimal calculateCost(final Call call,
