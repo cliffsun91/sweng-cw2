@@ -38,12 +38,12 @@ public class BillingPrinterTest {
             oneOf(moneyFormatter).penceToPounds(decimal); will(returnValue("50"));
             oneOf(printer).printItem("Today", "87654321", "20", "50");
 
-            oneOf(printer).printTotal("£50");
+            oneOf(printer).printTotal("50");
 
         }});
 
         List<LineItem> lineItems = new ArrayList<LineItem>();
         lineItems.add(firstCall);
-        new BillPrinter(moneyFormatter).print(customer, lineItems, "£50", printer);
+        new BillPrinter(moneyFormatter).print(customer, lineItems, "50", printer);
     }
 }
