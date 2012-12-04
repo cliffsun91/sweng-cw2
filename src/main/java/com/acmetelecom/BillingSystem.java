@@ -16,8 +16,14 @@ import com.acmetelecom.customer.Tariff;
 
 public class BillingSystem {
 
-  private final List<AbstractCallEvent> callLog = new ArrayList<AbstractCallEvent>();
-
+  private final List<AbstractCallEvent> callLog;
+  private final Printer printer;
+  
+  public BillingSystem(Printer printer) {
+	this.callLog = new ArrayList<AbstractCallEvent>();
+	this.printer = printer;
+  }
+  
   public void callInitiated(final CallStart startCall) {
     callLog.add(startCall);
   }
@@ -92,7 +98,7 @@ public class BillingSystem {
     final String totalBillString = new MoneyFormatter()
         .penceToPounds(totalBill);
     new BillPrinter(new MoneyFormatter()).print(customer, items,
-        totalBillString, HtmlPrinter.getInstance());
+        totalBillString, printer);
   }
 
   private BigDecimal calculateCost(final Call call,

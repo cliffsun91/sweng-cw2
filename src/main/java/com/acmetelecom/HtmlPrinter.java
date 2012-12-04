@@ -3,35 +3,37 @@ package com.acmetelecom;
 class HtmlPrinter implements Printer {
 
     private static Printer instance = new HtmlPrinter();
-
+    private String print;
+    
     private HtmlPrinter() {
+    	print = "";
     }
 
     public static Printer getInstance() {
         return instance;
     }
 
-    public void printHeading(String name, String phoneNumber, String pricePlan) {
+    public void createHeading(String name, String phoneNumber, String pricePlan) {
         beginHtml();
-        System.out.println(h2(name + "/" + phoneNumber + " - " + "Price Plan: " + pricePlan));
+        print += h2(name + "/" + phoneNumber + " - " + "Price Plan: " + pricePlan) + "\n";
         beginTable();
     }
 
     private void beginTable() {
-        System.out.println("<table border=\"1\">");
-        System.out.println(tr(th("Time") + th("Number") + th("Duration") + th("Cost")));
+        print += "<table border=\"1\">\n";
+        print += tr(th("Time") + th("Number") + th("Duration") + th("Cost")) + "\n";
     }
 
     private void endTable() {
-        System.out.println("</table>");
+        print += "</table>\n";
     }
 
     private String h2(String text) {
         return "<h2>" + text + "</h2>";
     }
 
-    public void printItem(String time, String callee, String duration, String cost) {
-        System.out.println(tr(td(time) + td(callee) + td(duration) + td(cost)));
+    public void createItem(String time, String callee, String duration, String cost) {
+        print += tr(td(time) + td(callee) + td(duration) + td(cost)) + "\n";
     }
 
     private String tr(String text) {
@@ -46,23 +48,30 @@ class HtmlPrinter implements Printer {
         return "<td>" + text + "</td>";
     }
 
-    public void printTotal(String total) {
+    public void createTotal(String total) {
         endTable();
-        System.out.println(h2("Total: " + total));
+        print += h2("Total: " + total) + "\n";
         endHtml();
     }
 
     private void beginHtml() {
-        System.out.println("<html>");
-        System.out.println("<head></head>");
-        System.out.println("<body>");
-        System.out.println("<h1>");
-        System.out.println("Acme Telecom");
-        System.out.println("</h1>");
+        print += "<html>\n" +
+        		 "<head></head>\n" +
+        		 "<body>\n" +
+        		 "<h1>\n" +
+        		 "Acme Telecom\n" +
+        		 "</h1>\n";
     }
 
     private void endHtml() {
-        System.out.println("</body>");
-        System.out.println("</html>");
+        print += "</body>\n</html>\n";
+    }
+    
+    public String getString(){
+    	return print;
+    }
+    
+    public void printAllToConsole() {
+    	System.out.println(print);
     }
 }

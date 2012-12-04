@@ -18,7 +18,7 @@ public class Runner {
 	DateTime newTime;
 	
     System.out.println("Running...");
-    final BillingSystem billingSystem = new BillingSystem();
+    final BillingSystem billingSystem = new BillingSystem(HtmlPrinter.getInstance());
     billingSystem.callInitiated(startCall("447722113434", "447766511332", timeNow));
     billingSystem.callCompleted(endCall("447722113434", "447766511332", newTime = timeNow.plusSeconds(20)));
     billingSystem.callInitiated(startCall("447722113434", "447711111111", newTime = newTime.plusSeconds(10)));
