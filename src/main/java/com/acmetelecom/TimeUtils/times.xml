@@ -1,0 +1,15 @@
+<TimeCalculator>
+    <times>
+        <startTime>0800</startTime>
+        <endTime>1600</endTime>
+    </times>
+    <times>
+        <startTime>0900</startTime>
+        <endTime>1700</endTime>
+    </times>
+    <times>
+        <startTime>0800</startTime>
+        <endTime>11900</endTime>
+    </times>
+
+</TimeCalculator>

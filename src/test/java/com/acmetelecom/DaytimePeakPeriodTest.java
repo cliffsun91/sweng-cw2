@@ -3,8 +3,7 @@ package com.acmetelecom;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Calendar;
-
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,33 +11,34 @@ import org.junit.Test;
 public class DaytimePeakPeriodTest {
 
   DaytimePeakPeriod peakPeriod;
-  Calendar calendar;
+  DateTime time;
+  DateTime newTime;
 
   @Before
   public void setUp() throws Exception {
     peakPeriod = new DaytimePeakPeriod();
-    calendar = Calendar.getInstance();
+    time = new DateTime();
   }
 
   @Test
   public void testThat5amIsOffPeak() {
-    calendar.set(Calendar.HOUR_OF_DAY, 5);
-    assertTrue(peakPeriod.offPeak(calendar.getTime()));
+	newTime = time.withHourOfDay(5);
+    assertTrue(peakPeriod.offPeak(newTime));
   }
   
   @Test
   public void testThat10amIsNotOffPeak(){
-	calendar.set(Calendar.HOUR_OF_DAY, 10);
-	assertFalse(peakPeriod.offPeak(calendar.getTime()));
+	newTime = time.withHourOfDay(10);
+	assertFalse(peakPeriod.offPeak(newTime));
   }
 
   @Test
   public void testIsOffPeakBoundaryTime() {
     // Check what happens on the limit of peak -> offpeak
-    calendar.set(Calendar.HOUR_OF_DAY, DaytimePeakPeriod.OFFPEAK_START);
-    assertTrue (peakPeriod.offPeak(calendar.getTime()));
-    calendar.set(Calendar.HOUR_OF_DAY, DaytimePeakPeriod.OFFPEAK_END);
-    assertFalse (peakPeriod.offPeak(calendar.getTime()));
+    newTime = time.withHourOfDay(DaytimePeakPeriod.OFFPEAK_START);
+    assertTrue (peakPeriod.offPeak(newTime));
+    newTime = time.withHourOfDay(DaytimePeakPeriod.OFFPEAK_END);
+    assertFalse (peakPeriod.offPeak(newTime));
   }
   
 }

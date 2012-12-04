@@ -19,7 +19,7 @@ import static org.junit.Assert.fail;
 public class BillingPrinterTest {
 
     final Mockery context = new Mockery();
-    final Customer customer = new Customer("a","b","c");
+    final Customer customer = new Customer("Jo King","12345678","xxx");
     final Printer printer = context.mock(Printer.class);
     final IMoneyFormatter moneyFormatter = context.mock(IMoneyFormatter.class);
 
@@ -29,7 +29,7 @@ public class BillingPrinterTest {
         final BigDecimal decimal = new BigDecimal(50);
 
         context.checking(new Expectations(){{
-            oneOf(printer).printHeading("a","b","c");
+            oneOf(printer).printHeading("Jo King","12345678","xxx");
 
             oneOf(firstCall).date(); will(returnValue("Today"));
             oneOf(firstCall).callee(); will(returnValue("87654321"));
@@ -38,12 +38,12 @@ public class BillingPrinterTest {
             oneOf(moneyFormatter).penceToPounds(decimal); will(returnValue("50"));
             oneOf(printer).printItem("Today", "87654321", "20", "50");
 
-            oneOf(printer).printTotal("£50");
+            oneOf(printer).printTotal("50");
 
         }});
 
         List<LineItem> lineItems = new ArrayList<LineItem>();
         lineItems.add(firstCall);
-        new BillPrinter(moneyFormatter).print(customer, lineItems, "£50", printer);
+        new BillPrinter(moneyFormatter).print(customer, lineItems, "50", printer);
     }
 }
