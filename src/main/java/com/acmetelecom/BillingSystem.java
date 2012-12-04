@@ -12,7 +12,6 @@ import com.acmetelecom.callevent.AbstractCallEvent;
 import com.acmetelecom.callevent.CallEnd;
 import com.acmetelecom.callevent.CallEvent;
 import com.acmetelecom.callevent.CallStart;
-import com.acmetelecom.customer.CentralCustomerDatabase;
 import com.acmetelecom.customer.CentralTariffDatabase;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.customer.Tariff;
@@ -29,9 +28,7 @@ public class BillingSystem {
     callLog.add(new CallEnd(caller, callee, endTime));
   }
 
-  public void createCustomerBills() {
-    final List<Customer> customers = CentralCustomerDatabase.getInstance()
-        .getCustomers();
+  public void createCustomerBills(List<Customer> customers) {
     for (final Customer customer : customers) {
       createBillFor(customer);
     }
@@ -56,6 +53,8 @@ public class BillingSystem {
       if (event instanceof CallEnd && start != null) {
         calls.add(new Call(start, event));
         start = null;
+        //this isn't very nice. Also if we have a start event and not an end, 
+        //it means we have an active call going on. 
       }
     }
 
@@ -64,8 +63,7 @@ public class BillingSystem {
 
     for (final Call call : calls) {
 
-      final Tariff tariff = CentralTariffDatabase.getInstance().tarriffFor(
-          customer);
+      final Tariff tariff = CentralTariffDatabase.getInstance().tarriffFor(customer);
 
       BigDecimal cost;
 

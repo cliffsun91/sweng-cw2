@@ -1,6 +1,5 @@
 package com.acmetelecom.call;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.joda.time.DateTime;
