@@ -5,8 +5,6 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTime;
-
 import com.acmetelecom.call.Call;
 import com.acmetelecom.callevent.AbstractCallEvent;
 import com.acmetelecom.callevent.CallEnd;
@@ -20,12 +18,12 @@ public class BillingSystem {
 
   private final List<AbstractCallEvent> callLog = new ArrayList<AbstractCallEvent>();
 
-  public void callInitiated(final String caller, final String callee, final DateTime startTime) {
-    callLog.add(new CallStart(caller, callee, startTime ));
+  public void callInitiated(CallStart startCall) {
+    callLog.add(startCall);
   }
 
-  public void callCompleted(final String caller, final String callee, final DateTime endTime) {
-    callLog.add(new CallEnd(caller, callee, endTime));
+  public void callCompleted(CallEnd endCall) {
+    callLog.add(endCall);
   }
 
   public void createCustomerBills(List<Customer> customers) {
