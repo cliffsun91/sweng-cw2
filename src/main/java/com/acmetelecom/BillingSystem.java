@@ -5,8 +5,6 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTime;
-
 import com.acmetelecom.call.Call;
 import com.acmetelecom.callevent.AbstractCallEvent;
 import com.acmetelecom.callevent.CallEnd;
@@ -18,33 +16,53 @@ import com.acmetelecom.customer.Tariff;
 
 public class BillingSystem {
 
-	private final List<AbstractCallEvent> callLog = new ArrayList<AbstractCallEvent>();
+	private final List<AbstractCallEvent> callLog;
+	private final Printer printer;
 
-	public void callInitiated(final String caller, final String callee, final DateTime startTime) {
-		callLog.add(new CallStart(caller, callee, startTime ));
+	public BillingSystem(Printer printer) {
+		this.callLog = new ArrayList<AbstractCallEvent>();
+		this.printer = printer;
 	}
 
-	public void callCompleted(final String caller, final String callee, final DateTime endTime) {
-		callLog.add(new CallEnd(caller, callee, endTime));
+	public void callInitiated(final CallStart startCall) {
+		callLog.add(startCall);
 	}
 
-	public void createCustomerBills(List<Customer> customers) {
+	public void callCompleted(final CallEnd endCall) {
+		callLog.add(endCall);
+	}
+
+	public void createCustomerBills(final List<Customer> customers) {
 		for (final Customer customer : customers) {
 			createBillFor(customer);
 		}
 		callLog.clear();
 	}
 
+	/*
+	 * TODO We should change the way this is implemented entirely. We should
+	 * receive the calls from the system after they happen (as an assembled call).
+	 * When we receive a call, we should calculate the time spent in peak and
+	 * offpeak for that singular call, and the cost, then append the bill to the
+	 * existing bill for that customer in a hashmap (hashing to customer number or
+	 * something). This way we accrue the resulting bill log (which is all we
+	 * need) as time goes on, and when we eventually want to produce the bill it's
+	 * just a constant access for the bill for that customer.
+	 * 
+	 * Currently the system would perform around 200 million iterations for a
+	 * customer base of only 1000, who make 100 calls per month!
+	 */
+
 	private void createBillFor(final Customer customer) {
 		final List<AbstractCallEvent> customerEvents = getCustomerEvents(customer);
 
 		final List<Call> calls = getCalls(customerEvents);
-		
+
 		final List<LineItem> items = new ArrayList<LineItem>();
 		BigDecimal totalBill = calculateTotalBill(customer, calls, items);
-		
+
 		String totalBillString = new MoneyFormatter().penceToPounds(totalBill);
-		
+
 		new BillPrinter(new MoneyFormatter()).print(customer, items,
 				totalBillString, HtmlPrinter.getInstance());
 	}
@@ -95,6 +113,7 @@ public class BillingSystem {
 		}
 		return customerEvents;
 	}
+
 
 	private BigDecimal calculateCost(final Call call,
 			final DaytimePeakPeriod peakPeriod, final Tariff tariff) {

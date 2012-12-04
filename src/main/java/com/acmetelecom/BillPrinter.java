@@ -16,15 +16,17 @@ public class BillPrinter {
 			final List<LineItem> calls, final String totalBill,
 			Printer printer) {
 
-		printer.printHeading(customer.getFullName(), customer.getPhoneNumber(),
+		printer.createHeading(customer.getFullName(), customer.getPhoneNumber(),
 				customer.getPricePlan());
 
 		for (final LineItem call : calls) {
-			printer.printItem(call.date(), call.callee(), call.durationMinutes(),
+			printer.createItem(call.date(), call.callee(), call.durationMinutes(),
 					moneyFormatter.penceToPounds(call.cost()));
 		}
 
-		printer.printTotal(totalBill);
+		printer.createTotal(totalBill);
+		
+		printer.printAllToConsole();
 	}
 
 }

@@ -15,7 +15,14 @@
 
 
 
+
 \usepackage{babel}
+
+
+
+
+\usepackage{babel}
+
 
 \makeatother
 
@@ -88,14 +95,13 @@ and calls of zero length, as well as extremely long calls. As an example,
 here is where we check the edge case of the boundary times between
 peak and offpeak: 
 \begin{lstlisting}[language=Java]
-@Test   
-public void testIsOffPeakBoundaryTime() {     
-	// Check what happens on the limit of peak -> offpeak     
-	calendar.set(Calendar.HOUR_OF_DAY, DaytimePeakPeriod.OFFPEAK_START);     
-	assertTrue (peakPeriod.offPeak(calendar.getTime()));     
-	calendar.set(Calendar.HOUR_OF_DAY, DaytimePeakPeriod.OFFPEAK_END);     
-	assertFalse (peakPeriod.offPeak(calendar.getTime()));   
-}
+@Test public void testIsOffPeakBoundaryTime() {
+	// Check what happens on the limit of peak -> offpeak
+	calendar.set(Calendar.HOUROFDAY, DaytimePeakPeriod.OFFPEAKSTART);
+	assertTrue (peakPeriod.offPeak(calendar.getTime())); 
+	calendar.set(Calendar.HOUROFDAY, DaytimePeakPeriod.OFFPEAKEND); 
+	assertFalse (peakPeriod.offPeak(calendar.getTime())); 
+} 
 \end{lstlisting}
 
 
@@ -121,7 +127,7 @@ Below is an example of one of the tests
 \[
 EXAMPLE
 \]
-This was built up using $HOW\, IT\, WAS\, BUILT$
+ This was built up using $HOW\, IT\, WAS\, BUILT$
 
 
 \subsection*{Adding unit tests for new functionality}
@@ -134,7 +140,7 @@ being fulfilled. We had to think carefully about what exactly to test,
 to make sure that it completely covered every aspect of our goals.
 We implemented the tests using the DSL that we developed earlier,
 effectively connecting the new functionality tests with the specifications
-that we were showing to Stephen. 
+that we were showing to Stephen.
 
 
 \paragraph*{How}
@@ -193,13 +199,30 @@ times without directly editing the class itself. Additionally, if
 different tariffs could have different peak times, perhaps changing
 more than once throughout the day, it would require a whole overhaul
 of the class. 
-\item The $CallerStart$ and $CallerEnd$ classes, used $System.currentTimeMillis$
+\item The $CallStart$ and $CallEnd$ classes, used $System.currentTimeMillis$
 to get the time of call and end. This made testing difficult - to
 construct a call using this implementation would require the test
 to $sleep$ inbetween calling and ending the call, which would make
 the testing process very slow indeed! This occurs in the $Runner$
 example provided in the specification - it takes a full 1 minute and
 50 seconds to complete!
+\item The $BillingSystem$ was responsible for registering and handling
+$CallEvent$ happenings, which we felt was somewhat outside of its
+domain of responsibility. We felt that a system that is designed for
+billing should handle just that - it should take a list of pre-assembled
+calls, and work out the bills from that. 
+\item Additionally, the $BillingSystem$ was woefully inefficient at creating
+the bills for customers. In the original state, it would iterate through
+every customer, and then through every $CallEvent$ that had been
+logged, and assemble each call that way. Assuming the system has $1000$
+customers, and each customer makes $100$ calls over the course of
+the month, that means each customer adds $200$ different events to
+the $callLog$, for a total of $200000$ call events. That means that
+the $BillingSystem$ makes a total of $1000\, customers\times200000\, events=200,000,000$
+iterations to assemble one bill for all of its customers! Even generating
+a single bill takes $20000$ iterations, making this system very difficult
+to scale. This isn't even the worst case - the way the system is designed,
+it searches the whole $callLog$ every time!
 \end{itemize}
 
 \paragraph*{How}
@@ -213,15 +236,19 @@ we implemented the common $getCaller$ and $getCallee$ methods that
 were being duplicated in both $CallStart$ and $CallEnd$ inside the
 $AbstractCallEvent$ class, reducing the code size and making it easier
 to read. As an example, this reduced the $CallStart$ class to simply
-being 
+being
 
 \begin{lstlisting}[language=Java]
 public class CallEnd extends AbstractCallEvent {
-    public CallEnd(String caller, String callee) {
-        super(caller, callee, System.currentTimeMillis());
-    }
+	public CallEnd(String caller, String callee) {
+		super(caller, callee, System.currentTimeMillis());
+	}
 }
 \end{lstlisting}
+With the $BillingSystem$ class, we removed the 
+\[
+METHODS\, WE\, REMOVED/IMPROVEMENTS
+\]
 
 
 
@@ -269,7 +296,7 @@ had to consider this risk when deciding to use Joda Time, for instance.
 Fortunately, Joda Time uses the Apache 2 license, which is not 'viral'
 and only requires that derivative work contains notifications of what
 was changed, as well as retaining all other copyright, patent, trademark
-notices etc. that existed in the original. 
+notices etc. that existed in the original.
 
 
 \subsection*{Building}
