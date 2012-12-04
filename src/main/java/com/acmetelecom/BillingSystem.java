@@ -18,7 +18,6 @@ import com.acmetelecom.customer.Tariff;
 
 public class BillingSystem {
 
-
 	private final List<AbstractCallEvent> callLog = new ArrayList<AbstractCallEvent>();
 
 	public void callInitiated(final String caller, final String callee, final DateTime startTime) {
@@ -40,10 +39,10 @@ public class BillingSystem {
 		final List<AbstractCallEvent> customerEvents = getCustomerEvents(customer);
 
 		final List<Call> calls = getCalls(customerEvents);
-
+		
 		final List<LineItem> items = new ArrayList<LineItem>();
-
 		BigDecimal totalBill = calculateTotalBill(customer, calls, items);
+		
 		String totalBillString = new MoneyFormatter().penceToPounds(totalBill);
 		
 		new BillPrinter(new MoneyFormatter()).print(customer, items,
@@ -55,7 +54,6 @@ public class BillingSystem {
 		BigDecimal totalBill = new BigDecimal(0);
 
 		for (final Call call : calls) {
-
 			final Tariff tariff = CentralTariffDatabase.getInstance().tarriffFor(
 					customer);
 
