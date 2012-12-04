@@ -41,8 +41,18 @@ public class BillingSystem {
 
 		final List<Call> calls = getCalls(customerEvents);
 
-		BigDecimal totalBill = new BigDecimal(0);
 		final List<LineItem> items = new ArrayList<LineItem>();
+
+		BigDecimal totalBill = calculateTotalBill(customer, calls, items);
+		String totalBillString = new MoneyFormatter().penceToPounds(totalBill);
+		
+		new BillPrinter(new MoneyFormatter()).print(customer, items,
+				totalBillString, HtmlPrinter.getInstance());
+	}
+
+	private BigDecimal calculateTotalBill(final Customer customer,
+			final List<Call> calls, final List<LineItem> items) {
+		BigDecimal totalBill = new BigDecimal(0);
 
 		for (final Call call : calls) {
 
@@ -59,10 +69,7 @@ public class BillingSystem {
 			totalBill = totalBill.add(callCost);
 			items.add(new DefaultLineItem(call, callCost));
 		}
-
-		String totalBillString = new MoneyFormatter().penceToPounds(totalBill);
-		new BillPrinter(new MoneyFormatter()).print(customer, items,
-				totalBillString, HtmlPrinter.getInstance());
+		return totalBill;
 	}
 
 	private List<Call> getCalls(final List<AbstractCallEvent> customerEvents) {
