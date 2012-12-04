@@ -5,31 +5,31 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joda.time.DateTime;
+
 import com.acmetelecom.call.Call;
 import com.acmetelecom.callevent.AbstractCallEvent;
 import com.acmetelecom.callevent.CallEnd;
 import com.acmetelecom.callevent.CallEvent;
 import com.acmetelecom.callevent.CallStart;
-import com.acmetelecom.customer.CentralCustomerDatabase;
 import com.acmetelecom.customer.CentralTariffDatabase;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.customer.Tariff;
 
 public class BillingSystem {
 
+
 	private final List<AbstractCallEvent> callLog = new ArrayList<AbstractCallEvent>();
 
-	public void callInitiated(final String caller, final String callee) {
-		callLog.add(new CallStart(caller, callee));
+	public void callInitiated(final String caller, final String callee, final DateTime startTime) {
+		callLog.add(new CallStart(caller, callee, startTime ));
 	}
 
-	public void callCompleted(final String caller, final String callee) {
-		callLog.add(new CallEnd(caller, callee));
+	public void callCompleted(final String caller, final String callee, final DateTime endTime) {
+		callLog.add(new CallEnd(caller, callee, endTime));
 	}
 
-	public void createCustomerBills() {
-		final List<Customer> customers = CentralCustomerDatabase.getInstance()
-		.getCustomers();
+	public void createCustomerBills(List<Customer> customers) {
 		for (final Customer customer : customers) {
 			createBillFor(customer);
 		}
@@ -117,5 +117,4 @@ public class BillingSystem {
 		}
 
 	}
-
 }
