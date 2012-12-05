@@ -3,6 +3,11 @@ package com.acmetelecom.callevent;
 import org.joda.time.DateTime;
 
 public class CallEnd extends AbstractCallEvent {
+	
+	public CallEnd(String caller, String callee){
+		this(caller, callee, DateTime.now());
+	}
+
     public CallEnd(String caller, String callee, DateTime timestamp) {
         super(caller, callee, timestamp);
     }

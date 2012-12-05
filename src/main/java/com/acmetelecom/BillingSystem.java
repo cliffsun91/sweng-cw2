@@ -11,6 +11,7 @@ import org.joda.time.DateTime;
 import com.acmetelecom.TimeUtils.TimeCalculator;
 import com.acmetelecom.callevent.CallEnd;
 import com.acmetelecom.callevent.CallStart;
+import com.acmetelecom.customer.CentralCustomerDatabase;
 import com.acmetelecom.customer.CentralTariffDatabase;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.customer.Tariff;
@@ -20,13 +21,25 @@ public class BillingSystem {
 	private final HashMap<String, List<CallTime>> customerCurrentCallLog;
 	private final Printer printer;
 
+	public BillingSystem() {
+		this(HtmlPrinter.getInstance());
+	}
+	
 	public BillingSystem(Printer printer) {
 		this.customerCurrentCallLog = new HashMap<String, List<CallTime>>();
 		this.printer = printer;
 	}
+	
+	public void callInitiated(String caller, String callee){
+		callInitiated(new CallStart(caller, callee));
+	}
+	
+	public void callCompleted(String caller, String callee){
+		callCompleted(new CallEnd(caller, callee));
+	}
 
-	public void callInitiated(final CallStart startCall) {
-		String caller = startCall.getCaller();
+	public void callInitiated(CallStart startCall) {
+	    String caller = startCall.getCaller();
 		if (customerCurrentCallLog.get(caller) == null){
 			customerCurrentCallLog.put(caller, new ArrayList<CallTime>());
 		}
@@ -34,11 +47,15 @@ public class BillingSystem {
 		calls.add(new CallTime(startCall.getTimestamp()));
 	}
 
-	public void callCompleted(final CallEnd endCall) {
+	public void callCompleted(CallEnd endCall) {
 		String caller = endCall.getCaller();
 		List<CallTime> calls = customerCurrentCallLog.get(caller);
 		CallTime time = calls.get(calls.size()-1);
 		time.setEndTime(endCall.getTimestamp());
+	}
+	
+	public void createCustomerBills(){
+		createCustomerBills(CentralCustomerDatabase.getInstance().getCustomers());
 	}
 
 	public void createCustomerBills(final List<Customer> customers) {
