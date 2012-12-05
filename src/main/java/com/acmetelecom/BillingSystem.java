@@ -31,14 +31,14 @@ public class BillingSystem {
 			customerCurrentCallLog.put(caller, new ArrayList<CallTime>());
 		}
 		List<CallTime> calls = customerCurrentCallLog.get(caller);
-		calls.add(new CallTime(new DateTime(startCall.time())));
+		calls.add(new CallTime(startCall.getTimestamp()));
 	}
 
 	public void callCompleted(final CallEnd endCall) {
 		String caller = endCall.getCaller();
 		List<CallTime> calls = customerCurrentCallLog.get(caller);
 		CallTime time = calls.get(calls.size()-1);
-		time.setEndTime(new DateTime(endCall.time()));
+		time.setEndTime(endCall.getTimestamp());
 	}
 
 	public void createCustomerBills(final List<Customer> customers) {

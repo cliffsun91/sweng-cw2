@@ -4,6 +4,9 @@ import com.acmetelecom.call.Call;
 
 import java.math.BigDecimal;
 
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
+
 /**
  * Created with IntelliJ IDEA.
  * User: oaj09
@@ -29,8 +32,12 @@ public class DefaultLineItem implements LineItem {
     }
 
     public String durationMinutes() {
-        return "" + call.durationSeconds() / 60 + ":"
-                + String.format("%02d", call.durationSeconds() % 60);
+    	//TODO: Make a single instance of this somewhere
+		PeriodFormatter minutesAndSeconds = new PeriodFormatterBuilder()
+											.appendMinutes()
+											.appendSecondsWithMillis()
+											.toFormatter();
+        return minutesAndSeconds.print(call.duration().toPeriod());
     }
 
     public BigDecimal cost() {
