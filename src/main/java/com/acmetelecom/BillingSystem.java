@@ -82,8 +82,6 @@ public class BillingSystem {
 	}
 
 	private BigDecimal calculateCost(final PeakOffPeakTime peakOffPeakTime, final Tariff tariff) {
-		System.out.println(">>>>>>>>>>>>>>>>>>>p" + tariff.peakRate());
-		System.out.println(">>>>>>>>>>>>>>>>>>>o" + tariff.offPeakRate());
 		BigDecimal peakCost = new BigDecimal(peakOffPeakTime.getPeakTime()).multiply(tariff.peakRate());
 		BigDecimal offPeakCost = new BigDecimal(peakOffPeakTime.getOffPeakTime()).multiply(tariff.offPeakRate());
 		return peakCost.add(offPeakCost);
