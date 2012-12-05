@@ -2,7 +2,7 @@ package com.acmetelecom.printer;
 
 import java.util.List;
 
-import com.acmetelecom.MoneyFormatters.IMoneyFormatter;
+import com.acmetelecom.moneyFormatters.IMoneyFormatter;
 import com.acmetelecom.call.LineItem;
 import com.acmetelecom.customer.Customer;
 

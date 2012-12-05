@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import com.acmetelecom.call.CallTime;
 import com.acmetelecom.call.CallTimeLineItem;
-import com.acmetelecom.TimeUtils.PeakOffPeakTime;
+import com.acmetelecom.timeUtils.PeakOffPeakTime;
 
 public class CallTimeLineItemFactory implements LineItemFactory{
 

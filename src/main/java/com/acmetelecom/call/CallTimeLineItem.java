@@ -2,7 +2,7 @@ package com.acmetelecom.call;
 
 import java.math.BigDecimal;
 
-import com.acmetelecom.TimeUtils.PeakOffPeakTime;
+import com.acmetelecom.timeUtils.PeakOffPeakTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
