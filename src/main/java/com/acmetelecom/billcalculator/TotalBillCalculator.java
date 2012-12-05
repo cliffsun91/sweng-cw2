@@ -3,9 +3,9 @@ package com.acmetelecom.billcalculator;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.acmetelecom.CallTime;
-import com.acmetelecom.LineItem;
-import com.acmetelecom.PeakOffPeakTime;
+import com.acmetelecom.call.CallTime;
+import com.acmetelecom.call.LineItem;
+import com.acmetelecom.TimeUtils.PeakOffPeakTime;
 import com.acmetelecom.TimeUtils.ITimeCalculator;
 import com.acmetelecom.customer.Tariff;
 

@@ -7,10 +7,7 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-import com.acmetelecom.Printer;
-import com.acmetelecom.customer.CentralTariffDatabase;
 import com.acmetelecom.customer.Customer;
-import com.acmetelecom.customer.Tariff;
 import com.acmetelecom.exception.CustomerNameMismatchException;
 import com.acmetelecom.fixture.AcmeTelecomTestFixture;
 import com.acmetelecom.fixture.FixturePrinter;

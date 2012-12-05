@@ -1,6 +1,10 @@
 package com.acmetelecom;
 
+import com.acmetelecom.MoneyFormatter.IMoneyFormatter;
+import com.acmetelecom.call.LineItem;
 import com.acmetelecom.customer.Customer;
+import com.acmetelecom.printer.BillPrinter;
+import com.acmetelecom.printer.Printer;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;

@@ -1,6 +1,4 @@
-package com.acmetelecom;
-
-import com.acmetelecom.call.Call;
+package com.acmetelecom.call;
 
 import java.math.BigDecimal;
 

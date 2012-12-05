@@ -1,4 +1,4 @@
-package com.acmetelecom;
+package com.acmetelecom.MoneyFormatter;
 
 import java.math.BigDecimal;
 

@@ -2,7 +2,7 @@ package com.acmetelecom.billcalculator;
 
 import java.math.BigDecimal;
 
-import com.acmetelecom.IMoneyFormatter;
+import com.acmetelecom.MoneyFormatter.IMoneyFormatter;
 
 class MoneyFormatter implements IMoneyFormatter {
 

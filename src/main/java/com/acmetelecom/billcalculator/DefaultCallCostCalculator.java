@@ -3,7 +3,7 @@ package com.acmetelecom.billcalculator;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import com.acmetelecom.PeakOffPeakTime;
+import com.acmetelecom.TimeUtils.PeakOffPeakTime;
 import com.acmetelecom.customer.Tariff;
 
 public class DefaultCallCostCalculator implements CallCostCalculator {
