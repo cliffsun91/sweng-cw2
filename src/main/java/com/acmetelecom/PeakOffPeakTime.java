@@ -5,8 +5,8 @@ public class PeakOffPeakTime {
 	private final long offPeakTime;
 
 	public PeakOffPeakTime(long peakTime, long offPeakTime){
-		this.offPeakTime = peakTime;
-		this.peakTime = offPeakTime;
+		this.offPeakTime = offPeakTime;
+		this.peakTime = peakTime;
 	}
 
 	public long getPeakTime() {
