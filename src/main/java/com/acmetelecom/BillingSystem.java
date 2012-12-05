@@ -3,7 +3,10 @@ package com.acmetelecom;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import org.joda.time.DateTime;
 
 import com.acmetelecom.call.Call;
 import com.acmetelecom.callevent.AbstractCallEvent;
@@ -16,11 +19,15 @@ import com.acmetelecom.customer.Tariff;
 
 public class BillingSystem {
 
+	private final HashMap<String, CallStartTime> customerCurrentCallLog;
+	private final HashMap<String, TotalPeakOffPeakTime> customerTotalCallingTimes;	
 	private final List<AbstractCallEvent> callLog;
 	private final Printer printer;
 
 	public BillingSystem(Printer printer) {
-		this.callLog = new ArrayList<AbstractCallEvent>();
+		this.customerCurrentCallLog = new HashMap<String, CallStartTime>();
+		this.customerTotalCallingTimes = new HashMap<String, TotalPeakOffPeakTime>();
+		this.callLog = new ArrayList<AbstractCallEvent>();		
 		this.printer = printer;
 	}
 	
@@ -30,10 +37,12 @@ public class BillingSystem {
 
 	public void callInitiated(final CallStart startCall) {
 		callLog.add(startCall);
+		customerCurrentCallLog.put(startCall.getCallee(), new CallStartTime(new DateTime(startCall.time())));
 	}
 
 	public void callCompleted(final CallEnd endCall) {
 		callLog.add(endCall);
+//		customerCurrentCallLog.get(endCall.getCallee()).setEndTime(new DateTime(endCall.time()));
 	}
 
 	public void createCustomerBills(final List<Customer> customers) {
