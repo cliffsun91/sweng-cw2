@@ -31,9 +31,9 @@ public class PeakOffPeakPeriodsTest {
     public void testLoadGoodFile() throws Exception {
         try{
         PeakOffPeakPeriods peakOffPeakPeriods =
-                PeakOffPeakPeriods.loadPeakOffPeakPeriods(new File("src/test/java/com/acmetelecom/TimeUtils/times.xml"));
-            Assert.assertTrue(peakOffPeakPeriods.jodaTimes.size() ==3);
-            Assert.assertTrue(peakOffPeakPeriods.times.size() ==3);
+                PeakOffPeakPeriods.loadPeakOffPeakPeriods(new File("src/test/java/com/acmetelecom/TimeUtils/timesTest.xml"));
+            Assert.assertEquals(peakOffPeakPeriods.jodaTimes.size(), 3);
+            Assert.assertEquals(peakOffPeakPeriods.times.size(), 5);
             DateTime startTime = DateTime.parse("0800", DateTimeFormat.forPattern("HHmm"));
             DateTime endTime = DateTime.parse("1000", DateTimeFormat.forPattern("HHmm"));
             Assert.assertTrue(peakOffPeakPeriods.jodaTimes.get(0).startTime.equals(startTime));
