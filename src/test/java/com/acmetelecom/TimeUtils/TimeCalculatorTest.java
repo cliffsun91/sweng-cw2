@@ -17,11 +17,13 @@ import java.io.File;
  */
 
 public class TimeCalculatorTest {
-    private PeakOffPeakPeriods peakOffPeakPeriods;
+    private IPeakOffPeakPeriods peakOffPeakPeriods;
+    private TimeCalculator timeCalculator;
     public  TimeCalculatorTest() throws  FileParseException{
         peakOffPeakPeriods =  PeakOffPeakPeriods.
                 loadPeakOffPeakPeriods(new File("src/test/java/com/acmetelecom/TimeUtils/timesTest.xml"));
-     }
+        timeCalculator = new TimeCalculator(peakOffPeakPeriods);
+    }
 
 
     @Test
@@ -29,7 +31,7 @@ public class TimeCalculatorTest {
         DateTime startTime = DateTime.parse("0800", DateTimeFormat.forPattern("HHmm"));
         DateTime endTime = DateTime.parse("0800", DateTimeFormat.forPattern("HHmm"));
 
-        PeakOffPeakTime time=  TimeCalculator.calculateTimes(startTime, endTime, peakOffPeakPeriods);
+        PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
         Assert.assertEquals(time.getPeakTime(),0);
         Assert.assertEquals(time.getOffPeakTime(),0);
 
@@ -40,7 +42,7 @@ public class TimeCalculatorTest {
         DateTime startTime = DateTime.parse("0800", DateTimeFormat.forPattern("HHmm"));
         DateTime endTime = DateTime.parse("0900", DateTimeFormat.forPattern("HHmm"));
 
-        PeakOffPeakTime time=  TimeCalculator.calculateTimes(startTime, endTime, peakOffPeakPeriods);
+        PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
         Assert.assertEquals(time.getPeakTime(),3600);
         Assert.assertEquals(time.getOffPeakTime(),0);
 
@@ -51,7 +53,7 @@ public class TimeCalculatorTest {
         DateTime startTime = DateTime.parse("0800", DateTimeFormat.forPattern("HHmm"));
         DateTime endTime = DateTime.parse("1100", DateTimeFormat.forPattern("HHmm"));
 
-        PeakOffPeakTime time=  TimeCalculator.calculateTimes(startTime, endTime, peakOffPeakPeriods);
+        PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
         Assert.assertEquals(time.getPeakTime(),7200);
         Assert.assertEquals(time.getOffPeakTime(),3600);
 
@@ -62,7 +64,7 @@ public class TimeCalculatorTest {
         DateTime startTime = DateTime.parse("0700", DateTimeFormat.forPattern("HHmm"));
         DateTime endTime = DateTime.parse("1300", DateTimeFormat.forPattern("HHmm"));
 
-        PeakOffPeakTime time=  TimeCalculator.calculateTimes(startTime, endTime, peakOffPeakPeriods);
+        PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
 
         Assert.assertEquals(time.getPeakTime(),10800);
         Assert.assertEquals(time.getOffPeakTime(),10800);
@@ -74,7 +76,7 @@ public class TimeCalculatorTest {
         DateTime startTime = DateTime.parse("0300", DateTimeFormat.forPattern("HHmm"));
         DateTime endTime = DateTime.parse("0400", DateTimeFormat.forPattern("HHmm"));
 
-        PeakOffPeakTime time=  TimeCalculator.calculateTimes(startTime, endTime, peakOffPeakPeriods);
+        PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
 
         Assert.assertEquals(time.getPeakTime(),0);
         Assert.assertEquals(time.getOffPeakTime(),3600);
@@ -84,11 +86,36 @@ public class TimeCalculatorTest {
     @Test
     public void EndTimeBeforeStartTime() throws Exception {
         DateTime startTime = DateTime.parse("0700", DateTimeFormat.forPattern("HHmm"));
-        DateTime endTime = DateTime.parse("0300", DateTimeFormat.forPattern("HHmm"));
+        DateTime endTime = DateTime.parse("0300", DateTimeFormat.forPattern("HHmm")).plusDays(1);
 
-        PeakOffPeakTime time=  TimeCalculator.calculateTimes(startTime, endTime, peakOffPeakPeriods);
+        PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
         Assert.assertEquals(time.getPeakTime(),21600);
         Assert.assertEquals(time.getOffPeakTime(),50400);
+
+    }
+
+
+
+
+    @Test
+    public void CallLargerThanOneDay() throws Exception {
+        DateTime startTime = DateTime.parse("0700", DateTimeFormat.forPattern("HHmm"));
+        DateTime endTime = DateTime.parse("0300", DateTimeFormat.forPattern("HHmm")).plusDays(1);
+
+        PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
+        Assert.assertEquals(time.getPeakTime(),21600);
+        Assert.assertEquals(time.getOffPeakTime(),50400);
+
+    }
+
+    @Test
+    public void CallLargerThanTwoDays() throws Exception {
+        DateTime startTime = DateTime.parse("0700", DateTimeFormat.forPattern("HHmm"));
+        DateTime endTime = DateTime.parse("0300", DateTimeFormat.forPattern("HHmm")).plusDays(3);
+
+        PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
+        Assert.assertEquals(time.getPeakTime(),64800);
+        Assert.assertEquals(time.getOffPeakTime(),180000);
 
     }
 }

@@ -88,7 +88,7 @@ public class BillingSystem {
 		}
 		
 		for (final CallTime call : calls) {
-			PeakOffPeakTime peakOffPeakTime = TimeCalculator.calculateTimes(call.getStartTime(), call.getEndTime());
+			PeakOffPeakTime peakOffPeakTime = (new TimeCalculator()).calculateTimes(call.getStartTime(), call.getEndTime());
 			BigDecimal callCost = calculateCost(peakOffPeakTime, tariff);
 			callCost = callCost.setScale(0, RoundingMode.HALF_UP);
 
@@ -107,4 +107,5 @@ public class BillingSystem {
 	public Printer getPrinter(){
 		return printer;
 	}
+
 }
