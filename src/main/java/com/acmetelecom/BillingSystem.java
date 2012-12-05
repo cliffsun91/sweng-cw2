@@ -68,7 +68,7 @@ public class BillingSystem {
 		String totalBillString = new MoneyFormatter().penceToPounds(totalBill);
 
 		new BillPrinter(new MoneyFormatter()).print(customer, items,
-				totalBillString, HtmlPrinter.getInstance());
+				totalBillString, printer);
 	}
 
 	private BigDecimal calculateTotalBill(final Customer customer,
