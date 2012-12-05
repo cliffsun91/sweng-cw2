@@ -1,25 +1,19 @@
 package com.acmetelecom;
 
-
 public class PeakOffPeakTime {
-	private float totalPeakTime;
-	private float totalOffPeakTime;
+	private final long peakTime;
+	private final long offPeakTime;
 
-	public PeakOffPeakTime(float totalPeakTime, float totalOffPeakTime){
-		this.totalOffPeakTime = 0;
-		this.totalPeakTime = 0;
+	public PeakOffPeakTime(long peakTime, long offPeakTime){
+		this.offPeakTime = peakTime;
+		this.peakTime = offPeakTime;
 	}
 
-	public float getTotalPeakTime() {
-		return totalPeakTime;
+	public long getPeakTime() {
+		return peakTime;
 	}
 
-	public float getTotalOffPeakTime() {
-		return totalOffPeakTime;
-	}
-
-	public void updateTimes(PeakOffPeakTime peakOffPeakTime) {
-		this.totalOffPeakTime += peakOffPeakTime.getTotalOffPeakTime();
-		this.totalPeakTime += peakOffPeakTime.getTotalPeakTime();
+	public long getOffPeakTime() {
+		return offPeakTime;
 	}
 }
