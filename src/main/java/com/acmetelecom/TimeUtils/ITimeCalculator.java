@@ -1,4 +1,4 @@
-package com.acmetelecom.billcalculator;
+package com.acmetelecom.TimeUtils;
 
 import org.joda.time.DateTime;
 

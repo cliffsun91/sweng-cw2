@@ -6,13 +6,14 @@ import java.util.List;
 import com.acmetelecom.CallTime;
 import com.acmetelecom.LineItem;
 import com.acmetelecom.PeakOffPeakTime;
+import com.acmetelecom.TimeUtils.ITimeCalculator;
 import com.acmetelecom.customer.Tariff;
 
 public class TotalBillCalculator {
 
 	private CallCostCalculator calculateCallCost;
 	private LineItemFactory lineItemFactory; 
-	private ITimeCalculator timeCalculator; 
+	private ITimeCalculator timeCalculator;
 
 	public TotalBillCalculator(final CallCostCalculator calculateCallCost, 
 			final LineItemFactory lineItemFactory, ITimeCalculator timeCalculator) {

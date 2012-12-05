@@ -15,19 +15,24 @@ import java.util.List;
 @XmlRootElement(name = "PeakOffPeakPeriods")
 @XmlSeeAlso({TimePeriod.class})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class PeakOffPeakPeriods {
+public class PeakOffPeakPeriods implements IPeakOffPeakPeriods {
 
 
-    public final List<JodaTimePeriod> jodaTimes = new ArrayList<JodaTimePeriod>();
+    @Override
+    public List<JodaTimePeriod> getJodaTimes() {
+        return jodaTimes;
+    }
+
+    private final List<JodaTimePeriod> jodaTimes = new ArrayList<JodaTimePeriod>();
     public  final List<TimePeriod> times = new ArrayList<TimePeriod>() ;
     private static  final DateTimeFormatter FORMATTER = DateTimeFormat.forPattern("HHmm");
     private static final JAXBContext context ;
     private static final Unmarshaller unmarshaller;
     private static final String DEFAULT_PATH ="src/main/java/com/acmetelecom/TimeUtils/times.xml";
-    private static final PeakOffPeakPeriods PEAK_OFF_PEAK_PERIODS ;
+    private static final IPeakOffPeakPeriods PEAK_OFF_PEAK_PERIODS ;
 
 
-    public static PeakOffPeakPeriods loadPeakOffPeakPeriods(File file)throws FileParseException{
+    public static IPeakOffPeakPeriods loadPeakOffPeakPeriods(File file)throws FileParseException{
 
         try{
              PeakOffPeakPeriods peakOffPeakPeriods=
@@ -40,14 +45,14 @@ public class PeakOffPeakPeriods {
 
     }
 
-    public static PeakOffPeakPeriods getDefaultPeakOffPeakPeriods(){
+    public static IPeakOffPeakPeriods getDefaultPeakOffPeakPeriods(){
         return  PEAK_OFF_PEAK_PERIODS;
     }
 
     static  {
         JAXBContext c = null;
         Unmarshaller u = null;
-        PeakOffPeakPeriods p = null;
+        IPeakOffPeakPeriods p = null;
         try{
             c = JAXBContext.newInstance(PeakOffPeakPeriods.class);
             u = c.createUnmarshaller();
