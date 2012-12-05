@@ -1,6 +1,6 @@
 package com.acmetelecom;
 
-import com.acmetelecom.MoneyFormatter.IMoneyFormatter;
+import com.acmetelecom.MoneyFormatters.IMoneyFormatter;
 import com.acmetelecom.call.LineItem;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.printer.BillPrinter;

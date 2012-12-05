@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.acmetelecom.MoneyFormatter.MoneyFormatter;
+import com.acmetelecom.MoneyFormatters.MoneyFormatter;
 import com.acmetelecom.TimeUtils.PeakOffPeakTime;
 import com.acmetelecom.call.CallTime;
 import com.acmetelecom.call.CallTimeLineItem;
