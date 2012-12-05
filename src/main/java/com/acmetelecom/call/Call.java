@@ -1,6 +1,7 @@
 package com.acmetelecom.call;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -19,21 +20,21 @@ public class Call {
     return start.getCallee();
   }
 
-  public int durationSeconds() {
-    return (int) (((end.time() - start.time()) / 1000));
+  public Duration duration() {
+    return new Duration(start.getTimestamp(), end.getTimestamp());
   }
 
   public String date() {
-	DateTime time = new DateTime(start.time());
+	DateTime time = new DateTime(start.getTimestamp());
 	DateTimeFormatter formatter = DateTimeFormat.forPattern("yy/M/d h:mma");
     return time.toString(formatter);
   }
 
   public DateTime startTime() {
-    return new DateTime(start.time());
+    return start.getTimestamp();
   }
 
   public DateTime endTime() {
-    return new DateTime(end.time());
+    return end.getTimestamp();
   }
 }
