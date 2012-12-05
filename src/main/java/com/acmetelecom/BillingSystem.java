@@ -24,6 +24,10 @@ public class BillingSystem {
 	this.printer = printer;
   }
   
+  public Printer getPrinter(){
+	  return printer;
+  }
+  
   public void callInitiated(final CallStart startCall) {
     callLog.add(startCall);
   }
