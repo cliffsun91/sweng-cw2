@@ -1,0 +1,14 @@
+<PeakOffPeakPeriods>
+    <times>
+        <startTime>0800</startTime>
+        <endTime>1000</endTime>
+    </times>
+    <times>
+        <startTime>1200</startTime>
+        <endTime>1400</endTime>
+    </times>
+    <times>
+        <startTime>1600</startTime>
+        <endTime>1800</endTime>
+    </times>
+</PeakOffPeakPeriods>

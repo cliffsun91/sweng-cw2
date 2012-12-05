@@ -26,14 +26,19 @@ public class TimeCalculator {
     }
 
     public static PeakOffPeakTime calculateTimes(DateTime startTime,
-                                                 DateTime endTime ){
+                                                 DateTime endTime ) {
        return   calculateTimes(startTime,endTime,PEAK_OFF_PEAK_PERIODS);
 
     }
 
     public  static PeakOffPeakTime calculateTimes(DateTime startTime ,
                                                   DateTime endTime ,
-                                                  PeakOffPeakPeriods peakOffPeakPeriods){
+                                                  PeakOffPeakPeriods peakOffPeakPeriods)
+                                                  {
+//        if ( startTime.compareTo(endTime)>0){
+//            throw  new IllegalArgumentException("start time must be before end time");
+//        }
+
         float  peakTime = 0 ;
         List<JodaTimePeriod> times = peakOffPeakPeriods.jodaTimes;
         for ( JodaTimePeriod period:times){
@@ -41,9 +46,9 @@ public class TimeCalculator {
                     period.startTime.compareTo(endTime)<=0){
                 DateTime earlierStart ;
                 if ( startTime.compareTo( period.startTime) <=0){
-                    earlierStart = startTime;
-                }else{
                     earlierStart = period.startTime;
+                }else{
+                    earlierStart = startTime;
                 }
                 DateTime earlierEnd ;
                 if ( endTime.compareTo( period.endTime) <=0){
