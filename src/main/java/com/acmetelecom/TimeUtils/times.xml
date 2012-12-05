@@ -11,4 +11,8 @@
         <startTime>0800</startTime>
         <endTime>1100</endTime>
     </times>
+    <times>
+        <startTime>0300</startTime>
+        <endTime>0350</endTime>
+    </times>
 </PeakOffPeakPeriods>
