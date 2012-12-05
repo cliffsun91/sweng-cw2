@@ -30,6 +30,10 @@ public class BillingSystem {
 		this.callLog = new ArrayList<AbstractCallEvent>();		
 		this.printer = printer;
 	}
+	
+	public Printer getPrinter(){
+		return printer;
+	}
 
 	public void callInitiated(final CallStart startCall) {
 		callLog.add(startCall);
@@ -73,7 +77,7 @@ public class BillingSystem {
 		String totalBillString = new MoneyFormatter().penceToPounds(totalBill);
 
 		new BillPrinter(new MoneyFormatter()).print(customer, items,
-				totalBillString, HtmlPrinter.getInstance());
+				totalBillString, printer);
 	}
 
 	private BigDecimal calculateTotalBill(final Customer customer,

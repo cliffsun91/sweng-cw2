@@ -1,5 +1,9 @@
 package com.acmetelecom.TimeUtils;
 
+import com.acmetelecom.PeakOffPeakTime;
+import org.joda.time.DateTime;
+import org.joda.time.JodaTimePermission;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -15,11 +19,12 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TimeCalculator {
 
+     public  static PeakOffPeakTime calculateTimes(DateTime startTime , DateTime endTime){
+         float  offPeakTime = 0;
+         float  peakTime = 0 ;
 
-
-
-
-
+         return new PeakOffPeakTime(peakTime, offPeakTime);
+     }
 
     //Code to read in a file
 
