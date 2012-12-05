@@ -1,9 +1,16 @@
 package com.acmetelecom.assertion;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
+
 import com.acmetelecom.BillingSystem;
+import com.acmetelecom.Printer;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.exception.CustomerNameMismatchException;
 import com.telecom.billingsystembuilder.FinalBillingSystemBuilder;
@@ -18,12 +25,9 @@ public class AcmeTelecomTestAssertions implements CustomersBuilder, BillingSyste
 		customers = new ArrayList<Customer>();
 	}
 	
-	
 	@Override
-	public BillingSystemBuilderBuilder hasCustomers(Customer ... customerList){
-		for (Customer c : customerList){
-			customers.add(c);	
-		}
+	public BillingSystemBuilderBuilder hasCustomerDatabase(List<Customer> customerList){
+		customers.addAll(customerList);
 		return this;
 	}
 
@@ -42,6 +46,10 @@ public class AcmeTelecomTestAssertions implements CustomersBuilder, BillingSyste
 	@Override
 	public void assertResult() {
 		billingSystem.createCustomerBills(customers);
+		Printer printer = billingSystem.getPrinter();
+		String resultString = printer.getString();
+		System.out.println(resultString);
+		assertThat(resultString, equalTo(expected));
 	}
 
 	

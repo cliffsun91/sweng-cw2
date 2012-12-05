@@ -21,8 +21,8 @@ public class DefaultTelephoneCallBuilder implements FromCallerBuilder,
 
 	Person caller;
 	Person receiver;
-	int startTime;
-	int endTime;
+	DateTime startTime;
+	DateTime endTime;
 
 	@Override
 	public ToReceiverBuilder fromCaller(Person caller) {
@@ -37,13 +37,13 @@ public class DefaultTelephoneCallBuilder implements FromCallerBuilder,
 	}
 
 	@Override
-	public EndTimeBuilder withStartTime(int startTime) {
+	public EndTimeBuilder withStartTime(DateTime startTime) {
 		this.startTime = startTime;
 		return this;
 	}
 
 	@Override
-	public FinalTelephoneCallBuilder andWithEndTime(int endTime) {
+	public FinalTelephoneCallBuilder andWithEndTime(DateTime endTime) {
 		this.endTime = endTime;
 		return this;
 	}
@@ -52,18 +52,14 @@ public class DefaultTelephoneCallBuilder implements FromCallerBuilder,
 	public CallStart buildStartCall(List<Customer> customers) throws CustomerNameMismatchException {
 		String callerTelephoneNumber = getTelephoneNumberForPerson(caller, customers);
 		String receiverTelephoneNumber = getTelephoneNumberForPerson(receiver, customers);
-		DateTime time = DateTime.now();
-		DateTime newTime = time.withHourOfDay(startTime);
-		return startCall(callerTelephoneNumber, receiverTelephoneNumber, newTime);
+		return startCall(callerTelephoneNumber, receiverTelephoneNumber, startTime);
 	}
 
 	@Override
 	public CallEnd buildEndCall(List<Customer> customers) throws CustomerNameMismatchException {
 		String callerTelephoneNumber = getTelephoneNumberForPerson(caller, customers);
 		String receiverTelephoneNumber = getTelephoneNumberForPerson(receiver, customers);
-		DateTime time = DateTime.now();
-		DateTime newTime = time.withHourOfDay(endTime);
-		return endCall(callerTelephoneNumber, receiverTelephoneNumber, newTime);
+		return endCall(callerTelephoneNumber, receiverTelephoneNumber, endTime);
 	}
 
 	public String getTelephoneNumberForPerson(Person person, List<Customer> customers) throws CustomerNameMismatchException{

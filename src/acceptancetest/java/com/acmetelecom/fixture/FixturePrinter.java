@@ -11,20 +11,20 @@ public class FixturePrinter implements Printer{
 	}
 	
 	@Override
-	public void createHeading(String name, String phoneNumber, String pricePlan) {
+	public void printHeading(String name, String phoneNumber, String pricePlan) {
 		String heading = "Bill For Customer:\n";
 		heading += "Name:" + name + "  Number:" + phoneNumber + "  Tariff:" + pricePlan + "\n"; 
 		print += heading;
 	}
 
 	@Override
-	public void createItem(String time, String callee, String duration, String cost) {
+	public void printItem(String time, String callee, String duration, String cost) {
 		String item = " -- time:" + time + ", receiver:" + callee + ", callduration:" + duration + ", cost:" + cost + "\n";
 		print += item;
 	}
 
 	@Override
-	public void createTotal(String total) {
+	public void printTotal(String total) {
 		String line = "-----------------------------\n";
 		line += "total = " + total + "\n\n";
 		print += line;
@@ -35,11 +35,6 @@ public class FixturePrinter implements Printer{
 		return print;
 	}
 
-	@Override
-	public void printAllToConsole() {
-		System.out.println(print);
-	}
-	
 	public static FixturePrinter aStandardPrinter(){
 		return new FixturePrinter();
 	}

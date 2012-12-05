@@ -1,5 +1,10 @@
 package com.acmetelecom.fixture;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.joda.time.DateTime;
+
 import com.acmetelecom.assertion.AcmeTelecomTestAssertions;
 import com.acmetelecom.assertion.CustomersBuilder;
 import com.acmetelecom.customer.Customer;
@@ -9,6 +14,7 @@ import com.acmetelecom.microtype.TelephoneNumber;
 import com.telecom.billingsystembuilder.BillingSystemBuilder;
 import com.telecom.billingsystembuilder.TelephoneCallsBuilder;
 import com.telecom.telephonecallbuilder.DefaultTelephoneCallBuilder;
+import com.telecom.telephonecallbuilder.FinalTelephoneCallBuilder;
 import com.telecom.telephonecallbuilder.FromCallerBuilder;
 
 public class AcmeTelecomTestFixture {
@@ -21,6 +27,13 @@ public class AcmeTelecomTestFixture {
 		return new Customer(person.getName(), number.getTelephoneNumberAsString(), tariffPlan.getTariffCode());
 	}
 	
+	public List<Customer> createNewDatabaseWithCustomers(Customer ... customers) {
+		return Arrays.asList(customers);
+	}
+	
+	public List<FinalTelephoneCallBuilder> createListOfTelephoneCalls(FinalTelephoneCallBuilder ... telephoneCallBuilders){
+		return Arrays.asList(telephoneCallBuilders);
+	}
 	
 	public TelephoneCallsBuilder billingSystem(){
 		return new BillingSystemBuilder();
@@ -43,5 +56,27 @@ public class AcmeTelecomTestFixture {
 		return new TariffPlan(tariffCode);
 	}
 	
+	public DateTime timeAndDate(int year, int month, int dayOfMonth, int hour, int minute){
+		return new DateTime(year, month, dayOfMonth, hour, minute);
+	}
+	
+	public int year(int year){
+		return year;
+	}
+	
+	public int month(int month){
+		return month;
+	}
 
+	public int dayOfMonth(int dayOfMonth){
+		return dayOfMonth;
+	}
+	
+	public int hour(int hour){
+		return hour;
+	}
+	
+	public int minute(int minute){
+		return minute;
+	}
 }
