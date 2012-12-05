@@ -20,7 +20,7 @@ public class TimeCalculatorTest {
     private PeakOffPeakPeriods peakOffPeakPeriods;
     public  TimeCalculatorTest() throws  FileParseException{
         peakOffPeakPeriods =  PeakOffPeakPeriods.
-                loadPeakOffPeakPeriods(new File("src/test/java/com/acmetelecom/TimeUtils/times.xml"));
+                loadPeakOffPeakPeriods(new File("src/test/java/com/acmetelecom/TimeUtils/timesTest.xml"));
      }
 
 

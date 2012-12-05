@@ -37,7 +37,7 @@ public class TimeCalculator {
                                                   PeakOffPeakPeriods peakOffPeakPeriods)
                                                   {
         if ( startTime.compareTo(endTime)>0){
-            DateTime midnight = DateTime.parse("235959999", DateTimeFormat.forPattern("HHmmssSSS"));
+            DateTime midnight = DateTime.parse("0000", DateTimeFormat.forPattern("HHmm")).plusDays(1);
             PeakOffPeakTime tillMidnight =TimeCalculator.calculateTimes(startTime,midnight,peakOffPeakPeriods) ;
             DateTime morning = DateTime.parse("0000", DateTimeFormat.forPattern("HHmm"));
             PeakOffPeakTime fromMorning =TimeCalculator.calculateTimes(morning,endTime,peakOffPeakPeriods) ;

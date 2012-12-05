@@ -1,14 +1,16 @@
 package com.acmetelecom.callevent;
 
+import org.joda.time.DateTime;
+
 public abstract class AbstractCallEvent implements CallEvent {
     private String caller;
     private String callee;
-    private long time;
+    private DateTime timestamp;
 
-    public AbstractCallEvent(String caller, String callee, long timeStamp) {
+    public AbstractCallEvent(String caller, String callee, DateTime timeStamp) {
         this.caller = caller;
         this.callee = callee;
-        this.time = timeStamp;
+        this.timestamp = timeStamp;
     }
 
     @Override
@@ -22,7 +24,7 @@ public abstract class AbstractCallEvent implements CallEvent {
     }
 
     @Override
-	public long time() {
-        return time;
+	public DateTime getTimestamp() {
+        return timestamp;
     }
 }

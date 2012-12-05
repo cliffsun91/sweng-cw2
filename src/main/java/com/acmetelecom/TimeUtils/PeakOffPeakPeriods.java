@@ -1,12 +1,10 @@
 package com.acmetelecom.TimeUtils;
 
-import com.acmetelecom.PeakOffPeakTime;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.*;
 import java.io.File;
@@ -80,7 +78,31 @@ public class PeakOffPeakPeriods {
                                        DateTime.parse(period.endTime,FORMATTER));
              jodaTimes.add(jperiod);
          }
+        normalizeJodaTimePeriods();
     }
+
+    private void normalizeJodaTimePeriods() throws Exception {
+       for ( int i =0 ; i < jodaTimes.size(); i++){
+           JodaTimePeriod timePeriod = jodaTimes.get(i);
+           for ( int j = 0; j <jodaTimes.size(); j++){
+               if ( i == j ){
+                   continue;
+               }
+               JodaTimePeriod innerTimePeriod = jodaTimes.get(j);
+                   if (timePeriod.startTime.compareTo(innerTimePeriod.endTime) <= 0 &&
+                           innerTimePeriod.startTime.compareTo(timePeriod.endTime)<=0){
+                       if ( timePeriod.startTime.compareTo(innerTimePeriod.startTime) <0){
+                           innerTimePeriod.startTime = timePeriod.startTime;
+                       }
+                       if ( timePeriod.endTime.compareTo(innerTimePeriod.endTime) > 0){
+                           innerTimePeriod.endTime  = timePeriod.endTime;
+                       }
+                       jodaTimes.remove(i);
+                   }
+               }
+       }
+    }
+
 
     public  static void  main(String args[])throws Exception{
 //        final Marshaller marshaller = context.createMarshaller();

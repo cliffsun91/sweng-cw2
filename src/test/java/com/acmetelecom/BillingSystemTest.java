@@ -1,14 +1,9 @@
 package com.acmetelecom;
 
-import static org.junit.Assert.fail;
-
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.acmetelecom.customer.Customer;
-import com.acmetelecom.customer.Tariff;
 
 
 // Is it possible to use mocking here?

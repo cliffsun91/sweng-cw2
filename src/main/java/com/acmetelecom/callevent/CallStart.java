@@ -4,7 +4,7 @@ import org.joda.time.DateTime;
 
 public class CallStart extends AbstractCallEvent {
     public CallStart(String caller, String callee, DateTime time) {
-        super(caller, callee, time.getMillis());
+        super(caller, callee, time);
     }
     
     public static CallStart startCall(String caller, String callee, DateTime time){

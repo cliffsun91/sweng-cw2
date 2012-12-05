@@ -11,4 +11,12 @@
         <startTime>1600</startTime>
         <endTime>1800</endTime>
     </times>
+    <times>
+        <startTime>1700</startTime>
+        <endTime>1800</endTime>
+    </times>
+    <times>
+        <startTime>1600</startTime>
+        <endTime>1700</endTime>
+    </times>
 </PeakOffPeakPeriods>
