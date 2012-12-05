@@ -8,10 +8,8 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 
-import com.acmetelecom.call.Call;
-import com.acmetelecom.callevent.AbstractCallEvent;
+import com.acmetelecom.TimeUtils.TimeCalculator;
 import com.acmetelecom.callevent.CallEnd;
-import com.acmetelecom.callevent.CallEvent;
 import com.acmetelecom.callevent.CallStart;
 import com.acmetelecom.customer.CentralTariffDatabase;
 import com.acmetelecom.customer.Customer;
@@ -19,60 +17,40 @@ import com.acmetelecom.customer.Tariff;
 
 public class BillingSystem {
 
-	private final HashMap<String, CallStartTime> customerCurrentCallLog;
-	private final HashMap<String, TotalPeakOffPeakTime> customerTotalCallingTimes;	
-	private final List<AbstractCallEvent> callLog;
+	private final HashMap<String, List<CallTime>> customerCurrentCallLog;
 	private final Printer printer;
 
 	public BillingSystem(Printer printer) {
-		this.customerCurrentCallLog = new HashMap<String, CallStartTime>();
-		this.customerTotalCallingTimes = new HashMap<String, TotalPeakOffPeakTime>();
-		this.callLog = new ArrayList<AbstractCallEvent>();		
+		this.customerCurrentCallLog = new HashMap<String, List<CallTime>>();
 		this.printer = printer;
-	}
-	
-	public Printer getPrinter(){
-		return printer;
 	}
 
 	public void callInitiated(final CallStart startCall) {
-		callLog.add(startCall);
-		customerCurrentCallLog.put(startCall.getCallee(), new CallStartTime(new DateTime(startCall.time())));
+		String callee = startCall.getCallee();
+		if (customerCurrentCallLog.get(callee) == null){
+			customerCurrentCallLog.put(callee, new ArrayList<CallTime>());
+		}
+		List<CallTime> calls = customerCurrentCallLog.get(callee);
+		calls.add(new CallTime(new DateTime(startCall.time())));
 	}
 
 	public void callCompleted(final CallEnd endCall) {
-		callLog.add(endCall);
-//		customerCurrentCallLog.get(endCall.getCallee()).setEndTime(new DateTime(endCall.time()));
+		String callee = endCall.getCallee();
+		List<CallTime> calls = customerCurrentCallLog.get(callee);
+		CallTime time = calls.get(calls.size()-1);
+		time.setEndTime(new DateTime(endCall.time()));
 	}
 
 	public void createCustomerBills(final List<Customer> customers) {
 		for (final Customer customer : customers) {
 			createBillFor(customer);
+			customerCurrentCallLog.put(customer.getPhoneNumber(), new ArrayList<CallTime>());
 		}
-		callLog.clear();
 	}
 
-	/*
-	 * TODO We should change the way this is implemented entirely. We should
-	 * receive the calls from the system after they happen (as an assembled call).
-	 * When we receive a call, we should calculate the time spent in peak and
-	 * offpeak for that singular call, and the cost, then append the bill to the
-	 * existing bill for that customer in a hashmap (hashing to customer number or
-	 * something). This way we accrue the resulting bill log (which is all we
-	 * need) as time goes on, and when we eventually want to produce the bill it's
-	 * just a constant access for the bill for that customer.
-	 * 
-	 * Currently the system would perform around 200 million iterations for a
-	 * customer base of only 1000, who make 100 calls per month!
-	 */
-
-	private void createBillFor(final Customer customer) {
-		final List<AbstractCallEvent> customerEvents = getCustomerEvents(customer);
-
-		final List<Call> calls = getCalls(customerEvents);
-
+	private void createBillFor(final Customer customer) {	
 		final List<LineItem> items = new ArrayList<LineItem>();
-		BigDecimal totalBill = calculateTotalBill(customer, calls, items);
+		BigDecimal totalBill = calculateTotalBill(customer, items);
 
 		String totalBillString = new MoneyFormatter().penceToPounds(totalBill);
 
@@ -81,77 +59,31 @@ public class BillingSystem {
 	}
 
 	private BigDecimal calculateTotalBill(final Customer customer,
-			final List<Call> calls, final List<LineItem> items) {
+			final List<LineItem> items) {
+		String callee = customer.getPhoneNumber();
+		List<CallTime> calls = customerCurrentCallLog.get(callee);
+		final Tariff tariff = CentralTariffDatabase.getInstance().tarriffFor(
+				customer);
+
 		BigDecimal totalBill = new BigDecimal(0);
+		for (final CallTime call : calls) {
+			PeakOffPeakTime peakOffPeakTime = TimeCalculator.calculateTimes(call.getStartTime(), call.getEndTime());
+			BigDecimal callCost = calculateCost(peakOffPeakTime, tariff);
+			callCost = callCost.setScale(0, RoundingMode.HALF_UP);
 
-		for (final Call call : calls) {
-			final Tariff tariff = CentralTariffDatabase.getInstance().tarriffFor(
-					customer);
-
-			BigDecimal cost;
-
-			final DaytimePeakPeriod peakPeriod = new DaytimePeakPeriod();
-			cost = calculateCost(call, peakPeriod, tariff);
-
-			cost = cost.setScale(0, RoundingMode.HALF_UP);
-			final BigDecimal callCost = cost;
 			totalBill = totalBill.add(callCost);
-			items.add(new DefaultLineItem(call, callCost));
+			items.add(new CallTimeLineItem(call, callee, callCost, peakOffPeakTime));
 		}
 		return totalBill;
 	}
 
-	private List<Call> getCalls(final List<AbstractCallEvent> customerEvents) {
-		final List<Call> calls = new ArrayList<Call>();
-
-		CallEvent start = null;
-		for (final CallEvent event : customerEvents) {
-			if (event instanceof CallStart) {
-				start = event;
-			}
-			if (event instanceof CallEnd && start != null) {
-				calls.add(new Call(start, event));
-				start = null;
-			}
-		}
-		return calls;
+	private BigDecimal calculateCost(final PeakOffPeakTime peakOffPeakTime, final Tariff tariff) {
+		BigDecimal peakCost = new BigDecimal(peakOffPeakTime.getPeakTime()).multiply(tariff.peakRate());
+		BigDecimal offPeakCost = new BigDecimal(peakOffPeakTime.getOffPeakTime()).multiply(tariff.offPeakRate());
+		return peakCost.add(offPeakCost);
 	}
 
-	private List<AbstractCallEvent> getCustomerEvents(final Customer customer) {
-		final List<AbstractCallEvent> customerEvents = new ArrayList<AbstractCallEvent>();
-		for (final AbstractCallEvent callEvent : callLog) {
-			if (callEvent.getCaller().equals(customer.getPhoneNumber())) {
-				customerEvents.add(callEvent);
-			}
-		}
-		return customerEvents;
-	}
-
-
-	private BigDecimal calculateCost(final Call call,
-			final DaytimePeakPeriod peakPeriod, final Tariff tariff) {
-
-		/*
-		 * NEW FUNCTIONALITY - let's look at old functionality first... // Only
-		 * charge peak rate during peak times final int durationOffPeak =
-		 * peakPeriod.calculateOffPeakTime(call.startTime(), call.endTime(),
-		 * call.durationSeconds()); final int durationPeak =
-		 * peakPeriod.calculatePeakTime(call.startTime(), call.endTime(),
-		 * call.durationSeconds());
-		 * 
-		 * return new
-		 * BigDecimal(durationOffPeak).multiply(tariff.offPeakRate()).add( new
-		 * BigDecimal(durationPeak).multiply(tariff.peakRate()));
-		 */
-
-		if (peakPeriod.offPeak(call.startTime())
-				&& peakPeriod.offPeak(call.endTime())
-				&& call.durationSeconds() < 12 * 60 * 60) {
-			return new BigDecimal(call.durationSeconds()).multiply(tariff
-					.offPeakRate());
-		} else {
-			return new BigDecimal(call.durationSeconds()).multiply(tariff.peakRate());
-		}
-
+	public Printer getPrinter(){
+		return printer;
 	}
 }

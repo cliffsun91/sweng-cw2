@@ -16,4 +16,8 @@ public class PeakOffPeakTime {
 	public long getOffPeakTime() {
 		return offPeakTime;
 	}
+	
+	public long durationSeconds(){
+		return peakTime + offPeakTime;
+	}
 }
