@@ -11,7 +11,7 @@ import org.junit.Test;
  */
 public class TimeCalculatorTest {
 
-    private TimeCalculator tc = new TimeCalculator();
+    //private TimeCalculator tc = new TimeCalculator();
     public TimeCalculatorTest(){
 
     }
