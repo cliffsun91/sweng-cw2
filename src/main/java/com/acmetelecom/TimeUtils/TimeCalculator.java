@@ -2,69 +2,53 @@ package com.acmetelecom.TimeUtils;
 
 import com.acmetelecom.PeakOffPeakTime;
 import org.joda.time.DateTime;
-import org.joda.time.JodaTimePermission;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.*;
-import java.io.File;
-import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.List;
 
-
-@XmlRootElement(name = "TimeCalculator")
-@XmlSeeAlso({TimePeriod.class})
-@XmlAccessorType(XmlAccessType.FIELD)
+/**
+* Created with IntelliJ IDEA.
+* User: deewar
+* Date: 05/12/12
+* Time: 02:28
+* To change this template use File | Settings | File Templates.
+*/
 public class TimeCalculator {
 
-     public  static PeakOffPeakTime calculateTimes(DateTime startTime , DateTime endTime){
-         float  offPeakTime = 0;
-         float  peakTime = 0 ;
+    private PeakOffPeakPeriods peakOffPeakPeriods;
 
-         return new PeakOffPeakTime(peakTime, offPeakTime);
-     }
-
-    //Code to read in a file
-
-    public  final List<TimePeriod> times = new ArrayList<TimePeriod>() ;
-
-    private static  final TimeCalculator timeCalculator;
-
-    private  TimeCalculator(){
-
+    public TimeCalculator(){
+        this.peakOffPeakPeriods = PeakOffPeakPeriods.getDefaultPeakOffPeakPeriods();
     }
-    public static TimeCalculator getInstance(){
-        return  timeCalculator;
+    public  TimeCalculator(PeakOffPeakPeriods peakOffPeakPeriods){
+
+        this.peakOffPeakPeriods = peakOffPeakPeriods;
     }
-    static  {
-        TimeCalculator tc = new TimeCalculator();
 
-        try{
-            JAXBContext context = JAXBContext.newInstance(TimeCalculator.class);
-            Unmarshaller um = context.createUnmarshaller()      ;
-            tc = (TimeCalculator)um.unmarshal(new File("src/main/java/com/acmetelecom/TimeUtils/times.xml"));
 
-        }catch (Exception e){
-            System.err.println("Unable to load time periods. Please restart\nException\n" +e.toString());
-            e.printStackTrace();
-            System.exit(-1);
+    public  PeakOffPeakTime calculateTimes(DateTime startTime , DateTime endTime){
+        float  peakTime = 0 ;
+        List<JodaTimePeriod> times = peakOffPeakPeriods.jodaTimes;
+        for ( JodaTimePeriod period:times){
+            if (startTime.compareTo(period.endTime) <= 0 &&
+                    period.startTime.compareTo(endTime)<=0){
+                DateTime earlierStart ;
+                if ( startTime.compareTo( period.startTime) <=0){
+                    earlierStart = startTime;
+                }else{
+                    earlierStart = period.startTime;
+                }
+                DateTime earlierEnd ;
+                if ( endTime.compareTo( period.endTime) <=0){
+                    earlierEnd = endTime;
+                }else{
+                    earlierEnd = period.endTime;
+                }
+                peakTime += (earlierEnd.getMillis() -earlierStart.getMillis());
+            }
         }
-        timeCalculator = tc;
+        float offpeak = endTime.getMillis() - startTime.getMillis();
+        offpeak -= peakTime;
+        return new PeakOffPeakTime((long)peakTime/1000,(long)offpeak/1000);
     }
-    public  static void  main(String args[])throws Exception{
-        JAXBContext context = JAXBContext.newInstance(TimeCalculator.class);
-        final Marshaller marshaller = context.createMarshaller();
-//        TimeCalculator tc = new TimeCalculator();
-//        TimePeriod tp = new TimePeriod();
-//        tp.endTime ="end";
-//        tp.startTime= "start";
-//        tc.times.add(tp);
-        marshaller.marshal(TimeCalculator.getInstance(),System.out);
-
-
-    }
-
 
 }

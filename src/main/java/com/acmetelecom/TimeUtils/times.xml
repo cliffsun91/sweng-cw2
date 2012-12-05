@@ -1,4 +1,4 @@
-<TimeCalculator>
+<PeakOffPeakPeriods>
     <times>
         <startTime>0800</startTime>
         <endTime>1600</endTime>
@@ -9,6 +9,6 @@
     </times>
     <times>
         <startTime>0800</startTime>
-        <endTime>11900</endTime>
+        <endTime>1100</endTime>
     </times>
-</TimeCalculator>
+</PeakOffPeakPeriods>

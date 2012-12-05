@@ -17,11 +17,6 @@ import javax.xml.bind.annotation.*;
 @XmlType
 @XmlRootElement(name = "TimePeriod")
 public class TimePeriod {
-
-
-
     public String startTime;
-
     public String endTime;
-
 }
