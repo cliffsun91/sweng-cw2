@@ -14,18 +14,26 @@ import java.util.List;
 */
 public class TimeCalculator {
 
-    private PeakOffPeakPeriods peakOffPeakPeriods;
+    private static  final PeakOffPeakPeriods PEAK_OFF_PEAK_PERIODS;
 
-    public TimeCalculator(){
-        this.peakOffPeakPeriods = PeakOffPeakPeriods.getDefaultPeakOffPeakPeriods();
-    }
-    public  TimeCalculator(PeakOffPeakPeriods peakOffPeakPeriods){
-
-        this.peakOffPeakPeriods = peakOffPeakPeriods;
+    static {
+        PEAK_OFF_PEAK_PERIODS = PeakOffPeakPeriods.getDefaultPeakOffPeakPeriods();
     }
 
 
-    public  PeakOffPeakTime calculateTimes(DateTime startTime , DateTime endTime){
+    private  TimeCalculator(){
+
+    }
+
+    public static PeakOffPeakTime calculateTimes(DateTime startTime,
+                                                 DateTime endTime ){
+       return   calculateTimes(startTime,endTime,PEAK_OFF_PEAK_PERIODS);
+
+    }
+
+    public  static PeakOffPeakTime calculateTimes(DateTime startTime ,
+                                                  DateTime endTime ,
+                                                  PeakOffPeakPeriods peakOffPeakPeriods){
         float  peakTime = 0 ;
         List<JodaTimePeriod> times = peakOffPeakPeriods.jodaTimes;
         for ( JodaTimePeriod period:times){
