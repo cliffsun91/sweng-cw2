@@ -2,6 +2,7 @@ package com.acmetelecom.TimeUtils;
 
 import com.acmetelecom.PeakOffPeakTime;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 import java.util.List;
 
@@ -35,9 +36,14 @@ public class TimeCalculator {
                                                   DateTime endTime ,
                                                   PeakOffPeakPeriods peakOffPeakPeriods)
                                                   {
-//        if ( startTime.compareTo(endTime)>0){
-//            throw  new IllegalArgumentException("start time must be before end time");
-//        }
+        if ( startTime.compareTo(endTime)>0){
+            DateTime midnight = DateTime.parse("235959999", DateTimeFormat.forPattern("HHmmssSSS"));
+            PeakOffPeakTime tillMidnight =TimeCalculator.calculateTimes(startTime,midnight,peakOffPeakPeriods) ;
+            DateTime morning = DateTime.parse("0000", DateTimeFormat.forPattern("HHmm"));
+            PeakOffPeakTime fromMorning =TimeCalculator.calculateTimes(morning,endTime,peakOffPeakPeriods) ;
+            return new PeakOffPeakTime( tillMidnight.getPeakTime() + fromMorning.getPeakTime(),
+                                        tillMidnight.getOffPeakTime()+ fromMorning.getOffPeakTime());
+        }
 
         float  peakTime = 0 ;
         List<JodaTimePeriod> times = peakOffPeakPeriods.jodaTimes;
