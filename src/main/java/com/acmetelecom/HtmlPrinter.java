@@ -1,77 +1,72 @@
 package com.acmetelecom;
 
 class HtmlPrinter implements Printer {
-
     private static Printer instance = new HtmlPrinter();
-    private String print;
     
     private HtmlPrinter() {
-    	print = "";
     }
-
+    
     public static Printer getInstance() {
         return instance;
     }
-
-    public void createHeading(String name, String phoneNumber, String pricePlan) {
+    
+    public void printHeading(String name, String phoneNumber, String pricePlan) {
         beginHtml();
-        print += h2(name + "/" + phoneNumber + " - " + "Price Plan: " + pricePlan) + "\n";
+        System.out.println(h2(name + "/" + phoneNumber + " - " + "Price Plan: " + pricePlan));
         beginTable();
     }
-
+    
     private void beginTable() {
-        print += "<table border=\"1\">\n";
-        print += tr(th("Time") + th("Number") + th("Duration") + th("Cost")) + "\n";
+        System.out.println("<table border=\"1\">");
+        System.out.println(tr(th("Time") + th("Number") + th("Duration") + th("Cost")));
     }
-
+    
     private void endTable() {
-        print += "</table>\n";
+    	System.out.println("</table>");
     }
-
+    
     private String h2(String text) {
         return "<h2>" + text + "</h2>";
     }
-
-    public void createItem(String time, String callee, String duration, String cost) {
-        print += tr(td(time) + td(callee) + td(duration) + td(cost)) + "\n";
+    
+    public void printItem(String time, String callee, String duration, String cost) {
+        System.out.println(tr(td(time) + td(callee) + td(duration) + td(cost)));
     }
-
+    
     private String tr(String text) {
         return "<tr>" + text + "</tr>";
     }
-
+    
     private String th(String text) {
         return "<th width=\"160\">" + text + "</th>";
     }
-
+    
     private String td(String text) {
         return "<td>" + text + "</td>";
     }
-
-    public void createTotal(String total) {
+    
+    public void printTotal(String total) {
         endTable();
-        print += h2("Total: " + total) + "\n";
-        endHtml();
+        System.out.println(h2("Total: " + total));
+        endHtml(); 
     }
-
+    
     private void beginHtml() {
-        print += "<html>\n" +
-        		 "<head></head>\n" +
-        		 "<body>\n" +
-        		 "<h1>\n" +
-        		 "Acme Telecom\n" +
-        		 "</h1>\n";
+        System.out.println("<html>");
+        System.out.println("<head></head>");
+        System.out.println("<body>");
+        System.out.println("<h1>");
+        System.out.println("Acme Telecom");
+        System.out.println("</h1>");
     }
-
+    
     private void endHtml() {
-        print += "</body>\n</html>\n";
+        System.out.println("</body>");
+        System.out.println("</html>");
     }
     
-    public String getString(){
-    	return print;
-    }
-    
-    public void printAllToConsole() {
-    	System.out.println(print);
-    }
+	@Override
+	public String getString() {
+		return "no string for HTML printer";
+	} 
 }
