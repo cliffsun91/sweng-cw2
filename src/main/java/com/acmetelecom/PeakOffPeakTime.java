@@ -1,25 +1,19 @@
 package com.acmetelecom;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
-import com.acmetelecom.callevent.CallEvent;
-
 public class PeakOffPeakTime {
-	private final float totalPeakTime;
-	private final float totalOffPeakTime;
+	private final long peakTime;
+	private final long offPeakTime;
 
-	public PeakOffPeakTime(float totalPeakTime, float totalOffPeakTime){
-		this.totalOffPeakTime = 0;
-		this.totalPeakTime = 0;
+	public PeakOffPeakTime(long peakTime, long offPeakTime){
+		this.offPeakTime = peakTime;
+		this.peakTime = offPeakTime;
 	}
 
-	public float getTotalPeakTime() {
-		return totalPeakTime;
+	public long getPeakTime() {
+		return peakTime;
 	}
 
-	public float getTotalOffPeakTime() {
-		return totalOffPeakTime;
+	public long getOffPeakTime() {
+		return offPeakTime;
 	}
 }
