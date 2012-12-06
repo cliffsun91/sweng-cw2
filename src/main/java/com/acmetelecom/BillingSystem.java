@@ -15,7 +15,7 @@ import com.acmetelecom.customer.CentralTariffDatabase;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.customer.Tariff;
 import com.acmetelecom.moneyformatters.MoneyFormatter;
-import com.acmetelecom.printer.BillPrinter;
+import com.acmetelecom.printer.BillGenerator;
 import com.acmetelecom.printer.HtmlPrinter;
 import com.acmetelecom.printer.Printer;
 import com.acmetelecom.timeutils.ITimeCalculator;
@@ -24,7 +24,7 @@ import com.acmetelecom.timeutils.TimeCalculator;
 public class BillingSystem {
 
 	private final HashMap<String, List<CallTime>> customerCurrentCallLog;
-	private final BillPrinter billPrinter;
+	private final BillGenerator billGenerator;
 	private final TotalBillCalculator totalBillCalculator;
 
 	public BillingSystem() {
@@ -38,7 +38,7 @@ public class BillingSystem {
 	public BillingSystem(Printer printer, ITimeCalculator timeCalculator) {
 		this.customerCurrentCallLog = new HashMap<String, List<CallTime>>();
 		this.totalBillCalculator = new TotalBillCalculator(timeCalculator);
-		billPrinter = new BillPrinter(new MoneyFormatter(), printer);
+		billGenerator = new BillGenerator(new MoneyFormatter(), printer);
 	}
 
 	public void callInitiated(String caller, String callee){
@@ -87,7 +87,7 @@ public class BillingSystem {
 
 		String totalBillString = new MoneyFormatter().penceToPounds(totalBill);
 
-		billPrinter.print(customer, items, totalBillString);
+		billGenerator.print(customer, items, totalBillString);
 	}
 
 }
