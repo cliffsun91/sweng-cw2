@@ -11,9 +11,6 @@ import org.junit.Test;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.exception.CustomerNameMismatchException;
 import com.acmetelecom.fixture.AcmeTelecomTestFixture;
-import com.acmetelecom.fixture.FixturePrinter;
-import com.acmetelecom.printer.Printer;
-import com.acmetelecom.telephonecallbuilder.FinalTelephoneCallBuilder;
 import com.acmetelecom.telephonecallbuilder.TelephoneCallRepresentation;
 
 public class AcmeTelecomTest extends AcmeTelecomTestFixture{
@@ -44,18 +41,12 @@ public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 																  				  endCall(customerDatabase)
 																);
 		
-		//Random playing around
-//		Tariff tarriff = Tariff.Standard;
-//		
-//		Customer customer = new Customer("","","");
-//		
 //		Tariff tarif1 = CentralTariffDatabase.getInstance().tarriffFor(customer);
-		//finish random playing around
-		
+
 		givenAcmeTelecom().hasCustomerDatabase(customerDatabase).
 			    		   andHasABillingSystem(
-			    				   				billingSystem().withTelephoneCalls(telephoneCalls)
-										  						//withABillPrinter(aStandardPrinter())
+			    				   				billingSystem().withTelephoneCalls(telephoneCalls).
+										  						withABillPrinter(aStandardPrinter())
 								          	   ).
 						   weExpectTheFollowingBillToBePrinted(
 								   						aBill(forCustomer(customer(named("James"), customerDatabase), 
@@ -72,7 +63,44 @@ public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 								   					    )
 								   						      ).
 						   assertResult();
-						
+	}
+	
+	@Test
+	public void TestBillingSystemWithCallWithOverlapPeakPeriodsPrintsBillWhichChargesTheCorrectAmount() throws CustomerNameMismatchException{
+
+		DateTime telephoneCall1StartTime = timeAndDate(year(2012), month(1), dayOfMonth(1), hour(7), minute(30));
+		DateTime telephoneCall1EndTime = timeAndDate(year(2012), month(1), dayOfMonth(1), hour(8), minute(30));
+		
+		List<TelephoneCallRepresentation> telephoneCalls 
+									= createListOfTelephoneCalls(aTelephoneCall().fromCaller(named("Fred")).
+																  				  toReceiver(named("James")).
+																  				  withStartTime(telephoneCall1StartTime).
+																  				  andWithEndTime(telephoneCall1EndTime).
+																  				  endCall(customerDatabase)
+																);
+		
+//		Tariff tarif1 = CentralTariffDatabase.getInstance().tarriffFor(customer);
+
+		givenAcmeTelecom().hasCustomerDatabase(customerDatabase).
+			    		   andHasABillingSystem(
+			    				   				billingSystem().withTelephoneCalls(telephoneCalls).
+										  						withABillPrinter(aStandardPrinter())
+								          	   ).
+						   weExpectTheFollowingBillToBePrinted(
+								   						aBill(forCustomer(customer(named("James"), customerDatabase), 
+								   								          usingPrinter(aStandardPrinter())).
+								   								withNoCalls().
+								   								  withBillTotal("0.00"),
+								   			      			  forCustomer(customer(named("Fred"), customerDatabase), 
+								   			      					      usingPrinter(aStandardPrinter())).
+								   			      			    withACall(startTime(telephoneCall1StartTime),
+									   									  endTime(telephoneCall1EndTime),
+									   									  toReceiver(customer(named("James"), customerDatabase)),
+									   									  withCost("12.60")).
+									   							  withBillTotal("12.60")
+								   					    )
+								   						      ).
+						   assertResult();
 	}
 	
 }
