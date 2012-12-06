@@ -11,6 +11,7 @@ import com.acmetelecom.assertion.AcmeTelecomTestAssertions;
 import com.acmetelecom.assertion.CustomersBuilder;
 import com.acmetelecom.billingsystembuilder.BillingSystemBuilder;
 import com.acmetelecom.billingsystembuilder.TelephoneCallsBuilder;
+import com.acmetelecom.call.CallTime;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.exception.CustomerNameMismatchException;
 import com.acmetelecom.microtype.Person;
@@ -21,7 +22,6 @@ import com.acmetelecom.printbillbuilder.SingleCustomerBillBuilder;
 import com.acmetelecom.printer.Printer;
 import com.acmetelecom.telephonecallbuilder.DefaultTelephoneCallBuilder;
 import com.acmetelecom.telephonecallbuilder.FromCallerBuilder;
-import com.acmetelecom.telephonecallbuilder.TelephoneCallRepresentation;
 
 public class AcmeTelecomTestFixture {
 
@@ -37,7 +37,7 @@ public class AcmeTelecomTestFixture {
 		return Arrays.asList(customers);
 	}
 	
-	public List<TelephoneCallRepresentation> createListOfTelephoneCalls(TelephoneCallRepresentation ... calls){
+	public List<CallTime> createListOfTelephoneCalls(CallTime ... calls){
 		return Arrays.asList(calls);
 	}
 	

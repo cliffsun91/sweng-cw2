@@ -10,10 +10,15 @@ public class CallTime {
 	private String callee;
 
 	public CallTime(final DateTime startTime, final String caller, final String callee){
+		this(startTime, null, caller, callee);
+	}
+	
+	public CallTime(final DateTime startTime, DateTime endTime, final String caller, final String callee){
 		this.startTime = startTime;
+		this.endTime = endTime;
 		this.callee = callee;
 		this.caller = caller;
-	}
+	}		
 	
 	public DateTime getStartTime() {
 		return startTime;

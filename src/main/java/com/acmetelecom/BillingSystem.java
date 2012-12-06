@@ -48,8 +48,17 @@ public class BillingSystem {
 	public void callCompleted(String caller, String callee){
 		callCompleted(caller, DateTime.now());
 	}
+	
+	public void fullCompletedCall(CallTime call){
+		String caller = call.getCaller();
+		if (customerCurrentCallLog.get(caller) == null){
+			customerCurrentCallLog.put(caller, new ArrayList<CallTime>());
+		}
+		List<CallTime> calls = customerCurrentCallLog.get(caller);
+		calls.add(call);
+	}
 
-	public void callInitiated(CallTime startCall) {
+	private void callInitiated(CallTime startCall) {
 		String caller = startCall.getCaller();
 		if (customerCurrentCallLog.get(caller) == null){
 			customerCurrentCallLog.put(caller, new ArrayList<CallTime>());
@@ -58,7 +67,7 @@ public class BillingSystem {
 		calls.add(startCall);
 	}
 	
-	public void callCompleted(String caller, DateTime endTime) {
+	private void callCompleted(String caller, DateTime endTime) {
 		List<CallTime> calls = customerCurrentCallLog.get(caller);
 		CallTime time = calls.get(calls.size()-1);
 		time.setEndTime(endTime);

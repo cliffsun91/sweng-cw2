@@ -4,22 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.acmetelecom.BillingSystem;
+import com.acmetelecom.call.CallTime;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.exception.CustomerNameMismatchException;
 import com.acmetelecom.printer.Printer;
-import com.acmetelecom.telephonecallbuilder.TelephoneCallRepresentation;
 
 public class BillingSystemBuilder implements TelephoneCallsBuilder, WithPrinterBuilder, FinalBillingSystemBuilder{
 
-	List<TelephoneCallRepresentation> telephoneCalls;
+	List<CallTime> telephoneCalls;
 	Printer printer;
 	
 	public BillingSystemBuilder() {
-		telephoneCalls = new ArrayList<TelephoneCallRepresentation>();
+		telephoneCalls = new ArrayList<CallTime>();
 	}
 	
 	@Override
-	public WithPrinterBuilder withTelephoneCalls(List<TelephoneCallRepresentation> calls) throws CustomerNameMismatchException{
+	public WithPrinterBuilder withTelephoneCalls(List<CallTime> calls) throws CustomerNameMismatchException{
 		telephoneCalls.addAll(calls);
 		return this;
 	}
@@ -33,9 +33,8 @@ public class BillingSystemBuilder implements TelephoneCallsBuilder, WithPrinterB
 	@Override
 	public BillingSystem buildBillingSystem(List<Customer> customers) throws CustomerNameMismatchException {
 		BillingSystem billingSystem = new BillingSystem(printer);
-		for (TelephoneCallRepresentation call : telephoneCalls){
-			billingSystem.callInitiated(call.getStartCall());
-			billingSystem.callCompleted(call.getEndCall());
+		for (CallTime call : telephoneCalls){
+			billingSystem.fullCompletedCall(call);
 		}
 		return billingSystem;
 	}

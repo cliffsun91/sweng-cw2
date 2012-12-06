@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 
+import com.acmetelecom.call.CallTime;
 import com.acmetelecom.callevent.CallEnd;
-import com.acmetelecom.callevent.CallStart;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.exception.CustomerNameMismatchException;
 import com.acmetelecom.fixture.CustomerRetriever;
@@ -50,21 +50,11 @@ public class DefaultTelephoneCallBuilder implements FromCallerBuilder,
 		return this;
 	}
 
-	private CallStart buildStartCall(List<Customer> customers) throws CustomerNameMismatchException {
-		String callerTelephoneNumber = getCustomerFromPerson(caller, customers).getPhoneNumber();
-		String receiverTelephoneNumber = getCustomerFromPerson(receiver, customers).getPhoneNumber();
-		return new CallStart(callerTelephoneNumber, receiverTelephoneNumber, startTime);
-	}
-
-	private CallEnd buildEndCall(List<Customer> customers) throws CustomerNameMismatchException {
-		String callerTelephoneNumber = getCustomerFromPerson(caller, customers).getPhoneNumber();
-		String receiverTelephoneNumber = getCustomerFromPerson(receiver, customers).getPhoneNumber();
-		return new CallEnd(callerTelephoneNumber, receiverTelephoneNumber, endTime);
-	}
-	
 	@Override
-	public TelephoneCallRepresentation endCall(List<Customer> customers) throws CustomerNameMismatchException{
-		return new TelephoneCallRepresentation(buildStartCall(customers), buildEndCall(customers));
+	public CallTime endCall(List<Customer> customers) throws CustomerNameMismatchException{
+		String callerTelephoneNumber = getCustomerFromPerson(caller, customers).getPhoneNumber();
+		String receiverTelephoneNumber = getCustomerFromPerson(receiver, customers).getPhoneNumber();
+		return new CallTime(startTime, endTime, callerTelephoneNumber, receiverTelephoneNumber);
 	}
 
 }

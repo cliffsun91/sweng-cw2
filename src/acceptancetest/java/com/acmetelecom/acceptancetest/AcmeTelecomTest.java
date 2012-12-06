@@ -8,15 +8,16 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.acmetelecom.call.CallTime;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.exception.CustomerNameMismatchException;
 import com.acmetelecom.fixture.AcmeTelecomTestFixture;
 import com.acmetelecom.printer.Printer;
-import com.acmetelecom.telephonecallbuilder.TelephoneCallRepresentation;
 
 public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 	
 	List<Customer> customerDatabase;
+	List<CallTime> telephoneCalls;
 	
 	@Before
 	public void Setup(){
@@ -34,13 +35,13 @@ public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 		DateTime telephoneCall1StartTime = timeAndDate(year(2012), month(1), dayOfMonth(1), hour(5), minute(0));
 		DateTime telephoneCall1EndTime = timeAndDate(year(2012), month(1), dayOfMonth(1), hour(6), minute(0));
 		
-		List<TelephoneCallRepresentation> telephoneCalls 
-									= createListOfTelephoneCalls(aTelephoneCall().fromCaller(named("James")).
-																  				  toReceiver(named("Fred")).
-																  				  withStartTime(telephoneCall1StartTime).
-																  				  andWithEndTime(telephoneCall1EndTime).
-																  				  endCall(customerDatabase)
-																);
+		 
+		telephoneCalls = createListOfTelephoneCalls(aTelephoneCall().fromCaller(named("James")).
+																  	 toReceiver(named("Fred")).
+																  	 withStartTime(telephoneCall1StartTime).
+																  	 andWithEndTime(telephoneCall1EndTime).
+																  	 endCall(customerDatabase)
+												   );
 		
 //		Tariff tarif1 = CentralTariffDatabase.getInstance().tarriffFor(customer);
 		Printer billPrinter = aStandardPrinter();
@@ -73,12 +74,11 @@ public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 		DateTime telephoneCall1StartTime = timeAndDate(year(2012), month(1), dayOfMonth(1), hour(7), minute(30));
 		DateTime telephoneCall1EndTime = timeAndDate(year(2012), month(1), dayOfMonth(1), hour(8), minute(30));
 		
-		List<TelephoneCallRepresentation> telephoneCalls 
-									= createListOfTelephoneCalls(aTelephoneCall().fromCaller(named("Fred")).
-																  				  toReceiver(named("James")).
-																  				  withStartTime(telephoneCall1StartTime).
-																  				  andWithEndTime(telephoneCall1EndTime).
-																  				  endCall(customerDatabase)
+		telephoneCalls = createListOfTelephoneCalls(aTelephoneCall().fromCaller(named("Fred")).
+																  	 toReceiver(named("James")).
+																     withStartTime(telephoneCall1StartTime).
+															    	 andWithEndTime(telephoneCall1EndTime).
+															    	 endCall(customerDatabase)
 																);
 		
 //		Tariff tarif1 = CentralTariffDatabase.getInstance().tarriffFor(customer);

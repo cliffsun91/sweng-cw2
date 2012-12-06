@@ -2,10 +2,10 @@ package com.acmetelecom.billingsystembuilder;
 
 import java.util.List;
 
+import com.acmetelecom.call.CallTime;
 import com.acmetelecom.exception.CustomerNameMismatchException;
-import com.acmetelecom.telephonecallbuilder.TelephoneCallRepresentation;
 
 public interface TelephoneCallsBuilder {
 
-	public WithPrinterBuilder withTelephoneCalls(List<TelephoneCallRepresentation> calls) throws CustomerNameMismatchException;
+	public WithPrinterBuilder withTelephoneCalls(List<CallTime> calls) throws CustomerNameMismatchException;
 }
