@@ -10,7 +10,7 @@ public class Runner2 {
         BillingSystem billingSystem = new BillingSystem();
         
         billingSystem.callInitiated("447777765432", "447711111111");
-        billingSystem.callCompleted(new CallEnd("447777765432", "447711111111", new DateTime().plus(1800000)));
+        billingSystem.callCompleted(new CallEnd("447777765432", "447711111111", new DateTime().plus(7200000)));
         
         billingSystem.createCustomerBills();
     }

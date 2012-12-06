@@ -45,6 +45,6 @@ public class BillingPrinterTest {
 
         List<LineItem> lineItems = new ArrayList<LineItem>();
         lineItems.add(firstCall);
-        new BillPrinter(moneyFormatter).print(customer, lineItems, "50", printer);
+        new BillPrinter(moneyFormatter, printer).print(customer, lineItems, "50");
     }
 }

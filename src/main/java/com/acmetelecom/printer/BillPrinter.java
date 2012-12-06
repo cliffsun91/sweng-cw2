@@ -8,15 +8,16 @@ import com.acmetelecom.customer.Customer;
 
 public class BillPrinter {
 
-	private IMoneyFormatter moneyFormatter;
+	private final IMoneyFormatter moneyFormatter;
+	private final Printer printer;
 
-	public BillPrinter(IMoneyFormatter moneyFormatter){
+	public BillPrinter(final IMoneyFormatter moneyFormatter, final Printer printer){
 		this.moneyFormatter = moneyFormatter;
+		this.printer = printer;
 	}
 
 	public void print(final Customer customer,
-			final List<LineItem> calls, final String totalBill,
-			Printer printer) {
+			final List<LineItem> calls, final String totalBill) {
 
 		printer.printHeading(customer.getFullName(), customer.getPhoneNumber(),
 				customer.getPricePlan());
