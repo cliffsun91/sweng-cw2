@@ -11,11 +11,13 @@ import com.acmetelecom.customer.Customer;
 import com.acmetelecom.microtype.Person;
 import com.acmetelecom.microtype.TariffPlan;
 import com.acmetelecom.microtype.TelephoneNumber;
+import com.acmetelecom.printer.Printer;
 import com.telecom.billingsystembuilder.BillingSystemBuilder;
 import com.telecom.billingsystembuilder.TelephoneCallsBuilder;
 import com.telecom.telephonecallbuilder.DefaultTelephoneCallBuilder;
 import com.telecom.telephonecallbuilder.FinalTelephoneCallBuilder;
 import com.telecom.telephonecallbuilder.FromCallerBuilder;
+import com.telecom.telephonecallbuilder.TelephoneCallRepresentation;
 
 public class AcmeTelecomTestFixture {
 
@@ -78,5 +80,28 @@ public class AcmeTelecomTestFixture {
 	
 	public int minute(int minute){
 		return minute;
+	}
+	
+	public String generateBillUsingPrinter(List<Customer> customers ,
+										   List<FinalTelephoneCallBuilder> telephoneCallBuilders, 
+										   Printer printer){
+		
+		for (Customer c : customers){
+			String tariffPlan = c.getPricePlan();
+			printer.printHeading(c.getFullName(), c.getPhoneNumber(), tariffPlan);
+			
+			for(FinalTelephoneCallBuilder builder : telephoneCallBuilders){
+				TelephoneCallRepresentation call = builder.getTelephoneCallRepresentation();
+				if (call.getCallerName().equals(c.getFullName())){
+					//extract stuff needed for print item.
+					//printer.printItem(startTime, callee, duration, cost)
+				}
+			}
+			
+			
+		}
+		
+		return "";
+		
 	}
 }

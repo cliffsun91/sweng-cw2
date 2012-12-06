@@ -12,4 +12,6 @@ public interface FinalTelephoneCallBuilder {
 	public CallStart buildStartCall(List<Customer> customers) throws CustomerNameMismatchException;
 	
 	public CallEnd buildEndCall(List<Customer> customers) throws CustomerNameMismatchException;
+	
+	public TelephoneCallRepresentation getTelephoneCallRepresentation();
 }

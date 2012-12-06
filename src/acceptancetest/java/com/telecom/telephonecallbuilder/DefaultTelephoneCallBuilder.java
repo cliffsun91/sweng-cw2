@@ -19,10 +19,10 @@ public class DefaultTelephoneCallBuilder implements FromCallerBuilder,
 											 EndTimeBuilder,
 											 FinalTelephoneCallBuilder{
 
-	Person caller;
-	Person receiver;
-	DateTime startTime;
-	DateTime endTime;
+	private Person caller;
+	private Person receiver;
+	private DateTime startTime;
+	private DateTime endTime;
 
 	@Override
 	public ToReceiverBuilder fromCaller(Person caller) {
@@ -61,6 +61,11 @@ public class DefaultTelephoneCallBuilder implements FromCallerBuilder,
 		String receiverTelephoneNumber = getTelephoneNumberForPerson(receiver, customers);
 		return endCall(callerTelephoneNumber, receiverTelephoneNumber, endTime);
 	}
+	
+	@Override
+	public TelephoneCallRepresentation getTelephoneCallRepresentation() {
+		return new TelephoneCallRepresentation(caller, receiver, startTime, endTime);
+	}
 
 	public String getTelephoneNumberForPerson(Person person, List<Customer> customers) throws CustomerNameMismatchException{
 		for(Customer c : customers){
@@ -70,4 +75,5 @@ public class DefaultTelephoneCallBuilder implements FromCallerBuilder,
 		}
 		throw new CustomerNameMismatchException("Name not found in Customer list!");
 	}
+
 }
