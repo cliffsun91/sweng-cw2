@@ -127,13 +127,13 @@ these tests could also be printed as a normal bill.
 
 Writing acceptance tests is crucial for both development and the business.
 For developers it provides validation that a particular feature works
-across the whole system. For the business it tells them that the feature
-has been successfully imple mented and can be released to production.
-In our case, it is important to write acceptance tests f or the new
-functionality that we are required to implement, it allows our customer
-Stephen to see whether new functionality works and lets him know the
-progress of development. However we are also trying to add tests to
-the legacy code and so it is also important to write acceptance tests
+across the whole system. Acceptance tests tells the business that the feature
+has been successfully implemented and can be released to production.
+In our case, it is important to write acceptance tests for the new
+functionality that we are required to implement, as it allows our customer
+Stephen to see whether new functionality works and also lets him know
+how development is progressing . However, because we are adding tests to
+the legacy code too, it is also important to write acceptance tests
 for the current functionality as well.
 
 
@@ -145,7 +145,17 @@ tests
 
 \begin{lstlisting}[language=Java,showstringspaces=false]
 // Creating a new customer database
-customerDatabase = createNewDatabaseWithCustomers(aCustomer(named("James"),  					   													withTelephoneNumber("+447567891234"),  					   													withTariffPlan("Standard")), 					   									  aCustomer(named("Fred"),  					   													withTelephoneNumber("+447912345678"),  					   													withTariffPlan("Standard")));
+customerDatabase = createNewDatabaseWithCustomers(
+	aCustomer(
+		named("James"),  	
+		withTelephoneNumber("+447567891234"),  					   													
+		withTariffPlan("Standard")), 					   									  
+	aCustomer(
+		named("Fred"),  					   									
+		withTelephoneNumber("+447912345678"),  					   							
+		withTariffPlan("Standard")
+	)
+);
 
 // Testing the final bill printed
 givenAcmeTelecom().hasCustomerDatabase(customerDatabase).
