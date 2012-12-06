@@ -34,7 +34,7 @@ public class TotalBillCalculator {
 			PeakOffPeakTime peakOffPeakTime = timeCalculator.calculateTimes(call.getStartTime(), call.getEndTime());
 			BigDecimal callCost = calculateCallCost.calculateCost(peakOffPeakTime, tariff);
 			totalBill = totalBill.add(callCost);
-			LineItem lineItem = lineItemFactory.createCallTimeLineItem(call, "CALLEE", callCost, peakOffPeakTime);
+			LineItem lineItem = lineItemFactory.createCallTimeLineItem(call, call.getCallee(), callCost, peakOffPeakTime);
 			items.add(lineItem);
 		}
 		return totalBill;

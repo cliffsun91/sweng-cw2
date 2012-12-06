@@ -1,4 +1,4 @@
-package com.acmetelecom;
+package com.acmetelecom.billcalculator;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
