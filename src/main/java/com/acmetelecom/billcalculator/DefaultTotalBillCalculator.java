@@ -38,6 +38,9 @@ public class DefaultTotalBillCalculator implements TotalBillCalculator {
 		}
 
 		for (final CallTime call : calls) {
+			if (call.getEndTime() == null){
+				continue;
+			}
 			PeakOffPeakTime peakOffPeakTime = timeCalculator.calculateTimes(call.getStartTime(), call.getEndTime());
 			BigDecimal callCost = calculateCallCost.calculateCost(peakOffPeakTime, tariff);
 			totalBill = totalBill.add(callCost);

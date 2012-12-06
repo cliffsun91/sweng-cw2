@@ -16,16 +16,14 @@ public class TimeCalculatorTest {
         timeCalculator = new TimeCalculator(peakOffPeakPeriods);
     }
 
-
     @Test
-    public void SameEndAndStartTimes() throws Exception {
+    public void sameEndAndStartTimes() throws Exception {
         DateTime startTime = DateTime.parse("0800", DateTimeFormat.forPattern("HHmm"));
         DateTime endTime = DateTime.parse("0800", DateTimeFormat.forPattern("HHmm"));
 
         PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
         Assert.assertEquals(time.getPeakTime(),0);
         Assert.assertEquals(time.getOffPeakTime(),0);
-
     }
 
     @Test
@@ -36,7 +34,6 @@ public class TimeCalculatorTest {
         PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
         Assert.assertEquals(time.getPeakTime(),3600);
         Assert.assertEquals(time.getOffPeakTime(),0);
-
     }
 
     @Test
@@ -47,7 +44,6 @@ public class TimeCalculatorTest {
         PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
         Assert.assertEquals(time.getPeakTime(),7200);
         Assert.assertEquals(time.getOffPeakTime(),3600);
-
     }
 
     @Test
@@ -59,7 +55,6 @@ public class TimeCalculatorTest {
 
         Assert.assertEquals(time.getPeakTime(),10800);
         Assert.assertEquals(time.getOffPeakTime(),10800);
-
     }
 
     @Test
@@ -71,23 +66,21 @@ public class TimeCalculatorTest {
 
         Assert.assertEquals(time.getPeakTime(),0);
         Assert.assertEquals(time.getOffPeakTime(),3600);
-
     }
-     // if calls last into the next day
+    
     @Test
-    public void CallContinuesToNextDay() throws Exception {
+    public void callContinuesToNextDay() throws Exception {
         DateTime startTime = DateTime.parse("0700", DateTimeFormat.forPattern("HHmm"));
         DateTime endTime = DateTime.parse("0300", DateTimeFormat.forPattern("HHmm")).plusDays(1);
 
         PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
         Assert.assertEquals(time.getPeakTime(),21600);
         Assert.assertEquals(time.getOffPeakTime(),50400);
-
     }
 
 
     @Test
-    public void CallLargerThanTwoDays() throws Exception {
+    public void callLargerThanTwoDays() throws Exception {
         DateTime startTime = DateTime.parse("0700", DateTimeFormat.forPattern("HHmm"));
         DateTime endTime = DateTime.parse("0300", DateTimeFormat.forPattern("HHmm")).plusDays(3);
 
@@ -96,6 +89,7 @@ public class TimeCalculatorTest {
         Assert.assertEquals(time.getOffPeakTime(),180000);
 
     }
+    
     @Test
     public void twentyFourHourCall() throws Exception {
         DateTime startTime = DateTime.parse("0700", DateTimeFormat.forPattern("HHmm"));
@@ -104,7 +98,6 @@ public class TimeCalculatorTest {
         PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
         Assert.assertEquals(time.getPeakTime(),21600);
         Assert.assertEquals(time.getOffPeakTime(),64800);
-
     }
 
     @Test

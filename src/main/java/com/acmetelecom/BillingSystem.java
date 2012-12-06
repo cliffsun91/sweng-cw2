@@ -37,17 +37,19 @@ public class BillingSystem {
 
 	public void callInitiated(String caller, String callee){
 		CallTime call = new CallTime(DateTime.now(), caller, callee);
-		if (customerCurrentCallLog.get(caller) == null){
-			customerCurrentCallLog.put(caller, new ArrayList<CallTime>());
-		}
-		List<CallTime> calls = customerCurrentCallLog.get(caller);
-		calls.add(call);
+		fullCompletedCall(call);
 	}
 
 	public void callCompleted(String caller, String callee){
-		List<CallTime> calls = customerCurrentCallLog.get(caller);
-		CallTime time = calls.get(calls.size()-1);
-		time.setEndTime(DateTime.now());
+		try {
+			List<CallTime> calls = customerCurrentCallLog.get(caller);
+			CallTime time = calls.get(calls.size()-1);
+			if (time.getEndTime() == null){ 
+				time.setEndTime(DateTime.now());
+			}
+		} catch (Exception e) {
+			// Won't throw exception to preserve original behaviour
+		}
 	}
 	
 	public void createCustomerBills(){

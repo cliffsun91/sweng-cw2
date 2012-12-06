@@ -38,9 +38,7 @@ public class CustomerBillGenerator {
 		final List<LineItem> items = new ArrayList<LineItem>();
 		
 		BigDecimal totalBill = totalBillCalculator.calculateTotalBill(calls, tariff, items);
-
 		String totalBillString = this.moneyFormatter.penceToPounds(totalBill);
-
 		billGenerator.print(customer, items, totalBillString);
 	}
 	
