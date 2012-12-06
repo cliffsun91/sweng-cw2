@@ -5,34 +5,34 @@ import static com.acmetelecom.fixture.FixturePrinter.aStandardPrinter;
 import java.util.List;
 
 import org.joda.time.DateTime;
+import org.junit.Before;
 import org.junit.Test;
 
-import com.acmetelecom.Printer;
-import com.acmetelecom.customer.CentralTariffDatabase;
 import com.acmetelecom.customer.Customer;
-import com.acmetelecom.customer.Tariff;
 import com.acmetelecom.exception.CustomerNameMismatchException;
 import com.acmetelecom.fixture.AcmeTelecomTestFixture;
-import com.acmetelecom.fixture.FixturePrinter;
 import com.telecom.telephonecallbuilder.FinalTelephoneCallBuilder;
 
 public class AcmeTelecomTest extends AcmeTelecomTestFixture{
-
+	
+	List<Customer> customerDatabase;
+	
+	
+	@Before
+	public void Setup(){
+		customerDatabase = createNewDatabaseWithCustomers(aCustomer(named("James"), 
+					   												withTelephoneNumber("+447567891234"), 
+					   												withTariffPlan("Standard")),
+					   									  aCustomer(named("Fred"), 
+					   												withTelephoneNumber("+447912345678"), 
+					   												withTariffPlan("Standard")));
+	}
+	
 	@Test
 	public void TestBillingSystemWithOneCallInOffPeakPeriodPrintsBillWithOffPeakChargeOnly() throws CustomerNameMismatchException{
 		// a telephone call from caller named James with telephone no. +447567891234 
 		// to a receiver named Fred with telephone no. +447912345678
 		// with a start time of 5:00:00am and end time of 5:00:30am  - 30 seconds
-
-		//Billing System shouldn't create customer list, it should be passed in
-		//so now it needs to be extracted out.
-		
-		List<Customer> customerDatabase = createNewDatabaseWithCustomers(aCustomer(named("James"), 
-	   			  																   withTelephoneNumber("+447567891234"), 
-	   			  																   withTariffPlan("Standard")),
-																	     aCustomer(named("Fred"), 
-																	    		   withTelephoneNumber("+447912345678"), 
-																			       withTariffPlan("Standard")));
 
 		DateTime telephoneCall1StartTime = timeAndDate(year(2012), month(1), dayOfMonth(1), hour(5), minute(0));
 		DateTime telephoneCall1EndTime = timeAndDate(year(2012), month(1), dayOfMonth(1), hour(6), minute(0));
@@ -45,7 +45,8 @@ public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 												);
 		
 		//String expected = generateBillUsingPrinter(customerDatabase, telephoneCalls, aStandardPrinter());
-				
+		// need an object to store the telephone call to access details like caller, callee, startTime, duration
+		
 		//Random playing around
 //		Tariff tarriff = Tariff.Standard;
 //		
