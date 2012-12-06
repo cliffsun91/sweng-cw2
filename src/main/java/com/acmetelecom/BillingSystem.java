@@ -42,11 +42,18 @@ public class BillingSystem {
 	}
 
 	public void callInitiated(String caller, String callee){
-		callInitiated(new CallTime(DateTime.now(), caller, callee));
+		CallTime call = new CallTime(DateTime.now(), caller, callee);
+		if (customerCurrentCallLog.get(caller) == null){
+			customerCurrentCallLog.put(caller, new ArrayList<CallTime>());
+		}
+		List<CallTime> calls = customerCurrentCallLog.get(caller);
+		calls.add(call);
 	}
 
 	public void callCompleted(String caller, String callee){
-		callCompleted(caller, DateTime.now());
+		List<CallTime> calls = customerCurrentCallLog.get(caller);
+		CallTime time = calls.get(calls.size()-1);
+		time.setEndTime(DateTime.now());
 	}
 	
 	public void fullCompletedCall(CallTime call){
@@ -56,21 +63,6 @@ public class BillingSystem {
 		}
 		List<CallTime> calls = customerCurrentCallLog.get(caller);
 		calls.add(call);
-	}
-
-	private void callInitiated(CallTime startCall) {
-		String caller = startCall.getCaller();
-		if (customerCurrentCallLog.get(caller) == null){
-			customerCurrentCallLog.put(caller, new ArrayList<CallTime>());
-		}
-		List<CallTime> calls = customerCurrentCallLog.get(caller);
-		calls.add(startCall);
-	}
-	
-	private void callCompleted(String caller, DateTime endTime) {
-		List<CallTime> calls = customerCurrentCallLog.get(caller);
-		CallTime time = calls.get(calls.size()-1);
-		time.setEndTime(endTime);
 	}
 	
 	public void createCustomerBills(){
@@ -86,8 +78,7 @@ public class BillingSystem {
 
 	private void createBillFor(final Customer customer) {	
 		final List<LineItem> items = new ArrayList<LineItem>();
-		final Tariff tariff = CentralTariffDatabase.getInstance().tarriffFor(
-				customer);
+		final Tariff tariff = CentralTariffDatabase.getInstance().tarriffFor(customer);
 		
 		List<CallTime> calls = customerCurrentCallLog.get(customer.getPhoneNumber());
 		BigDecimal totalBill = totalBillCalculator.calculateTotalBill(calls, tariff, items);
@@ -96,5 +87,4 @@ public class BillingSystem {
 
 		billGenerator.print(customer, items, totalBillString);
 	}
-
 }
