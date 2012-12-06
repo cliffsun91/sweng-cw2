@@ -5,8 +5,12 @@
 \usepackage[latin9]{inputenc}
 \usepackage{listings}
 \usepackage{geometry}
-\geometry{verbose,tmargin=4cm,bmargin=4cm,lmargin=2cm,rmargin=2cm}
+\geometry{verbose,tmargin=3cm,bmargin=3cm,lmargin=2cm,rmargin=2cm}
 \usepackage{url}
+
+\lstset{
+	basicstyle=\small
+}
 
 \makeatletter
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
@@ -146,24 +150,30 @@ tests
 \begin{lstlisting}[language=Java,showstringspaces=false]
 // Creating a new customer database
 customerDatabase = createNewDatabaseWithCustomers(
-	aCustomer(
-		named("James"),  	
-		withTelephoneNumber("+447567891234"),  					   													
-		withTariffPlan("Standard")), 					   									  
-	aCustomer(
-		named("Fred"),  					   									
-		withTelephoneNumber("+447912345678"),  					   							
-		withTariffPlan("Standard")
-	)
+	aCustomer(named("James"),  	
+		  withTelephoneNumber("+447567891234"),  					   				 
+		  withTariffPlan("Standard")), 					   						  
+	aCustomer(named("Fred"),  					   							
+		  withTelephoneNumber("+447912345678"),  					   			
+  		  withTariffPlan("Standard"))
 );
 
 // Testing the final bill printed
-givenAcmeTelecom().hasCustomerDatabase(customerDatabase).
+	givenAcmeTelecom().hasCustomerDatabase(customerDatabase).
 	andHasABillingSystem(
-	billingSystem().withTelephoneCalls(telephoneCalls)
-				   .withABillPrinter(aStandardPrinter())
-	).
-	weExpectTheFollowingBillToBePrinted("foo").assertResult();
+	billingSystem().withTelephoneCalls(telephoneCalls).
+			withABillPrinter(billPrinter)
+	weExpectTheFollowingBillToBePrinted(
+		aBill(forCustomer(customer(named("James"), customerDatabase), 
+				  usingPrinter(aStandardPrinter())).
+		      withACall(startTime(telephoneCall1StartTime),
+				endTime(telephoneCall1EndTime),
+				toReceiver(customer(named("Fred"), customerDatabase)),
+				withCost("7.20")).
+		      withBillTotal("7.20"),
+		      //another bill for Fred )).
+	assertResult(billPrinter);
+	
 \end{lstlisting}
 The benefits of such an acceptance test system are immediately obvious
 - it lets someone without any prior knowledge of how Java works or
@@ -198,11 +208,10 @@ Before we could implement the required changes, we wanted to add unit
 tests to cover what the expected outcome was going to be, as an example
 of Test-Driven Development. This meant that we could repeatedly test
 the code as we implemented it to ensure that the desired goal was
-being fulfilled. We had to think carefully about what exactly to test,
+being fulfilled. In addition writing unit tests first helped us to drive the
+design of our code and as a result we ended up with much more modular
+design. We also had to think carefully about what exactly to test,
 to make sure that it completely covered every aspect of our goals.
-We implemented the tests using the DSL that we developed earlier,
-effectively connecting the new functionality tests with the specifications
-that we were showing to Stephen.
 
 
 \paragraph*{How}
@@ -213,7 +222,8 @@ public void testCallCostWithStandardTariff() throws Exception {
 	PeakOffPeakTime peakOffPeakTime = new PeakOffPeakTime(100, 200);     	
 	Tariff tariff = Tariff.Standard;     	
 	BigDecimal cost = 
-		new DefaultCallCostCalculator().calculateCost(peakOffPeakTime, tariff); 	Assert.assertEquals(cost.longValue(), 90);     
+		 new DefaultCallCostCalculator().calculateCost(peakOffPeakTime, tariff); 
+	Assert.assertEquals(cost.longValue(), 90);     
 }	
 \end{lstlisting}
 
