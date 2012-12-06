@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.joda.time.DateTime;
+
 import com.acmetelecom.billcalculator.TotalBillCalculator;
 import com.acmetelecom.call.CallTime;
 import com.acmetelecom.call.LineItem;
-import com.acmetelecom.callevent.CallEnd;
-import com.acmetelecom.callevent.CallStart;
 import com.acmetelecom.customer.CentralCustomerDatabase;
 import com.acmetelecom.customer.CentralTariffDatabase;
 import com.acmetelecom.customer.Customer;
@@ -42,30 +42,28 @@ public class BillingSystem {
 	}
 
 	public void callInitiated(String caller, String callee){
-		callInitiated(new CallStart(caller, callee));
+		callInitiated(new CallTime(DateTime.now(), caller, callee));
 	}
 
 	public void callCompleted(String caller, String callee){
-		callCompleted(new CallEnd(caller, callee));
+		callCompleted(caller, DateTime.now());
 	}
 
-	public void callInitiated(CallStart startCall) {
+	public void callInitiated(CallTime startCall) {
 		String caller = startCall.getCaller();
-		String callee = startCall.getCallee();
 		if (customerCurrentCallLog.get(caller) == null){
 			customerCurrentCallLog.put(caller, new ArrayList<CallTime>());
 		}
 		List<CallTime> calls = customerCurrentCallLog.get(caller);
-		calls.add(new CallTime(startCall.getTimestamp(), callee));
+		calls.add(startCall);
 	}
-
-	public void callCompleted(CallEnd endCall) {
-		String caller = endCall.getCaller();
+	
+	public void callCompleted(String caller, DateTime endTime) {
 		List<CallTime> calls = customerCurrentCallLog.get(caller);
 		CallTime time = calls.get(calls.size()-1);
-		time.setEndTime(endCall.getTimestamp());
+		time.setEndTime(endTime);
 	}
-
+	
 	public void createCustomerBills(){
 		createCustomerBills(CentralCustomerDatabase.getInstance().getCustomers());
 	}

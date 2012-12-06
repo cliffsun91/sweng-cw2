@@ -38,7 +38,7 @@ public class TotalBillCalculatorTest {
         
         final DateTime startTime = new DateTime();
         final DateTime endTime = startTime.plus(1800); 
-        final CallTime callTime = new CallTime(startTime, "callee");
+        final CallTime callTime = new CallTime(startTime, "caller", "callee");
         callTime.setEndTime(endTime);
         List<CallTime> calls = new ArrayList<CallTime>();
         calls.add(callTime);
