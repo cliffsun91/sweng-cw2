@@ -3,7 +3,7 @@ package com.acmetelecom.printer;
 import com.acmetelecom.moneyformatters.IMoneyFormatter;
 import com.acmetelecom.call.LineItem;
 import com.acmetelecom.customer.Customer;
-import com.acmetelecom.printer.BillPrinter;
+import com.acmetelecom.printer.BillGenerator;
 import com.acmetelecom.printer.Printer;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -17,7 +17,7 @@ import java.util.List;
 
 
 @RunWith(JMock.class)
-public class BillingPrinterTest {
+public class BillingGeneratorTest {
 
     final Mockery context = new Mockery();
     final Customer customer = new Customer("Jo King","12345678","xxx");
@@ -45,6 +45,6 @@ public class BillingPrinterTest {
 
         List<LineItem> lineItems = new ArrayList<LineItem>();
         lineItems.add(firstCall);
-        new BillPrinter(moneyFormatter, printer).print(customer, lineItems, "50");
+        new BillGenerator(moneyFormatter, printer).print(customer, lineItems, "50");
     }
 }

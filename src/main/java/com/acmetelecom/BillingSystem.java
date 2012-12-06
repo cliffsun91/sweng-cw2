@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.acmetelecom.billcalculator.CallCostCalculator;
-import com.acmetelecom.billcalculator.CallTimeLineItemFactory;
-import com.acmetelecom.billcalculator.DefaultCallCostCalculator;
 import com.acmetelecom.billcalculator.TotalBillCalculator;
 import com.acmetelecom.call.CallTime;
 import com.acmetelecom.call.LineItem;
@@ -18,7 +15,7 @@ import com.acmetelecom.customer.CentralTariffDatabase;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.customer.Tariff;
 import com.acmetelecom.moneyformatters.MoneyFormatter;
-import com.acmetelecom.printer.BillPrinter;
+import com.acmetelecom.printer.BillGenerator;
 import com.acmetelecom.printer.HtmlPrinter;
 import com.acmetelecom.printer.Printer;
 import com.acmetelecom.timeutils.ITimeCalculator;
@@ -27,8 +24,7 @@ import com.acmetelecom.timeutils.TimeCalculator;
 public class BillingSystem {
 
 	private final HashMap<String, List<CallTime>> customerCurrentCallLog;
-	private final Printer printer;
-	private final BillPrinter billPrinter;
+	private final BillGenerator billGenerator;
 	private final TotalBillCalculator totalBillCalculator;
 
 	public BillingSystem() {
@@ -36,16 +32,13 @@ public class BillingSystem {
 	}
 
 	public BillingSystem(Printer printer) {		
-		this(printer, new DefaultCallCostCalculator(),
-				new CallTimeLineItemFactory(), new TimeCalculator());
+		this(printer, new TimeCalculator());
 	}
 	
-	public BillingSystem(Printer printer, CallCostCalculator callCostCalculator,
-			CallTimeLineItemFactory callTimeLineItemFactory, ITimeCalculator timeCalculator) {
+	public BillingSystem(Printer printer, ITimeCalculator timeCalculator) {
 		this.customerCurrentCallLog = new HashMap<String, List<CallTime>>();
-		this.printer = printer;
-		this.totalBillCalculator = new TotalBillCalculator(callCostCalculator, callTimeLineItemFactory, timeCalculator);
-		billPrinter = new BillPrinter(new MoneyFormatter());
+		this.totalBillCalculator = new TotalBillCalculator(timeCalculator);
+		billGenerator = new BillGenerator(new MoneyFormatter(), printer);
 	}
 
 	public void callInitiated(String caller, String callee){
@@ -94,11 +87,7 @@ public class BillingSystem {
 
 		String totalBillString = new MoneyFormatter().penceToPounds(totalBill);
 
-		billPrinter.print(customer, items, totalBillString, printer);
-	}
-
-	public Printer getPrinter(){
-		return printer;
+		billGenerator.print(customer, items, totalBillString);
 	}
 
 }

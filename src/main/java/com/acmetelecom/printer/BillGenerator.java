@@ -6,12 +6,12 @@ import com.acmetelecom.moneyformatters.IMoneyFormatter;
 import com.acmetelecom.call.LineItem;
 import com.acmetelecom.customer.Customer;
 
-public class BillPrinter {
+public class BillGenerator {
 
 	private final IMoneyFormatter moneyFormatter;
 	private final Printer printer;
 
-	public BillPrinter(final IMoneyFormatter moneyFormatter, final Printer printer){
+	public BillGenerator(final IMoneyFormatter moneyFormatter, final Printer printer){
 		this.moneyFormatter = moneyFormatter;
 		this.printer = printer;
 	}

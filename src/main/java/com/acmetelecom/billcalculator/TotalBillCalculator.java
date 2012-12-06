@@ -15,6 +15,13 @@ public class TotalBillCalculator {
 	private LineItemFactory lineItemFactory; 
 	private ITimeCalculator timeCalculator;
 
+	public TotalBillCalculator(ITimeCalculator timeCalculator) {
+		this.calculateCallCost = new DefaultCallCostCalculator();
+		this.lineItemFactory = new CallTimeLineItemFactory();
+		this.timeCalculator = timeCalculator;
+	}
+
+	
 	public TotalBillCalculator(final CallCostCalculator calculateCallCost, 
 			final LineItemFactory lineItemFactory, ITimeCalculator timeCalculator) {
 		this.calculateCallCost = calculateCallCost;
