@@ -75,7 +75,7 @@ public class TimeCalculatorTest {
     }
      // if calls last into the next day
     @Test
-    public void EndTimeBeforeStartTime() throws Exception {
+    public void CallContinuesToNextDay() throws Exception {
         DateTime startTime = DateTime.parse("0700", DateTimeFormat.forPattern("HHmm"));
         DateTime endTime = DateTime.parse("0300", DateTimeFormat.forPattern("HHmm")).plusDays(1);
 
@@ -85,19 +85,6 @@ public class TimeCalculatorTest {
 
     }
 
-
-
-
-    @Test
-    public void CallLargerThanOneDay() throws Exception {
-        DateTime startTime = DateTime.parse("0700", DateTimeFormat.forPattern("HHmm"));
-        DateTime endTime = DateTime.parse("0300", DateTimeFormat.forPattern("HHmm")).plusDays(1);
-
-        PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
-        Assert.assertEquals(time.getPeakTime(),21600);
-        Assert.assertEquals(time.getOffPeakTime(),50400);
-
-    }
 
     @Test
     public void CallLargerThanTwoDays() throws Exception {
@@ -109,21 +96,25 @@ public class TimeCalculatorTest {
         Assert.assertEquals(time.getOffPeakTime(),180000);
 
     }
+    @Test
+    public void twentyFourHourCall() throws Exception {
+        DateTime startTime = DateTime.parse("0700", DateTimeFormat.forPattern("HHmm"));
+        DateTime endTime = DateTime.parse("0700", DateTimeFormat.forPattern("HHmm")).plusHours(24);
 
-    //our implementation only works when the time is less than 24 hours
+        PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
+        Assert.assertEquals(time.getPeakTime(),21600);
+        Assert.assertEquals(time.getOffPeakTime(),64800);
+
+    }
 
     @Test
     public void callWithCurrentDates() throws Exception {
         DateTime startTime = DateTime.now();
-        DateTime endTime =   startTime.plusHours(24);
+        DateTime endTime = startTime.now().plusDays(3);
 
         PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
-//        Assert.assertEquals(time.getPeakTime(),64800);
-        System.out.println(time.getOffPeakTime());
-        System.out.println(time.getPeakTime());
-
-
-//        Assert.assertEquals(time.getOffPeakTime(),194400);
+        Assert.assertEquals(time.getPeakTime(),64800);
+        Assert.assertEquals(time.getOffPeakTime(),194400);
 
     }
 }
