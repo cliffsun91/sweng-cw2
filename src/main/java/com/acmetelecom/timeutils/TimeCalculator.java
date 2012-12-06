@@ -1,7 +1,6 @@
 package com.acmetelecom.timeutils;
 
 import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;

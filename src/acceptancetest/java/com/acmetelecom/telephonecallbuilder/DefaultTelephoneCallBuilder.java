@@ -1,7 +1,5 @@
 package com.acmetelecom.telephonecallbuilder;
 
-import static com.acmetelecom.callevent.CallEnd.endCall;
-import static com.acmetelecom.callevent.CallStart.startCall;
 import static com.acmetelecom.fixture.CustomerRetriever.getCustomerFromPerson;
 
 import java.util.List;
@@ -9,10 +7,8 @@ import java.util.List;
 import org.joda.time.DateTime;
 
 import com.acmetelecom.call.CallTime;
-import com.acmetelecom.callevent.CallEnd;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.exception.CustomerNameMismatchException;
-import com.acmetelecom.fixture.CustomerRetriever;
 import com.acmetelecom.microtype.Person;
 
 public class DefaultTelephoneCallBuilder implements FromCallerBuilder, 

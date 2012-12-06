@@ -13,6 +13,7 @@ import com.acmetelecom.customer.Customer;
 import com.acmetelecom.exception.CustomerNameMismatchException;
 import com.acmetelecom.fixture.AcmeTelecomTestFixture;
 import com.acmetelecom.printer.Printer;
+import com.acmetelecom.timeutils.FileParseException;
 
 public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 	
@@ -30,7 +31,7 @@ public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 	}
 	
 	@Test
-	public void TestBillingSystemWithOneCallInOffPeakPeriodPrintsBillWithOffPeakChargeOnly() throws CustomerNameMismatchException{
+	public void TestBillingSystemWithOneCallInOffPeakPeriodPrintsBillWithOffPeakChargeOnly() throws CustomerNameMismatchException, FileParseException{
 
 		DateTime telephoneCall1StartTime = timeAndDate(year(2012), month(1), dayOfMonth(1), hour(5), minute(0));
 		DateTime telephoneCall1EndTime = timeAndDate(year(2012), month(1), dayOfMonth(1), hour(6), minute(0));
@@ -43,13 +44,12 @@ public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 																  	 endCall(customerDatabase)
 												   );
 		
-//		Tariff tarif1 = CentralTariffDatabase.getInstance().tarriffFor(customer);
 		Printer billPrinter = aStandardPrinter();
 		
 		givenAcmeTelecom().hasCustomerDatabase(customerDatabase).
 			    		   andHasABillingSystem(
 			    				   				billingSystem().withTelephoneCalls(telephoneCalls).
-										  						withABillPrinter(aStandardPrinter())
+										  						withABillPrinter(billPrinter)
 								          	   ).
 						   weExpectTheFollowingBillToBePrinted(
 								   						aBill(forCustomer(customer(named("James"), customerDatabase), 
@@ -60,7 +60,7 @@ public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 								   									  	  withCost("7.20")).
 								   							      withBillTotal("7.20"),
 								   			      			  forCustomer(customer(named("Fred"), customerDatabase), 
-								   			      					      usingPrinter(billPrinter)).
+								   			      					      usingPrinter(aStandardPrinter())).
 								   			      			    withNoCalls().
 								   			      			      withBillTotal("0.00")
 								   					    )
@@ -69,10 +69,10 @@ public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 	}
 	
 	@Test
-	public void TestBillingSystemWithCallWithOverlapPeakPeriodsPrintsBillWhichChargesTheCorrectAmount() throws CustomerNameMismatchException{
+	public void TestBillingSystemWithCallWithOverlapPeakPeriodsPrintsBillWhichChargesTheCorrectAmount() throws CustomerNameMismatchException, FileParseException{
 
-		DateTime telephoneCall1StartTime = timeAndDate(year(2012), month(1), dayOfMonth(1), hour(7), minute(30));
-		DateTime telephoneCall1EndTime = timeAndDate(year(2012), month(1), dayOfMonth(1), hour(8), minute(30));
+		DateTime telephoneCall1StartTime = timeAndDate(year(2012), month(1), dayOfMonth(1), hour(6), minute(30));
+		DateTime telephoneCall1EndTime = timeAndDate(year(2012), month(1), dayOfMonth(1), hour(7), minute(30));
 		
 		telephoneCalls = createListOfTelephoneCalls(aTelephoneCall().fromCaller(named("Fred")).
 																  	 toReceiver(named("James")).
@@ -81,17 +81,16 @@ public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 															    	 endCall(customerDatabase)
 																);
 		
-//		Tariff tarif1 = CentralTariffDatabase.getInstance().tarriffFor(customer);
 		Printer billPrinter = aStandardPrinter();
 		
 		givenAcmeTelecom().hasCustomerDatabase(customerDatabase).
 			    		   andHasABillingSystem(
 			    				   				billingSystem().withTelephoneCalls(telephoneCalls).
-										  						withABillPrinter(aStandardPrinter())
+										  						withABillPrinter(billPrinter)
 								          	   ).
 						   weExpectTheFollowingBillToBePrinted(
 								   						aBill(forCustomer(customer(named("James"), customerDatabase), 
-								   								          usingPrinter(billPrinter)).
+								   								          usingPrinter(aStandardPrinter())).
 								   							    withNoCalls().
 								   								  withBillTotal("0.00"),
 								   			      			  forCustomer(customer(named("Fred"), customerDatabase), 
