@@ -12,7 +12,7 @@ import java.util.List;
  * Time: 02:28
  * To change this template use File | Settings | File Templates.
  */
-public class TimeCalculator {
+public class TimeCalculator implements ITimeCalculator {
 
     private  final IPeakOffPeakPeriods peakOffPeakPeriods;
 
