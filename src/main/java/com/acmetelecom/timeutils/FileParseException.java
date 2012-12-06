@@ -8,7 +8,12 @@ package com.acmetelecom.timeutils;
  * To change this template use File | Settings | File Templates.
  */
 public class FileParseException extends Throwable {
-    public FileParseException(String s, Exception e) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public FileParseException(String s, Exception e) {
         super(s,e);
     }
 }

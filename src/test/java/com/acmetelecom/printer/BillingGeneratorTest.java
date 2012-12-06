@@ -1,19 +1,18 @@
 package com.acmetelecom.printer;
 
-import com.acmetelecom.moneyformatters.IMoneyFormatter;
-import com.acmetelecom.call.LineItem;
-import com.acmetelecom.customer.Customer;
-import com.acmetelecom.printer.BillGenerator;
-import com.acmetelecom.printer.Printer;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import com.acmetelecom.call.LineItem;
+import com.acmetelecom.customer.Customer;
+import com.acmetelecom.moneyformatters.IMoneyFormatter;
 
 
 @RunWith(JMock.class)
@@ -45,6 +44,6 @@ public class BillingGeneratorTest {
 
         List<LineItem> lineItems = new ArrayList<LineItem>();
         lineItems.add(firstCall);
-        new BillGenerator(moneyFormatter, printer).print(customer, lineItems, "50");
+        new DefaultBillGenerator(moneyFormatter, printer).print(customer, lineItems, "50");
     }
 }

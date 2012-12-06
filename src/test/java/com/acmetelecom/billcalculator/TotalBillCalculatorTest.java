@@ -12,9 +12,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.acmetelecom.billcalculator.CallCostCalculator;
-import com.acmetelecom.billcalculator.LineItemFactory;
-import com.acmetelecom.billcalculator.TotalBillCalculator;
 import com.acmetelecom.call.CallTime;
 import com.acmetelecom.call.LineItem;
 import com.acmetelecom.customer.Tariff;
@@ -50,7 +47,7 @@ public class TotalBillCalculatorTest {
         }});
     	
         List<LineItem> lineItems = new ArrayList<LineItem>();
-    	new TotalBillCalculator(callCostCalculator, lineItemFactory, timeCalculator)
+    	new DefaultTotalBillCalculator(callCostCalculator, lineItemFactory, timeCalculator)
     		.calculateTotalBill(calls, tariff, lineItems);
     	
     	Assert.assertEquals(lineItem, lineItems.get(0));
