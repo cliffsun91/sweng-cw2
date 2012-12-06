@@ -32,13 +32,10 @@
 \title{Software Engineering CW2}
 
 
-\author{Abhijit Chandgadkar, Osama Javed, }
+\author{Abhijit Chandgadkar, Osama Javed, Joseph Slade, Cliff Sun, Luke Tomlin}
 
 
-\author{Joseph Slade, Cliff Sun, Luke Tomlin}
-
-
-\date{27/11/12}
+\date{06/12/12}
 
 \maketitle
 
@@ -93,10 +90,22 @@ these making sure that the resulting bill was equivalent to what we
 expected. These calls were designed to cover all of the edge cases
 as well, such as calls over peak time to off peak time and vice versa,
 and calls of zero length, as well as extremely long calls. As an example,
-here is where we check the edge case of the boundary times between
-peak and offpeak: 
+here is where we check the functionality of the $Call$ class: 
 \begin{lstlisting}[language=Java]
-NEW TEST
+final Mockery context = new Mockery(); 	
+final CallEvent callStart = context.mock(CallEvent.class, "CallEvent1"); 	
+final CallEvent callEnd = context.mock(CallEvent.class, "CallEvent2"); 	
+final Call call = new Call(callStart, callEnd); 
+	
+@Test 	
+public void testGetCalleeGetsCalleeFromCallStart(){ 		
+	final String callee = "Cliff"; 	
+	context.checking(new Expectations() {{             
+		oneOf(callStart).getCallee(); 
+		will(returnValue(callee));         
+	}}); 	
+	Assert.assertThat(call.callee(), CoreMatchers.equalTo(callee));	 	
+}
 \end{lstlisting}
 
 
@@ -190,9 +199,11 @@ that we were showing to Stephen.
 
 \begin{lstlisting}[language=Java]
 @Test     
-public void testCallCostWithStandardTariff() throws Exception {     	PeakOffPeakTime peakOffPeakTime = new PeakOffPeakTime(100, 200);     	
+public void testCallCostWithStandardTariff() throws Exception {     	
+	PeakOffPeakTime peakOffPeakTime = new PeakOffPeakTime(100, 200);     	
 	Tariff tariff = Tariff.Standard;     	
-	BigDecimal cost = new DefaultCallCostCalculator().calculateCost(peakOffPeakTime, tariff); 	Assert.assertEquals(cost.longValue(), 90);     
+	BigDecimal cost = 
+		new DefaultCallCostCalculator().calculateCost(peakOffPeakTime, tariff); 	Assert.assertEquals(cost.longValue(), 90);     
 }	
 \end{lstlisting}
 
@@ -212,7 +223,7 @@ cleared with Stephen).
 We needed to tweak how the calls were charged, which involved understanding
 exactly how long a call was in peak and offpeak periods and tallying
 the results accordingly. This involved recoding how $BillingSystem$
-worked, as well as adding additional functionality to $DaytimePeakPeriod$.
+worked, as well as moving and/or adding functionality to $DaytimePeakPeriod$.
 
 
 \paragraph*{How}
@@ -222,14 +233,26 @@ peak/offpeak time calculations out from the billing system. Careful
 consideration went into building the package, making sure that it
 would be easily scalable and configurable. For instance, we added
 the ability to define different xml files for peak/offpeak configuration,
-which are read in at run-time. 
+which are read in at run-time, and they also allow multiple peak and
+offpeak times to be specified for the same day.
 
 Originally we considered making the time calculation methods static,
 to improve performance - however after rethinking the issue we decided
 to use interfaces and objects as this is much easier to scale and
 extend. If the underlying implementation needs to change at any point
 (eg. implementing a different kind of calculator), as long as they
-abide by the interface rules everything will still work.
+abide by the interface rules everything will still work. 
+
+This package was developed in a test-driven-development style - unit
+tests were specified once the planning had finished, and were coded
+to cover the entire scope of the specification. The result of this
+was that we could be confident that the required functionality was
+intact as we went about developing the package.
+
+The end result was a change in how $BillingSystem$ worked, as well
+as removing a lot of the responsibility that it previously had. It
+fundamentally performed the same task, however it now did so more
+efficiently, and in a much clearer and concise manner.
 
 
 \subsection*{Refactoring and improving code to aid maintainability and code health}
@@ -308,12 +331,20 @@ public class CallEnd extends AbstractCallEvent {
 
 \subparagraph*{BillingSystem}
 
-With the $BillingSystem$ class, we removed the 
-\[
-METHODS\, WE\, REMOVED/IMPROVEMENTS
-\]
-{[}LOADED FROM XML - using Jaxb java archi for xml bindings - list
-of time periods, does basic validation{]}
+With the $BillingSystem$ class, we made a lot of changes. From the
+performance perspective, we moved the calculation of bills from call
+events to happen as the calls come in - this made it far more efficient
+when bill generation was required, effectively making it linear in
+size of customer base as compared to polynomial! From the structure
+perspective, as mentioned above, we moved a lot of the functionality
+elsewhere and made its responsibilities more specific. Additionally,
+we added a large amount of extra functionality to the existing system,
+such as allowing for flexible peak/offpeak time periods, or even multiple
+peak/offpeak time periods! These can be defined at run-time using
+xml, and were implemented using the $JAXB$ java architecture for
+xml bindings. Basic validation of these files is done at runtime to
+ensure that they are properly formed, and helps prevent user-created
+errors.
 
 
 \subparagraph*{Joda Time}
@@ -370,6 +401,22 @@ areas of the program, as well as making the code conceptually easier
 to understand. 
 
 
+\paragraph*{Wrappers}
+
+We found that testing was a little bit challenging, as the customer
+database that was supplied to us was located outside of the package.
+We considered creating a wrapper around the functionality of the database,
+which we could use as an interface to create dummies of the database
+for testing and mocking without having to touch the 'real' databases
+whilst doing tests. However, we didn't have enough time to fully implement
+these wrappers, as the underlying functionality that it would need
+to fulfill was too complicated for us to get a grasp of in a short
+time-frame. Fortunately this doesn't translate too badly into real
+life, as the database accesses that are performed from the tests are
+minor, but this could be problematic if the databases are ever down
+and we need to do tests!
+
+
 \subsection*{Multi-Threading}
 
 The act of generating multiple bills appears to lend itself quite
@@ -395,15 +442,18 @@ and only requires that derivative work contains notifications of what
 was changed, as well as retaining all other copyright, patent, trademark
 notices etc. that existed in the original.
 
+Maven also helps us with licensing - it can keep track of license
+for different parts of the projects, and notify us of clashes in licensing. 
+
 
 \subsection*{Building}
 
 For build automation we decided to use Maven, as the team was already
 mostly familiar with its usage from previous tutorials, and because
-of how well it tied in with TeamCity for continuous integration. Additionally,
-it allowed the import of our project as a dependency, so it could
-be easily used in other projects (such as extensions of the billing
-system or similar).
+of how well it licensingtied in with TeamCity for continuous integration.
+Additionally, it allowed the import of our project as a dependency,
+so it could be easily used in other projects (such as extensions of
+the billing system or similar).
 
 
 \subsection*{Deployment}
@@ -418,5 +468,11 @@ tutorial (Release). It would be fairly simple to set up as we already
 had git and Maven configured, and assuming that management was happy
 with the quality of the tests that we put in place, would make releasing
 very simple and quick. We assumed that the Acme company has access
-to its own set of servers, and we would use those to deploy on. 
+to its own set of servers, and we would use those to deploy on.
+
+Maven also acts as a form of internal deployment - it lets us deploy
+to an internal 'Maven repository'. Internal users who wish to use
+the latest version of our project simply add the project as a dependency
+to their project, and Maven then automatically imports the latest
+version of the jars and sets it up.
 \end{document}
