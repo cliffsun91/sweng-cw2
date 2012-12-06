@@ -1,4 +1,4 @@
-package com.acmetelecom.TimeUtils;
+package com.acmetelecom.timeutils;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -19,7 +19,7 @@ public class PeakOffPeakPeriodsTest {
     public void testLoadBadFile() throws Exception {
         try{
             IPeakOffPeakPeriods peakOffPeakPeriods =
-                    PeakOffPeakPeriods.loadPeakOffPeakPeriods(new File("src/test/java/com/acmetelecom/TimeUtils/timesbad.xml"));
+                    PeakOffPeakPeriods.loadPeakOffPeakPeriods(new File("src/test/java/com/acmetelecom/timeutils/timesbad.xml"));
         }catch ( FileParseException e){
             return;
         }
@@ -31,7 +31,7 @@ public class PeakOffPeakPeriodsTest {
     public void testLoadGoodFile() throws Exception {
         try{
            IPeakOffPeakPeriods peakOffPeakPeriods =
-                PeakOffPeakPeriods.loadPeakOffPeakPeriods(new File("src/test/java/com/acmetelecom/TimeUtils/timesTest.xml"));
+                PeakOffPeakPeriods.loadPeakOffPeakPeriods(new File("src/test/java/com/acmetelecom/timeutils/timesTest.xml"));
             Assert.assertEquals(peakOffPeakPeriods.getJodaTimes().size(), 3);
             DateTime startTime = DateTime.parse("0800", DateTimeFormat.forPattern("HHmm"));
             DateTime endTime = DateTime.parse("1000", DateTimeFormat.forPattern("HHmm"));

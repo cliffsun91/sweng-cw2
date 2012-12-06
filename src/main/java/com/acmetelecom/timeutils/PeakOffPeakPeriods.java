@@ -1,4 +1,4 @@
-package com.acmetelecom.TimeUtils;
+package com.acmetelecom.timeutils;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -28,7 +28,7 @@ public class PeakOffPeakPeriods implements IPeakOffPeakPeriods {
     private static  final DateTimeFormatter FORMATTER = DateTimeFormat.forPattern("HHmm");
     private static final JAXBContext context ;
     private static final Unmarshaller unmarshaller;
-    private static final String DEFAULT_PATH ="src/main/java/com/acmetelecom/TimeUtils/times.xml";
+    private static final String DEFAULT_PATH ="src/main/java/com/acmetelecom/timeutils/times.xml";
     private static final IPeakOffPeakPeriods PEAK_OFF_PEAK_PERIODS ;
 
 

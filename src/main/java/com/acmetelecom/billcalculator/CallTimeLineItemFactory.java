@@ -2,9 +2,9 @@ package com.acmetelecom.billcalculator;
 
 import java.math.BigDecimal;
 
-import com.acmetelecom.CallTime;
-import com.acmetelecom.CallTimeLineItem;
-import com.acmetelecom.PeakOffPeakTime;
+import com.acmetelecom.call.CallTime;
+import com.acmetelecom.call.CallTimeLineItem;
+import com.acmetelecom.timeutils.PeakOffPeakTime;
 
 public class CallTimeLineItemFactory implements LineItemFactory{
 

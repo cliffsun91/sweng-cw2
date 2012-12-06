@@ -1,8 +1,6 @@
-package com.acmetelecom.TimeUtils;
+package com.acmetelecom.timeutils;
 
 import org.joda.time.DateTime;
-
-import com.acmetelecom.PeakOffPeakTime;
 
 public interface ITimeCalculator{
 

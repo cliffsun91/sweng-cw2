@@ -1,4 +1,4 @@
-package com.acmetelecom;
+package com.acmetelecom.timeutils;
 
 public class PeakOffPeakTime {
 	private final long peakTime;

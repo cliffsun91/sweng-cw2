@@ -1,4 +1,4 @@
-package com.acmetelecom.TimeUtils;
+package com.acmetelecom.timeutils;
 
 import javax.xml.bind.annotation.*;
 

@@ -1,4 +1,4 @@
-package com.acmetelecom.TimeUtils;
+package com.acmetelecom.timeutils;
 
 /**
  * Created with IntelliJ IDEA.

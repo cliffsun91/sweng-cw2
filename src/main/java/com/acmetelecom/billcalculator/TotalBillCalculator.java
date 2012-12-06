@@ -3,10 +3,10 @@ package com.acmetelecom.billcalculator;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.acmetelecom.CallTime;
-import com.acmetelecom.LineItem;
-import com.acmetelecom.PeakOffPeakTime;
-import com.acmetelecom.TimeUtils.ITimeCalculator;
+import com.acmetelecom.call.CallTime;
+import com.acmetelecom.call.LineItem;
+import com.acmetelecom.timeutils.PeakOffPeakTime;
+import com.acmetelecom.timeutils.ITimeCalculator;
 import com.acmetelecom.customer.Tariff;
 
 public class TotalBillCalculator {
@@ -34,7 +34,7 @@ public class TotalBillCalculator {
 			PeakOffPeakTime peakOffPeakTime = timeCalculator.calculateTimes(call.getStartTime(), call.getEndTime());
 			BigDecimal callCost = calculateCallCost.calculateCost(peakOffPeakTime, tariff);
 			totalBill = totalBill.add(callCost);
-			LineItem lineItem = lineItemFactory.createCallTimeLineItem(call, "CALLEE", callCost, peakOffPeakTime);
+			LineItem lineItem = lineItemFactory.createCallTimeLineItem(call, call.getCallee(), callCost, peakOffPeakTime);
 			items.add(lineItem);
 		}
 		return totalBill;

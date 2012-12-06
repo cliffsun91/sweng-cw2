@@ -6,11 +6,8 @@ import static org.junit.Assert.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-
 import com.acmetelecom.BillingSystem;
-import com.acmetelecom.Printer;
+import com.acmetelecom.printer.Printer;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.exception.CustomerNameMismatchException;
 import com.telecom.billingsystembuilder.FinalBillingSystemBuilder;

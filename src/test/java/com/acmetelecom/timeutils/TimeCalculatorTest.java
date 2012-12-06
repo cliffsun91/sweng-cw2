@@ -1,6 +1,5 @@
-package com.acmetelecom.TimeUtils;
+package com.acmetelecom.timeutils;
 
-import com.acmetelecom.PeakOffPeakTime;
 import junit.framework.Assert;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -8,20 +7,12 @@ import org.junit.Test;
 
 import java.io.File;
 
-/**
- * Created with IntelliJ IDEA.
- * User: deewar
- * Date: 05/12/12
- * Time: 02:21
- * To change this template use File | Settings | File Templates.
- */
-
 public class TimeCalculatorTest {
     private IPeakOffPeakPeriods peakOffPeakPeriods;
     private TimeCalculator timeCalculator;
     public  TimeCalculatorTest() throws  FileParseException{
         peakOffPeakPeriods =  PeakOffPeakPeriods.
-                loadPeakOffPeakPeriods(new File("src/test/java/com/acmetelecom/TimeUtils/timesTest.xml"));
+                loadPeakOffPeakPeriods(new File("src/test/java/com/acmetelecom/timeutils/timesTest.xml"));
         timeCalculator = new TimeCalculator(peakOffPeakPeriods);
     }
 
@@ -116,6 +107,23 @@ public class TimeCalculatorTest {
         PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
         Assert.assertEquals(time.getPeakTime(),64800);
         Assert.assertEquals(time.getOffPeakTime(),180000);
+
+    }
+
+    //our implementation only works when the time is less than 24 hours
+
+    @Test
+    public void callWithCurrentDates() throws Exception {
+        DateTime startTime = DateTime.now();
+        DateTime endTime =   startTime.plusHours(24);
+
+        PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
+//        Assert.assertEquals(time.getPeakTime(),64800);
+        System.out.println(time.getOffPeakTime());
+        System.out.println(time.getPeakTime());
+
+
+//        Assert.assertEquals(time.getOffPeakTime(),194400);
 
     }
 }

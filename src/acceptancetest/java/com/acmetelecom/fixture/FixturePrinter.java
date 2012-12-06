@@ -1,6 +1,6 @@
 package com.acmetelecom.fixture;
 
-import com.acmetelecom.Printer;
+import com.acmetelecom.printer.Printer;
 
 public class FixturePrinter implements Printer{
 

@@ -1,4 +1,4 @@
-package com.acmetelecom;
+package com.acmetelecom.printer;
 
 import com.acmetelecom.moneyformatters.IMoneyFormatter;
 import com.acmetelecom.call.LineItem;

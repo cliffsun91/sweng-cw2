@@ -1,14 +1,16 @@
-package com.acmetelecom;
+package com.acmetelecom.printer;
 
 import java.util.List;
 
+import com.acmetelecom.moneyformatters.IMoneyFormatter;
+import com.acmetelecom.call.LineItem;
 import com.acmetelecom.customer.Customer;
 
 public class BillPrinter {
 
 	private IMoneyFormatter moneyFormatter;
 
-	BillPrinter(IMoneyFormatter moneyFormatter){
+	public BillPrinter(IMoneyFormatter moneyFormatter){
 		this.moneyFormatter = moneyFormatter;
 	}
 
