@@ -3,6 +3,8 @@ package com.acmetelecom.call;
 import java.math.BigDecimal;
 
 import com.acmetelecom.timeutils.PeakOffPeakTime;
+import com.acmetelecom.timeutils.TimeFormatter;
+
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -28,8 +30,7 @@ public class CallTimeLineItem implements LineItem {
 	}
 
 	public String durationMinutes() {
-        return "" + peakOffPeakTime.durationSeconds() / 60 + ":"
-                + String.format("%02d", peakOffPeakTime.durationSeconds() % 60);
+		return TimeFormatter.formatMinutesFromSeconds(peakOffPeakTime.durationSeconds());
     }
 
 	@Override

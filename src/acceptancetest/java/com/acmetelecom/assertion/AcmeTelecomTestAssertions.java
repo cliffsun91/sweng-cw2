@@ -8,9 +8,9 @@ import java.util.List;
 
 import com.acmetelecom.BillingSystem;
 import com.acmetelecom.printer.Printer;
+import com.acmetelecom.billingsystembuilder.FinalBillingSystemBuilder;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.exception.CustomerNameMismatchException;
-import com.telecom.billingsystembuilder.FinalBillingSystemBuilder;
 
 public class AcmeTelecomTestAssertions implements CustomersBuilder, BillingSystemBuilderBuilder, ExpectationBuilder, FinalAssertionChecker{
 

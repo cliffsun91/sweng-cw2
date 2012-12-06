@@ -1,4 +1,4 @@
-package com.telecom.billingsystembuilder;
+package com.acmetelecom.billingsystembuilder;
 
 import java.util.List;
 

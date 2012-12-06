@@ -11,12 +11,14 @@ import org.junit.Test;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.exception.CustomerNameMismatchException;
 import com.acmetelecom.fixture.AcmeTelecomTestFixture;
-import com.telecom.telephonecallbuilder.FinalTelephoneCallBuilder;
+import com.acmetelecom.fixture.FixturePrinter;
+import com.acmetelecom.printer.Printer;
+import com.acmetelecom.telephonecallbuilder.FinalTelephoneCallBuilder;
+import com.acmetelecom.telephonecallbuilder.TelephoneCallRepresentation;
 
 public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 	
 	List<Customer> customerDatabase;
-	
 	
 	@Before
 	public void Setup(){
@@ -30,22 +32,17 @@ public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 	
 	@Test
 	public void TestBillingSystemWithOneCallInOffPeakPeriodPrintsBillWithOffPeakChargeOnly() throws CustomerNameMismatchException{
-		// a telephone call from caller named James with telephone no. +447567891234 
-		// to a receiver named Fred with telephone no. +447912345678
-		// with a start time of 5:00:00am and end time of 5:00:30am  - 30 seconds
 
 		DateTime telephoneCall1StartTime = timeAndDate(year(2012), month(1), dayOfMonth(1), hour(5), minute(0));
 		DateTime telephoneCall1EndTime = timeAndDate(year(2012), month(1), dayOfMonth(1), hour(6), minute(0));
 		
-		List<FinalTelephoneCallBuilder> telephoneCalls 
-					= createListOfTelephoneCalls(aTelephoneCall().fromCaller(named("James")).
-																  toReceiver(named("Fred")).
-																  withStartTime(telephoneCall1StartTime).
-																  andWithEndTime(telephoneCall1EndTime)
-												);
-		
-		//String expected = generateBillUsingPrinter(customerDatabase, telephoneCalls, aStandardPrinter());
-		// need an object to store the telephone call to access details like caller, callee, startTime, duration
+		List<TelephoneCallRepresentation> telephoneCalls 
+									= createListOfTelephoneCalls(aTelephoneCall().fromCaller(named("James")).
+																  				  toReceiver(named("Fred")).
+																  				  withStartTime(telephoneCall1StartTime).
+																  				  andWithEndTime(telephoneCall1EndTime).
+																  				  endCall(customerDatabase)
+																);
 		
 		//Random playing around
 //		Tariff tarriff = Tariff.Standard;
@@ -60,7 +57,21 @@ public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 			    				   				billingSystem().withTelephoneCalls(telephoneCalls)
 										  						//withABillPrinter(aStandardPrinter())
 								          	   ).
-						   weExpectTheFollowingBillToBePrinted("boo").assertResult();
+						   weExpectTheFollowingBillToBePrinted(
+								   						aBill(forCustomer(customer(named("James"), customerDatabase), 
+								   								          usingPrinter(aStandardPrinter())).
+								   								withACall(startTime(telephoneCall1StartTime),
+								   										  endTime(telephoneCall1EndTime),
+								   									  	  toReceiver(customer(named("Fred"), customerDatabase)),
+								   									  	  withCost("7.20")).
+								   							      withBillTotal("7.20"),
+								   			      			  forCustomer(customer(named("Fred"), customerDatabase), 
+								   			      					      usingPrinter(aStandardPrinter())).
+								   			      			    withNoCalls().
+								   			      			      withBillTotal("0.00")
+								   					    )
+								   						      ).
+						   assertResult();
 						
 	}
 	
