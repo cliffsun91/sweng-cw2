@@ -11,6 +11,7 @@ import org.junit.Test;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.exception.CustomerNameMismatchException;
 import com.acmetelecom.fixture.AcmeTelecomTestFixture;
+import com.acmetelecom.printer.Printer;
 import com.acmetelecom.telephonecallbuilder.TelephoneCallRepresentation;
 
 public class AcmeTelecomTest extends AcmeTelecomTestFixture{
@@ -42,7 +43,8 @@ public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 																);
 		
 //		Tariff tarif1 = CentralTariffDatabase.getInstance().tarriffFor(customer);
-
+		Printer billPrinter = aStandardPrinter();
+		
 		givenAcmeTelecom().hasCustomerDatabase(customerDatabase).
 			    		   andHasABillingSystem(
 			    				   				billingSystem().withTelephoneCalls(telephoneCalls).
@@ -57,12 +59,12 @@ public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 								   									  	  withCost("7.20")).
 								   							      withBillTotal("7.20"),
 								   			      			  forCustomer(customer(named("Fred"), customerDatabase), 
-								   			      					      usingPrinter(aStandardPrinter())).
+								   			      					      usingPrinter(billPrinter)).
 								   			      			    withNoCalls().
 								   			      			      withBillTotal("0.00")
 								   					    )
 								   						      ).
-						   assertResult();
+						   assertResult(billPrinter);
 	}
 	
 	@Test
@@ -80,7 +82,8 @@ public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 																);
 		
 //		Tariff tarif1 = CentralTariffDatabase.getInstance().tarriffFor(customer);
-
+		Printer billPrinter = aStandardPrinter();
+		
 		givenAcmeTelecom().hasCustomerDatabase(customerDatabase).
 			    		   andHasABillingSystem(
 			    				   				billingSystem().withTelephoneCalls(telephoneCalls).
@@ -88,8 +91,8 @@ public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 								          	   ).
 						   weExpectTheFollowingBillToBePrinted(
 								   						aBill(forCustomer(customer(named("James"), customerDatabase), 
-								   								          usingPrinter(aStandardPrinter())).
-								   								withNoCalls().
+								   								          usingPrinter(billPrinter)).
+								   							    withNoCalls().
 								   								  withBillTotal("0.00"),
 								   			      			  forCustomer(customer(named("Fred"), customerDatabase), 
 								   			      					      usingPrinter(aStandardPrinter())).
@@ -100,7 +103,7 @@ public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 									   							  withBillTotal("12.60")
 								   					    )
 								   						      ).
-						   assertResult();
+						   assertResult(billPrinter);
 	}
 	
 }

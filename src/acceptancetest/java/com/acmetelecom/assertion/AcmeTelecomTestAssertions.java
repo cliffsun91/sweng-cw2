@@ -41,9 +41,8 @@ public class AcmeTelecomTestAssertions implements CustomersBuilder, BillingSyste
 	}
 
 	@Override
-	public void assertResult() {
+	public void assertResult(Printer printer ) {
 		billingSystem.createCustomerBills(customers);
-		Printer printer = billingSystem.getPrinter();
 		String resultString = printer.getString();
 		System.out.println(resultString);
 		assertThat(resultString, equalTo(expected));
