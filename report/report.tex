@@ -179,16 +179,16 @@ of builder patterns (for building the tests from the DSL), fixtures
 
 We can choose a variety of acceptance test frameworks to write out
 tests with. Frameworks like Behave, FIT and Cucumber are well supported
-and widely used but often come with a lot of setting up nd have features
-that are not necessary. Especially in our case as we only need to
+and widely used but often come with a lot of setting up and have features
+that are not necessary; in our case as we only needed to
 test that we charge the correct amount depending on the peak period.
 So in our case it would be beneficial to write out own DSL to create
 acceptance tests with. We also use the JUnit framework to create our
-internal Domain Specific Language which we will then use to write
+internal Domain Specific Language which we then used to write
 the acceptance tests. The advantage is that we can run the acceptance
 tests along with the unit tests and means it works well if we were
 to use continuous integration. Also, as we are doing this in an IDE,
-we have the advantages of auto-complete / content assist and syntax
+we have the advantages of auto-complete, content assist and syntax
 checking.
 
 
