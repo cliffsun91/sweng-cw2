@@ -11,7 +11,7 @@ public class Runner {
         sleepSeconds(3);
         billingSystem.callCompleted("447722113434", "447711111111");
         billingSystem.callInitiated("447777765432", "447711111111");
-        sleepSeconds(6);
+        sleepSeconds(20);
         billingSystem.callCompleted("447777765432", "447711111111");
         billingSystem.createCustomerBills();
     }

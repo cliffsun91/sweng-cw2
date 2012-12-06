@@ -109,12 +109,21 @@ public class TimeCalculatorTest {
 
     @Test
     public void callWithCurrentDates() throws Exception {
-        DateTime startTime = DateTime.now();
-        DateTime endTime = startTime.now().plusDays(3);
+    	DateTime startTime = DateTime.parse("0700", DateTimeFormat.forPattern("HHmm"));
+        DateTime endTime = DateTime.parse("0700", DateTimeFormat.forPattern("HHmm")).plusDays(3);
 
         PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
         Assert.assertEquals(time.getPeakTime(),64800);
         Assert.assertEquals(time.getOffPeakTime(),194400);
-
     }
+    
+//    @Test
+//    public void callWithSeconds() throws Exception {
+//        DateTime startTime = DateTime.now();
+//        DateTime endTime = startTime.plusSeconds(3);
+//
+//        PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
+//        Assert.assertEquals(time.getPeakTime(),0);
+//        Assert.assertEquals(time.getOffPeakTime(),3);
+//    }
 }

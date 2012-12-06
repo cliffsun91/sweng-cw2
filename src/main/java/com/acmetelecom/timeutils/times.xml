@@ -15,4 +15,8 @@
         <startTime>0500</startTime>
         <endTime>0600</endTime>
     </times>
+	<times>
+        <startTime>2200</startTime>
+        <endTime>2300</endTime>
+    </times>
 </PeakOffPeakPeriods>
