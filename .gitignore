@@ -16,5 +16,10 @@ target/
 
 !src/main/resources/external.jar
 
+# For when generating the pdf from latex
+report/*.aux
+report/*.pdf
+report/*.log
+
 # Backup file, typically made by emacs
 *~
