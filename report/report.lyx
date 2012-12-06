@@ -326,11 +326,57 @@ status open
 
 \begin_layout Plain Layout
 
-customerDatabase = createNewDatabaseWithCustomers(aCustomer(named("James"),
-  					   													withTelephoneNumber("+447567891234"),  					   										
-			withTariffPlan("Standard")), 					   									  aCustomer(named("Fred"),
-  					   													withTelephoneNumber("+447912345678"),  					   										
-			withTariffPlan("Standard")));
+customerDatabase = createNewDatabaseWithCustomers(
+\end_layout
+
+\begin_layout Plain Layout
+
+	aCustomer(
+\end_layout
+
+\begin_layout Plain Layout
+
+		named("James"),  	
+\end_layout
+
+\begin_layout Plain Layout
+
+		withTelephoneNumber("+447567891234"),  					   													
+\end_layout
+
+\begin_layout Plain Layout
+
+		withTariffPlan("Standard")), 					   									  
+\end_layout
+
+\begin_layout Plain Layout
+
+	aCustomer(
+\end_layout
+
+\begin_layout Plain Layout
+
+		named("Fred"),  					   									
+\end_layout
+
+\begin_layout Plain Layout
+
+		withTelephoneNumber("+447912345678"),  					   							
+\end_layout
+
+\begin_layout Plain Layout
+
+		withTariffPlan("Standard")
+\end_layout
+
+\begin_layout Plain Layout
+
+	)
+\end_layout
+
+\begin_layout Plain Layout
+
+);
 \end_layout
 
 \begin_layout Plain Layout
