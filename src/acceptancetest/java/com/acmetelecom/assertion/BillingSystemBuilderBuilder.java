@@ -1,7 +1,7 @@
 package com.acmetelecom.assertion;
 
+import com.acmetelecom.billingsystembuilder.FinalBillingSystemBuilder;
 import com.acmetelecom.exception.CustomerNameMismatchException;
-import com.telecom.billingsystembuilder.FinalBillingSystemBuilder;
 
 public interface BillingSystemBuilderBuilder {
 

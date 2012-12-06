@@ -110,6 +110,8 @@ public class TimeCalculatorTest {
 
     }
 
+    //our implementation only works when the time is less than 24 hours
+
     @Test
     public void callWithCurrentDates() throws Exception {
         DateTime startTime = DateTime.now();

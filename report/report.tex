@@ -6,6 +6,7 @@
 \usepackage{listings}
 \usepackage{geometry}
 \geometry{verbose,tmargin=4cm,bmargin=4cm,lmargin=2cm,rmargin=2cm}
+\usepackage{url}
 
 \makeatletter
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
@@ -23,7 +24,6 @@
 
 \usepackage{babel}
 
-
 \makeatother
 
 \usepackage{babel}
@@ -32,13 +32,10 @@
 \title{Software Engineering CW2}
 
 
-\author{Abhijit Chandgadkar, Osama Javed, }
+\author{Abhijit Chandgadkar, Osama Javed, Joseph Slade, Cliff Sun, Luke Tomlin}
 
 
-\author{Joseph Slade, Cliff Sun, Luke Tomlin}
-
-
-\date{27/11/12}
+\date{06/12/12}
 
 \maketitle
 
@@ -62,7 +59,8 @@ functionality. To do this, we began adding unit tests that tested
 the existing functionality, so that we could easily verify that our
 changes were not breaking anything. This was the first step to making
 the code maintainable, much like we did in the first lecture tutorial
-(Legacy Code). We decided to use $JUnit4$ to do our unit testing.
+(Legacy Code). We decided to use $JUnit4$ to do our unit testing,
+with some help from $JMock$.
 
 
 \paragraph*{How}
@@ -78,7 +76,7 @@ what responsibilities this class had:
 customers from the customer database
 
 \begin{itemize}
-\item In doing so, it calculates the tariff rates and uses some algorithm
+\item In doing so, it reads the tariff rates and uses them with some algorithm
 (which we were changing in the specification) to decide the final
 cost of the call. 
 \end{itemize}
@@ -92,16 +90,22 @@ these making sure that the resulting bill was equivalent to what we
 expected. These calls were designed to cover all of the edge cases
 as well, such as calls over peak time to off peak time and vice versa,
 and calls of zero length, as well as extremely long calls. As an example,
-here is where we check the edge case of the boundary times between
-peak and offpeak: 
+here is where we check the functionality of the $Call$ class: 
 \begin{lstlisting}[language=Java]
-@Test public void testIsOffPeakBoundaryTime() {
-	// Check what happens on the limit of peak -> offpeak
-	calendar.set(Calendar.HOUROFDAY, DaytimePeakPeriod.OFFPEAKSTART);
-	assertTrue (peakPeriod.offPeak(calendar.getTime())); 
-	calendar.set(Calendar.HOUROFDAY, DaytimePeakPeriod.OFFPEAKEND); 
-	assertFalse (peakPeriod.offPeak(calendar.getTime())); 
-} 
+final Mockery context = new Mockery(); 	
+final CallEvent callStart = context.mock(CallEvent.class, "CallEvent1"); 	
+final CallEvent callEnd = context.mock(CallEvent.class, "CallEvent2"); 	
+final Call call = new Call(callStart, callEnd); 
+	
+@Test 	
+public void testGetCalleeGetsCalleeFromCallStart(){ 		
+	final String callee = "Cliff"; 	
+	context.checking(new Expectations() {{             
+		oneOf(callStart).getCallee(); 
+		will(returnValue(callee));         
+	}}); 	
+	Assert.assertThat(call.callee(), CoreMatchers.equalTo(callee));	 	
+}
 \end{lstlisting}
 
 
@@ -119,15 +123,63 @@ non-developers as an example of expected operation. The results of
 these tests could also be printed as a normal bill.
 
 
+\paragraph*{Acceptance tests}
+
+Writing acceptance tests is crucial for both development and the business.
+For developers it provides validation that a particular feature works
+across the whole system. For the business it tells them that the feature
+has been successfully imple mented and can be released to production.
+In our case, it is important to write acceptance tests f or the new
+functionality that we are required to implement, it allows our customer
+Stephen to see whether new functionality works and lets him know the
+progress of development. However we are also trying to add tests to
+the legacy code and so it is also important to write acceptance tests
+for the current functionality as well.
+
+
 \paragraph*{How}
 
-Using parts of week 6's lectures (DSLs), we developed our own DSL.
-Below is an example of one of the tests
+Using parts of week 6's lectures (DSLs), we developed our own DSL
+to perform the acceptance tests. Below is an example of one of the
+tests
 
-\[
-EXAMPLE
-\]
- This was built up using $HOW\, IT\, WAS\, BUILT$
+\begin{lstlisting}[language=Java,showstringspaces=false]
+// Creating a new customer database
+customerDatabase = createNewDatabaseWithCustomers(aCustomer(named("James"),  					   													withTelephoneNumber("+447567891234"),  					   													withTariffPlan("Standard")), 					   									  aCustomer(named("Fred"),  					   													withTelephoneNumber("+447912345678"),  					   													withTariffPlan("Standard")));
+
+// Testing the final bill printed
+givenAcmeTelecom().hasCustomerDatabase(customerDatabase).
+	andHasABillingSystem(
+	billingSystem().withTelephoneCalls(telephoneCalls)
+				   .withABillPrinter(aStandardPrinter())
+	).
+	weExpectTheFollowingBillToBePrinted("foo").assertResult();
+\end{lstlisting}
+The benefits of such an acceptance test system are immediately obvious
+- it lets someone without any prior knowledge of how Java works or
+of how the system is set up, understand what the tests are doing -
+a developer could run through this code with Stephen or any other
+project manager, and change the acceptance tests (and ultimately the
+code itself to adhere to the tests). This was built up using a combination
+of builder patterns (for building the tests from the DSL), fixtures
+(for running the tests), and microtypes (to make the DSL more readable). 
+
+
+\paragraph*{Choice}
+
+We can choose a variety of acceptance test frameworks to write out
+tests with. Frameworks like Behave, FIT and Cucumber are well supported
+and widely used but often come with a lot of setting up nd have features
+that are not necessary. Especially in our case as we only need to
+test that we charge the correct amount depending on the peak period.
+So in our case it would be beneficial to write out own DSL to create
+acceptance tests with. We also use the JUnit framework to create our
+internal Domain Specific Language which we will then use to write
+the acceptance tests. The advantage is that we can run the acceptance
+tests along with the unit tests and means it works well if we were
+to use continuous integration. Also, as we are doing this in an IDE,
+we have the advantages of auto-complete / content assist and syntax
+checking.
 
 
 \subsection*{Adding unit tests for new functionality}
@@ -145,9 +197,15 @@ that we were showing to Stephen.
 
 \paragraph*{How}
 
-\[
-SOME\, TESTS
-\]
+\begin{lstlisting}[language=Java]
+@Test     
+public void testCallCostWithStandardTariff() throws Exception {     	
+	PeakOffPeakTime peakOffPeakTime = new PeakOffPeakTime(100, 200);     	
+	Tariff tariff = Tariff.Standard;     	
+	BigDecimal cost = 
+		new DefaultCallCostCalculator().calculateCost(peakOffPeakTime, tariff); 	Assert.assertEquals(cost.longValue(), 90);     
+}	
+\end{lstlisting}
 
 
 
@@ -165,23 +223,39 @@ cleared with Stephen).
 We needed to tweak how the calls were charged, which involved understanding
 exactly how long a call was in peak and offpeak periods and tallying
 the results accordingly. This involved recoding how $BillingSystem$
-worked, as well as adding additional functionality to $DaytimePeakPeriod$.
+worked, as well as moving and/or adding functionality to $DaytimePeakPeriod$.
 
 
 \paragraph*{How}
 
-\[
-EXAMPLE\, OF\, NEW\, IMPLEMENTATION
-\]
+We created a new package called timeutils, which abstracted the required
+peak/offpeak time calculations out from the billing system. Careful
+consideration went into building the package, making sure that it
+would be easily scalable and configurable. For instance, we added
+the ability to define different xml files for peak/offpeak configuration,
+which are read in at run-time, and they also allow multiple peak and
+offpeak times to be specified for the same day.
+
+Originally we considered making the time calculation methods static,
+to improve performance - however after rethinking the issue we decided
+to use interfaces and objects as this is much easier to scale and
+extend. If the underlying implementation needs to change at any point
+(eg. implementing a different kind of calculator), as long as they
+abide by the interface rules everything will still work. 
+
+This package was developed in a test-driven-development style - unit
+tests were specified once the planning had finished, and were coded
+to cover the entire scope of the specification. The result of this
+was that we could be confident that the required functionality was
+intact as we went about developing the package.
+
+The end result was a change in how $BillingSystem$ worked, as well
+as removing a lot of the responsibility that it previously had. It
+fundamentally performed the same task, however it now did so more
+efficiently, and in a much clearer and concise manner.
 
 
-\[
-DISCUSSION
-\]
-
-
-
-\subsection*{Refactoring code to improve maintainability and code health}
+\subsection*{Refactoring and improving code to aid maintainability and code health}
 
 The existing code had multiple problems that we aimed to fix over
 the course of the project. These were not all related to the goals
@@ -227,6 +301,13 @@ it searches the whole $callLog$ every time!
 
 \paragraph*{How}
 
+We performed many different changes to the code, with the aim to fix
+the above problems, or at least make them more manageable. Some of
+the main things we changed include:
+
+
+\subparagraph*{Call Events}
+
 We added an $AbstractCallEvent$ as an abstract interface implementing
 the $CallEvent$ interface, and then changed $CallStart$ and $CallEnd$
 to implement this. This let us write tests a lot easier (rather than
@@ -245,20 +326,54 @@ public class CallEnd extends AbstractCallEvent {
 	}
 }
 \end{lstlisting}
-With the $BillingSystem$ class, we removed the 
-\[
-METHODS\, WE\, REMOVED/IMPROVEMENTS
-\]
 
+
+
+\subparagraph*{BillingSystem}
+
+With the $BillingSystem$ class, we made a lot of changes. From the
+performance perspective, we moved the calculation of bills from call
+events to happen as the calls come in - this made it far more efficient
+when bill generation was required, effectively making it linear in
+size of customer base as compared to polynomial! From the structure
+perspective, as mentioned above, we moved a lot of the functionality
+elsewhere and made its responsibilities more specific. Additionally,
+we added a large amount of extra functionality to the existing system,
+such as allowing for flexible peak/offpeak time periods, or even multiple
+peak/offpeak time periods! These can be defined at run-time using
+xml, and were implemented using the $JAXB$ java architecture for
+xml bindings. Basic validation of these files is done at runtime to
+ensure that they are properly formed, and helps prevent user-created
+errors.
+
+
+\subparagraph*{Joda Time}
+
+One big change that we made to the code was to introduce Joda Time
+(\url{http://joda-time.sourceforge.net/}) in place of $java.util.Date$.
+This had many advantages, above and beyond simply being easier to
+use. It has a lot more flexibilty and power than $Date,$ allowing
+us to work dates and times in a more concise manner without having
+to wrestle with $Calendars$ and $SimpleDateFormat$ classes. Another
+big thing to consider was the fact that $SimpleDateFormat$ is not
+thread safe! As handling dates and times is so integral to the code,
+if we wanted to implement any sort of multi-threading functionality
+to the code we would have to completely remove $SimpleDateFormat$. 
+
+
+\section*{Statistics}
+
+dependency diagram, test-coverage
 
 
 \section*{Considerations}
 
-Whilt we were implementing the required changes and tweaking the codebase,
-we thought of a variety of other considerations that should be considered.
-We also implemented some of these whilst we were coding, but some
-of the other ones were outside the scope of the coursework itself,
-but should have been considered in the theoretical Acme Telecom scenario.
+Whilst we were implementing the required changes and tweaking the
+codebase, we thought of a variety of other considerations that should
+be considered. We also implemented some of these whilst we were coding,
+but some of the other ones were outside the scope of the coursework
+itself, but should have been considered in the theoretical Acme Telecom
+scenario.
 
 
 \subsection*{Source control}
@@ -276,11 +391,40 @@ of changes made to allow rollbacks.
 
 We made multiple architectural changes to the code over the course
 of the project - we altered where some of the files were placed, based
-on responsibilities, as well as adding testing and resource directories.
-For instance, we moved calling-based and call-event-based classes
-away from normal telecom-based classes into a seperate package, modularising
+on responsibilities, as well as adding testing (acceptance or unit-based)
+and resource directories. For instance, we moved calling-based and
+call-event-based classes away from normal telecom-based classes into
+a seperate package, moved the entirety of offpeak/peak cal calculations
+out to a seperate utils class, amongst other things, modularising
 the codebase and making it easier for multiple people to work on different
-areas of the program.
+areas of the program, as well as making the code conceptually easier
+to understand. 
+
+
+\paragraph*{Wrappers}
+
+We found that testing was a little bit challenging, as the customer
+database that was supplied to us was located outside of the package.
+We considered creating a wrapper around the functionality of the database,
+which we could use as an interface to create dummies of the database
+for testing and mocking without having to touch the 'real' databases
+whilst doing tests. However, we didn't have enough time to fully implement
+these wrappers, as the underlying functionality that it would need
+to fulfill was too complicated for us to get a grasp of in a short
+time-frame. Fortunately this doesn't translate too badly into real
+life, as the database accesses that are performed from the tests are
+minor, but this could be problematic if the databases are ever down
+and we need to do tests!
+
+
+\subsection*{Multi-Threading}
+
+The act of generating multiple bills appears to lend itself quite
+well to a multi-threaded approach. Each bill being generated could
+be classified as a unit of operation, and the whole process could
+be split across multiple computers. We did not get around to implementing
+multithreading to the system, but it would certainly be something
+to consider in the future if running time ever became a problem. 
 
 
 \subsection*{Licensing}
@@ -298,15 +442,21 @@ and only requires that derivative work contains notifications of what
 was changed, as well as retaining all other copyright, patent, trademark
 notices etc. that existed in the original.
 
+Maven also helps us with licensing - it can keep track of license
+for different parts of the projects, and notify us of clashes in licensing. 
+
 
 \subsection*{Building}
 
-Maven
+For build automation we decided to use Maven, as the team was already
+mostly familiar with its usage from previous tutorials, and because
+of how well it licensingtied in with TeamCity for continuous integration.
+Additionally, it allowed the import of our project as a dependency,
+so it could be easily used in other projects (such as extensions of
+the billing system or similar).
 
 
 \subsection*{Deployment}
-
-Continuous integration - git push / TeamCity linked to pom.xml
 
 Whilst we did not actually implement any deployment mechanisms, we
 did consider what deployment mechanisms would be appropriate for Acme
@@ -318,5 +468,11 @@ tutorial (Release). It would be fairly simple to set up as we already
 had git and Maven configured, and assuming that management was happy
 with the quality of the tests that we put in place, would make releasing
 very simple and quick. We assumed that the Acme company has access
-to its own set of servers, and we would use those to deploy on. 
+to its own set of servers, and we would use those to deploy on.
+
+Maven also acts as a form of internal deployment - it lets us deploy
+to an internal 'Maven repository'. Internal users who wish to use
+the latest version of our project simply add the project as a dependency
+to their project, and Maven then automatically imports the latest
+version of the jars and sets it up.
 \end{document}

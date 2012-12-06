@@ -6,6 +6,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import com.acmetelecom.callevent.CallEvent;
+import com.acmetelecom.timeutils.TimeFormatter;
 
 public class Call {
   private final CallEvent start;
@@ -26,8 +27,7 @@ public class Call {
 
   public String date() {
 	DateTime time = new DateTime(start.getTimestamp());
-	DateTimeFormatter formatter = DateTimeFormat.forPattern("yy/M/d h:mma");
-    return time.toString(formatter);
+	return TimeFormatter.formatDateTime(time);
   }
 
   public DateTime startTime() {

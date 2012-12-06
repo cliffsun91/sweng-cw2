@@ -1,5 +1,7 @@
 package com.acmetelecom.fixture;
 
+import static com.acmetelecom.fixture.CustomerRetriever.getCustomerFromPerson;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -7,15 +9,19 @@ import org.joda.time.DateTime;
 
 import com.acmetelecom.assertion.AcmeTelecomTestAssertions;
 import com.acmetelecom.assertion.CustomersBuilder;
+import com.acmetelecom.billingsystembuilder.BillingSystemBuilder;
+import com.acmetelecom.billingsystembuilder.TelephoneCallsBuilder;
 import com.acmetelecom.customer.Customer;
+import com.acmetelecom.exception.CustomerNameMismatchException;
 import com.acmetelecom.microtype.Person;
 import com.acmetelecom.microtype.TariffPlan;
 import com.acmetelecom.microtype.TelephoneNumber;
-import com.telecom.billingsystembuilder.BillingSystemBuilder;
-import com.telecom.billingsystembuilder.TelephoneCallsBuilder;
-import com.telecom.telephonecallbuilder.DefaultTelephoneCallBuilder;
-import com.telecom.telephonecallbuilder.FinalTelephoneCallBuilder;
-import com.telecom.telephonecallbuilder.FromCallerBuilder;
+import com.acmetelecom.printbillbuilder.AddCallsToBillBuilder;
+import com.acmetelecom.printbillbuilder.SingleCustomerBillBuilder;
+import com.acmetelecom.printer.Printer;
+import com.acmetelecom.telephonecallbuilder.DefaultTelephoneCallBuilder;
+import com.acmetelecom.telephonecallbuilder.FromCallerBuilder;
+import com.acmetelecom.telephonecallbuilder.TelephoneCallRepresentation;
 
 public class AcmeTelecomTestFixture {
 
@@ -31,8 +37,8 @@ public class AcmeTelecomTestFixture {
 		return Arrays.asList(customers);
 	}
 	
-	public List<FinalTelephoneCallBuilder> createListOfTelephoneCalls(FinalTelephoneCallBuilder ... telephoneCallBuilders){
-		return Arrays.asList(telephoneCallBuilders);
+	public List<TelephoneCallRepresentation> createListOfTelephoneCalls(TelephoneCallRepresentation ... calls){
+		return Arrays.asList(calls);
 	}
 	
 	public TelephoneCallsBuilder billingSystem(){
@@ -79,4 +85,41 @@ public class AcmeTelecomTestFixture {
 	public int minute(int minute){
 		return minute;
 	}
+	
+	public DateTime startTime(DateTime time){
+		return time;
+	}
+	
+	public DateTime endTime(DateTime time){
+		return time;
+	}
+	
+	public Customer toReceiver(Customer customer){
+		return customer;
+	}
+	
+	public String withCost(String cost){
+		return cost;
+	}
+	
+	public String aBill(String ... customerBills){
+		String fullBill = "";
+		for(String bill : customerBills){
+			fullBill += bill;
+		}
+		return fullBill;
+	}
+	
+	public Customer customer(Person person, List<Customer> customerList) throws CustomerNameMismatchException{
+		return getCustomerFromPerson(person, customerList);
+	}
+	
+	public AddCallsToBillBuilder forCustomer(Customer customer, Printer printer){
+		return new SingleCustomerBillBuilder(customer, printer);
+	}
+	
+	public Printer usingPrinter (Printer printer){
+		return printer;
+	}
+	
 }
