@@ -58,11 +58,12 @@ public class BillingSystem {
 
 	public void callInitiated(CallStart startCall) {
 		String caller = startCall.getCaller();
+		String callee = startCall.getCallee();
 		if (customerCurrentCallLog.get(caller) == null){
 			customerCurrentCallLog.put(caller, new ArrayList<CallTime>());
 		}
 		List<CallTime> calls = customerCurrentCallLog.get(caller);
-		calls.add(new CallTime(startCall.getTimestamp()));
+		calls.add(new CallTime(startCall.getTimestamp(), callee));
 	}
 
 	public void callCompleted(CallEnd endCall) {

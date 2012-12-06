@@ -38,7 +38,7 @@ public class TotalBillCalculatorTest {
         
         final DateTime startTime = new DateTime();
         final DateTime endTime = startTime.plus(1800); 
-        final CallTime callTime = new CallTime(startTime);
+        final CallTime callTime = new CallTime(startTime, "callee");
         callTime.setEndTime(endTime);
         List<CallTime> calls = new ArrayList<CallTime>();
         calls.add(callTime);
@@ -46,7 +46,7 @@ public class TotalBillCalculatorTest {
         context.checking(new Expectations(){{
         	oneOf(timeCalculator).calculateTimes(startTime, endTime); will(returnValue(peakOffPeakTime));
         	oneOf(callCostCalculator).calculateCost(peakOffPeakTime, tariff); will(returnValue(callCost));
-        	oneOf(lineItemFactory).createCallTimeLineItem(callTime, "CALLEE", callCost, peakOffPeakTime); will(returnValue(lineItem));
+        	oneOf(lineItemFactory).createCallTimeLineItem(callTime, "callee", callCost, peakOffPeakTime); will(returnValue(lineItem));
         }});
     	
         List<LineItem> lineItems = new ArrayList<LineItem>();
