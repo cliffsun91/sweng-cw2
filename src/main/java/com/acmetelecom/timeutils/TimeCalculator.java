@@ -2,6 +2,7 @@ package com.acmetelecom.timeutils;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -25,20 +26,41 @@ public class TimeCalculator implements ITimeCalculator {
     public PeakOffPeakTime calculateTimes(DateTime startTime,
                                           DateTime endTime) throws IllegalArgumentException {
         if (endTime.compareTo(startTime) < 0) {
-            throw new IllegalArgumentException("start time must be less than equal to the end time");
+          throw new IllegalArgumentException("start time must be less than equal to the end time");
         }
+        if (endTime.compareTo(startTime) == 0){
+            return  new PeakOffPeakTime(0 ,0);
+        }
+        long offpeak = endTime.getMillis() - startTime.getMillis();
         long peakTime = 0;
-        int days = Days.daysBetween(startTime, endTime).getDays();
+
+        int days = (int)new Duration(startTime, endTime).getStandardDays();
+
         List<JodaTimePeriod> times = peakOffPeakPeriods.getJodaTimes();
+
+        startTime = DateTime.parse(startTime.toString(DATE_FORMATTER), DATE_FORMATTER);
+        endTime   = DateTime.parse(endTime.toString(DATE_FORMATTER), DATE_FORMATTER);
+
+
         DateTime startTimeWithoutDays =
                 DateTime.parse(startTime.toString(DATE_FORMATTER), DATE_FORMATTER);
+
         DateTime endTimeWithoutDays =
                 DateTime.parse(endTime.toString(DATE_FORMATTER), DATE_FORMATTER);
-        for (int i = 0; i <= days; i++) {
-            peakTime += calculateTimeForADay(startTimeWithoutDays, endTimeWithoutDays, times);
-        }
 
-        long offpeak = endTime.getMillis() - startTime.getMillis();
+        if (days == 0){
+            peakTime += calculateTimeForADay(startTimeWithoutDays,endTimeWithoutDays,times) ;
+
+        } else{
+
+           if (!startTime.toLocalTime().equals(endTime.toLocalTime())){
+                days++;
+           }
+
+            for (int i = 0; i < days; i++) {
+                peakTime += calculateTimeForADay(startTimeWithoutDays, endTimeWithoutDays, times);
+        }
+        }
         offpeak -= peakTime;
         return new PeakOffPeakTime((long) peakTime / 1000, (long) offpeak / 1000);
     }
@@ -49,7 +71,7 @@ public class TimeCalculator implements ITimeCalculator {
 
 
 
-        if ( startTime.compareTo(endTime)>0){
+        if ( startTime.compareTo(endTime)>=0){
             DateTime midnight = DateTime.parse("0000", DateTimeFormat.forPattern("HHmm")).plusDays(1);
             long tillMidnight = calculateTimeForADay(startTime,midnight,times) ;
             DateTime morning  = DateTime.parse("0000", DateTimeFormat.forPattern("HHmm"));
