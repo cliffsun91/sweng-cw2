@@ -298,11 +298,11 @@ calls, and work out the bills from that.
 \item Additionally, the $BillingSystem$ was woefully inefficient at creating
 the bills for customers. In the original state, it would iterate through
 every customer, and then through every $CallEvent$ that had been
-logged, and assemble each call that way. Assuming the system has $1000$
+logged, and assemble each call that way. If, for example, the system had $1000$
 customers, and each customer makes $100$ calls over the course of
-the month, that means each customer adds $200$ different events to
-the $callLog$, for a total of $200000$ call events. That means that
-the $BillingSystem$ makes a total of $1000\, customers\times200000\, events=200,000,000$
+the month, then each customer adds $200$ different events to
+the $callLog$, for a total of $200,000$ call events. That means that
+the $BillingSystem$ makes a total of $1,000\, customers\times200,000\, events=200,000,000$
 iterations to assemble one bill for all of its customers! Even generating
 a single bill takes $20000$ iterations, making this system very difficult
 to scale. This isn't even the worst case - the way the system is designed,
@@ -320,7 +320,7 @@ the main things we changed include:
 
 We added an $AbstractCallEvent$ as an abstract interface implementing
 the $CallEvent$ interface, and then changed $CallStart$ and $CallEnd$
-to implement this. This let us write tests a lot easier (rather than
+to implement this. This let us write tests a lot more easily (rather than
 having to rely on $sleep$!), by letting us fabricate times as we
 wanted and then test it using the standard functions. Additionally,
 we implemented the common $getCaller$ and $getCallee$ methods that
@@ -345,7 +345,7 @@ With the $BillingSystem$ class, we made a lot of changes. From the
 performance perspective, we moved the calculation of bills from call
 events to happen as the calls come in - this made it far more efficient
 when bill generation was required, effectively making it linear in
-size of customer base as compared to polynomial! From the structure
+size of customer base as compared to quadratic! From the structure
 perspective, as mentioned above, we moved a lot of the functionality
 elsewhere and made its responsibilities more specific. Additionally,
 we added a large amount of extra functionality to the existing system,
@@ -445,8 +445,10 @@ GNU General Public License), which require all derivative works to
 also be licensed with the GPL, then the whole project itself would
 have to be licensed with the GPL! This might prove to be problematic
 in a private company with proprietary software, as they most likely
-do not want competitors to be able to freely use their software. We
-had to consider this risk when deciding to use Joda Time, for instance.
+do not want competitors to be able to freely use their software. However,
+because we would not have been distributing the binaries for the billing system,
+this would not have been an issue. We had to consider this risk when
+ deciding to use Joda Time, for instance.
 Fortunately, Joda Time uses the Apache 2 license, which is not 'viral'
 and only requires that derivative work contains notifications of what
 was changed, as well as retaining all other copyright, patent, trademark
@@ -460,7 +462,7 @@ for different parts of the projects, and notify us of clashes in licensing.
 
 For build automation we decided to use Maven, as the team was already
 mostly familiar with its usage from previous tutorials, and because
-of how well it licensingtied in with TeamCity for continuous integration.
+of how well it tied in with TeamCity for continuous integration.
 Additionally, it allowed the import of our project as a dependency,
 so it could be easily used in other projects (such as extensions of
 the billing system or similar).
@@ -479,6 +481,11 @@ had git and Maven configured, and assuming that management was happy
 with the quality of the tests that we put in place, would make releasing
 very simple and quick. We assumed that the Acme company has access
 to its own set of servers, and we would use those to deploy on.
+
+However, 'pushing to production' would not probably not be a suitable
+ model for the billing system of a telecom company. An error in billing
+would almost always lead to big issues for the company, either costing
+them money, reputation or both.
 
 Maven also acts as a form of internal deployment - it lets us deploy
 to an internal 'Maven repository'. Internal users who wish to use
