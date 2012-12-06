@@ -109,4 +109,19 @@ public class TimeCalculatorTest {
         Assert.assertEquals(time.getOffPeakTime(),180000);
 
     }
+
+    @Test
+    public void callWithCurrentDates() throws Exception {
+        DateTime startTime = DateTime.now();
+        DateTime endTime =   startTime.plusHours(24);
+
+        PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
+//        Assert.assertEquals(time.getPeakTime(),64800);
+        System.out.println(time.getOffPeakTime());
+        System.out.println(time.getPeakTime());
+
+
+//        Assert.assertEquals(time.getOffPeakTime(),194400);
+
+    }
 }
