@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.acmetelecom.call.CallTime;
 import com.acmetelecom.call.LineItem;
-import com.acmetelecom.timeUtils.PeakOffPeakTime;
-import com.acmetelecom.timeUtils.ITimeCalculator;
+import com.acmetelecom.timeutils.PeakOffPeakTime;
+import com.acmetelecom.timeutils.ITimeCalculator;
 import com.acmetelecom.customer.Tariff;
 
 public class TotalBillCalculator {

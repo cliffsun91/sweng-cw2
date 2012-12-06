@@ -2,7 +2,7 @@ package com.acmetelecom.billcalculator;
 
 import java.math.BigDecimal;
 
-import com.acmetelecom.timeUtils.PeakOffPeakTime;
+import com.acmetelecom.timeutils.PeakOffPeakTime;
 import com.acmetelecom.customer.Tariff;
 
 public interface CallCostCalculator {
