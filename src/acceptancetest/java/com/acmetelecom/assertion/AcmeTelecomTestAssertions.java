@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.acmetelecom.BillingSystem;
 import com.acmetelecom.printer.Printer;
+import com.acmetelecom.timeutils.FileParseException;
 import com.acmetelecom.billingsystembuilder.FinalBillingSystemBuilder;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.exception.CustomerNameMismatchException;
@@ -29,7 +30,7 @@ public class AcmeTelecomTestAssertions implements CustomersBuilder, BillingSyste
 	}
 
 	@Override
-	public ExpectationBuilder andHasABillingSystem(FinalBillingSystemBuilder builder) throws CustomerNameMismatchException {
+	public ExpectationBuilder andHasABillingSystem(FinalBillingSystemBuilder builder) throws CustomerNameMismatchException, FileParseException {
 		billingSystem = builder.buildBillingSystem(customers);
 		return this;
 	}
