@@ -10,7 +10,7 @@ import java.util.List;
 public class DefaultTimeCalculator implements TimeCalculator {
 
     private final PeakOffPeakPeriods peakOffPeakPeriods;
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormat.forPattern("HHmmSSS");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormat.forPattern("HHmmssSSS");
 
 
     public DefaultTimeCalculator() {
@@ -36,10 +36,6 @@ public class DefaultTimeCalculator implements TimeCalculator {
         int days = (int)new Duration(startTime, endTime).getStandardDays();
 
         List<JodaTimePeriod> times = peakOffPeakPeriods.getJodaTimes();
-
-        startTime = DateTime.parse(startTime.toString(DATE_FORMATTER), DATE_FORMATTER);
-        endTime   = DateTime.parse(endTime.toString(DATE_FORMATTER), DATE_FORMATTER);
-
 
         DateTime startTimeWithoutDays =
                 DateTime.parse(startTime.toString(DATE_FORMATTER), DATE_FORMATTER);

@@ -110,13 +110,13 @@ public class TimeCalculatorTest {
         Assert.assertEquals(time.getOffPeakTime(),194400);
     }
     
-//    @Test
-//    public void callWithSeconds() throws Exception {
-//        DateTime startTime = DateTime.now();
-//        DateTime endTime = startTime.plusSeconds(3);
-//
-//        PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
-//        Assert.assertEquals(time.getPeakTime(),0);
-//        Assert.assertEquals(time.getOffPeakTime(),3);
-//    }
+    @Test
+    public void callWithSeconds() throws Exception {
+        DateTime startTime = DateTime.now();
+        DateTime endTime = startTime.plusSeconds(3);
+
+        PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
+        Assert.assertEquals(time.getPeakTime(),3);
+        Assert.assertEquals(time.getOffPeakTime(),0);
+    }
 }
