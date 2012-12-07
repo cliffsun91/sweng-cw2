@@ -10,11 +10,11 @@ import com.acmetelecom.call.Call;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.exception.CustomerNameMismatchException;
 import com.acmetelecom.printer.Printer;
+import com.acmetelecom.timeutils.DefaultTimeCalculator;
 import com.acmetelecom.timeutils.FileParseException;
 import com.acmetelecom.timeutils.PeakOffPeakPeriods;
 import com.acmetelecom.timeutils.TimeCalculator;
-import com.acmetelecom.timeutils.DefaultPeakOffPeakPeriods;
-import com.acmetelecom.timeutils.DefaultTimeCalculator;
+import com.acmetelecom.timeutils.TimeConfigurationReader;
 
 public class BillingSystemBuilder implements TelephoneCallsBuilder, WithPrinterBuilder, FinalBillingSystemBuilder{
 
@@ -39,7 +39,7 @@ public class BillingSystemBuilder implements TelephoneCallsBuilder, WithPrinterB
 	
 	@Override
 	public BillingSystem buildBillingSystem(List<Customer> customers) throws CustomerNameMismatchException, FileParseException {
-		PeakOffPeakPeriods period = DefaultPeakOffPeakPeriods.loadPeakOffPeakPeriods(new File("src/acceptancetest/java/com/acmetelecom/acceptancetest/timesAcceptance.xml"));
+		PeakOffPeakPeriods period = TimeConfigurationReader.loadPeakOffPeakPeriods(new File("src/acceptancetest/java/com/acmetelecom/acceptancetest/timesAcceptance.xml"));
 		TimeCalculator calculator = new DefaultTimeCalculator(period);
 		BillingSystem billingSystem = new BillingSystem(printer, calculator, new DefaultTariffStore(), customers);
 		for (Call call : telephoneCalls){
