@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.acmetelecom.call.CallTime;
+import com.acmetelecom.call.Call;
 
 public class BillingSystemTest {
 
@@ -22,9 +22,9 @@ public class BillingSystemTest {
 	public void testCallInitiatedOnly() throws Exception {		
 		billingSystem.callInitiated("Abz", "Cliff");
 		
-		HashMap<String, List<CallTime>> customerCallLog = billingSystem.getCustomersCallLog();
-		List<CallTime> calls = customerCallLog.get("Abz");
-		CallTime call = calls.get(0);
+		HashMap<String, List<Call>> customerCallLog = billingSystem.getCustomersCallLog();
+		List<Call> calls = customerCallLog.get("Abz");
+		Call call = calls.get(0);
 		Assert.assertEquals("Abz", call.getCaller());
 		Assert.assertEquals("Cliff", call.getCallee());
 		Assert.assertNotNull(call.getStartTime());
@@ -36,8 +36,8 @@ public class BillingSystemTest {
 	public void testCallCompletedOnly() throws Exception {
 		billingSystem.callCompleted("Abz", "Cliff");
 		
-		HashMap<String, List<CallTime>> customerCallLog = billingSystem.getCustomersCallLog();
-		List<CallTime> calls = customerCallLog.get("Abz");
+		HashMap<String, List<Call>> customerCallLog = billingSystem.getCustomersCallLog();
+		List<Call> calls = customerCallLog.get("Abz");
 		Assert.assertNull(calls);
 	}
 	
@@ -46,9 +46,9 @@ public class BillingSystemTest {
 		billingSystem.callInitiated("Abz", "Cliff");
 		billingSystem.callCompleted("Abz", "Cliff");
 		
-		HashMap<String, List<CallTime>> customerCallLog = billingSystem.getCustomersCallLog();
-		List<CallTime> calls = customerCallLog.get("Abz");
-		CallTime call = calls.get(0);
+		HashMap<String, List<Call>> customerCallLog = billingSystem.getCustomersCallLog();
+		List<Call> calls = customerCallLog.get("Abz");
+		Call call = calls.get(0);
 		Assert.assertEquals("Abz", call.getCaller());
 		Assert.assertEquals("Cliff", call.getCallee());
 		Assert.assertNotNull(call.getStartTime());

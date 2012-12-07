@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.acmetelecom.BillingSystem;
-import com.acmetelecom.call.CallTime;
+import com.acmetelecom.call.Call;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.exception.CustomerNameMismatchException;
 import com.acmetelecom.printer.Printer;
@@ -17,15 +17,15 @@ import com.acmetelecom.timeutils.TimeCalculator;
 
 public class BillingSystemBuilder implements TelephoneCallsBuilder, WithPrinterBuilder, FinalBillingSystemBuilder{
 
-	List<CallTime> telephoneCalls;
+	List<Call> telephoneCalls;
 	Printer printer;
 	
 	public BillingSystemBuilder() {
-		telephoneCalls = new ArrayList<CallTime>();
+		telephoneCalls = new ArrayList<Call>();
 	}
 	
 	@Override
-	public WithPrinterBuilder withTelephoneCalls(List<CallTime> calls) throws CustomerNameMismatchException{
+	public WithPrinterBuilder withTelephoneCalls(List<Call> calls) throws CustomerNameMismatchException{
 		telephoneCalls.addAll(calls);
 		return this;
 	}
@@ -41,7 +41,7 @@ public class BillingSystemBuilder implements TelephoneCallsBuilder, WithPrinterB
 		IPeakOffPeakPeriods period = PeakOffPeakPeriods.loadPeakOffPeakPeriods(new File("src/acceptancetest/java/com/acmetelecom/acceptancetest/timesAcceptance.xml"));
 		ITimeCalculator calculator = new TimeCalculator(period);
 		BillingSystem billingSystem = new BillingSystem(printer, calculator);
-		for (CallTime call : telephoneCalls){
+		for (Call call : telephoneCalls){
 			billingSystem.fullCompletedCall(call);
 		}
 		return billingSystem;

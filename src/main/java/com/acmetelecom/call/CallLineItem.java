@@ -15,14 +15,14 @@ import org.joda.time.format.DateTimeFormatter;
  * Time: 00:43
  * To change this template use File | Settings | File Templates.
  */
-public class CallTimeLineItem implements LineItem {
+public class CallLineItem implements LineItem {
 
-	private final CallTime call;
+	private final Call call;
 	private String callee;
     private final BigDecimal callCost;
 	private PeakOffPeakTime peakOffPeakTime;
  
-    public CallTimeLineItem(CallTime call, String callee, BigDecimal callCost, PeakOffPeakTime peakOffPeakTime) {
+    public CallLineItem(Call call, String callee, BigDecimal callCost, PeakOffPeakTime peakOffPeakTime) {
     	   this.call = call;
            this.callee = callee;
            this.callCost = callCost; 

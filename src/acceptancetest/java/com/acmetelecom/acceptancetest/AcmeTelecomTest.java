@@ -8,7 +8,7 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.acmetelecom.call.CallTime;
+import com.acmetelecom.call.Call;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.exception.CustomerNameMismatchException;
 import com.acmetelecom.fixture.AcmeTelecomTestFixture;
@@ -18,7 +18,7 @@ import com.acmetelecom.timeutils.FileParseException;
 public class AcmeTelecomTest extends AcmeTelecomTestFixture{
 	
 	List<Customer> customerDatabase;
-	List<CallTime> telephoneCalls;
+	List<Call> telephoneCalls;
 	
 	@Before
 	public void Setup(){

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.acmetelecom.call.CallTime;
+import com.acmetelecom.call.Call;
 import com.acmetelecom.call.LineItem;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.customer.Tariff;
@@ -34,7 +34,7 @@ public class CustomerBillGenerator {
 		this.moneyFormatter = moneyFormatter;
 	}
 	
-	public void createBillFor(final Customer customer, final List<CallTime> calls, Tariff tariff){
+	public void createBillFor(final Customer customer, final List<Call> calls, Tariff tariff){
 		final List<LineItem> items = new ArrayList<LineItem>();
 		
 		BigDecimal totalBill = totalBillCalculator.calculateTotalBill(calls, tariff, items);

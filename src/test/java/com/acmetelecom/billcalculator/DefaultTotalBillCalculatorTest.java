@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 import com.acmetelecom.billcalculator.CallCostCalculator;
 import com.acmetelecom.billcalculator.LineItemFactory;
 import com.acmetelecom.billcalculator.DefaultTotalBillCalculator;
-import com.acmetelecom.call.CallTime;
+import com.acmetelecom.call.Call;
 import com.acmetelecom.call.LineItem;
 import com.acmetelecom.customer.Tariff;
 import com.acmetelecom.timeutils.ITimeCalculator;
@@ -38,15 +38,15 @@ public class DefaultTotalBillCalculatorTest {
         
         final DateTime startTime = new DateTime();
         final DateTime endTime = startTime.plus(1800); 
-        final CallTime callTime = new CallTime(startTime, "caller", "callee");
-        callTime.setEndTime(endTime);
-        List<CallTime> calls = new ArrayList<CallTime>();
-        calls.add(callTime);
+        final Call call = new Call(startTime, "caller", "callee");
+        call.setEndTime(endTime);
+        List<Call> calls = new ArrayList<Call>();
+        calls.add(call);
         
         context.checking(new Expectations(){{
         	oneOf(timeCalculator).calculateTimes(startTime, endTime); will(returnValue(peakOffPeakTime));
         	oneOf(callCostCalculator).calculateCost(peakOffPeakTime, tariff); will(returnValue(callCost));
-        	oneOf(lineItemFactory).createCallTimeLineItem(callTime, "callee", callCost, peakOffPeakTime); will(returnValue(lineItem));
+        	oneOf(lineItemFactory).createCallLineItem(call, "callee", callCost, peakOffPeakTime); will(returnValue(lineItem));
         }});
     	
         List<LineItem> lineItems = new ArrayList<LineItem>();

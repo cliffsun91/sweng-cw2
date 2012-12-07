@@ -10,7 +10,7 @@ import org.jmock.integration.junit4.JMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.acmetelecom.call.CallTime;
+import com.acmetelecom.call.Call;
 import com.acmetelecom.call.LineItem;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.customer.Tariff;
@@ -29,7 +29,7 @@ public class DefaultCustomerBillGeneratorTest {
 	public void testCreateBillForACustomer() throws Exception {    	
 		final List<LineItem> items = new ArrayList<LineItem>();               
 		final Tariff tariff = Tariff.Business;       
-		final List<CallTime> calls = new ArrayList<CallTime>();
+		final List<Call> calls = new ArrayList<Call>();
 		final Customer customer = new Customer("Jo King", "12345678", "STANDARD");
 		final BigDecimal totalBill = new BigDecimal(10);
 

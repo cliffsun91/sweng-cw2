@@ -3,17 +3,17 @@ package com.acmetelecom.call;
 import org.joda.time.DateTime;
 
 
-public class CallTime {
+public class Call {
 	private DateTime startTime;
 	private DateTime endTime;
 	private String caller;
 	private String callee;
 
-	public CallTime(final DateTime startTime, final String caller, final String callee){
+	public Call(final DateTime startTime, final String caller, final String callee){
 		this(startTime, null, caller, callee);
 	}
 	
-	public CallTime(final DateTime startTime, DateTime endTime, final String caller, final String callee){
+	public Call(final DateTime startTime, DateTime endTime, final String caller, final String callee){
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.callee = callee;

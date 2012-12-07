@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 
-import com.acmetelecom.call.CallTime;
+import com.acmetelecom.call.Call;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.exception.CustomerNameMismatchException;
 import com.acmetelecom.microtype.Person;
@@ -47,10 +47,10 @@ public class DefaultTelephoneCallBuilder implements FromCallerBuilder,
 	}
 
 	@Override
-	public CallTime endCall(List<Customer> customers) throws CustomerNameMismatchException{
+	public Call endCall(List<Customer> customers) throws CustomerNameMismatchException{
 		String callerTelephoneNumber = getCustomerFromPerson(caller, customers).getPhoneNumber();
 		String receiverTelephoneNumber = getCustomerFromPerson(receiver, customers).getPhoneNumber();
-		return new CallTime(startTime, endTime, callerTelephoneNumber, receiverTelephoneNumber);
+		return new Call(startTime, endTime, callerTelephoneNumber, receiverTelephoneNumber);
 	}
 
 }

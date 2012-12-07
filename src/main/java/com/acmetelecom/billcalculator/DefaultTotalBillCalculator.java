@@ -3,7 +3,7 @@ package com.acmetelecom.billcalculator;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.acmetelecom.call.CallTime;
+import com.acmetelecom.call.Call;
 import com.acmetelecom.call.LineItem;
 import com.acmetelecom.timeutils.PeakOffPeakTime;
 import com.acmetelecom.timeutils.ITimeCalculator;
@@ -17,7 +17,7 @@ public class DefaultTotalBillCalculator implements TotalBillCalculator {
 
 	public DefaultTotalBillCalculator(ITimeCalculator timeCalculator) {
 		this.calculateCallCost = new DefaultCallCostCalculator();
-		this.lineItemFactory = new CallTimeLineItemFactory();
+		this.lineItemFactory = new CallLineItemFactory();
 		this.timeCalculator = timeCalculator;
 	}
 
@@ -29,7 +29,7 @@ public class DefaultTotalBillCalculator implements TotalBillCalculator {
 		this.timeCalculator = timeCalculator;
 	}
 
-	public BigDecimal calculateTotalBill(List<CallTime> calls, Tariff tariff, List<LineItem> items) {
+	public BigDecimal calculateTotalBill(List<Call> calls, Tariff tariff, List<LineItem> items) {
 
 		BigDecimal totalBill = new BigDecimal(0);
 
@@ -37,14 +37,14 @@ public class DefaultTotalBillCalculator implements TotalBillCalculator {
 			return totalBill;
 		}
 
-		for (final CallTime call : calls) {
+		for (final Call call : calls) {
 			if (call.getEndTime() == null){
 				continue;
 			}
 			PeakOffPeakTime peakOffPeakTime = timeCalculator.calculateTimes(call.getStartTime(), call.getEndTime());
 			BigDecimal callCost = calculateCallCost.calculateCost(peakOffPeakTime, tariff);
 			totalBill = totalBill.add(callCost);
-			LineItem lineItem = lineItemFactory.createCallTimeLineItem(call, call.getCallee(), callCost, peakOffPeakTime);
+			LineItem lineItem = lineItemFactory.createCallLineItem(call, call.getCallee(), callCost, peakOffPeakTime);
 			items.add(lineItem);
 		}
 		return totalBill;
