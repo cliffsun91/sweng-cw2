@@ -88,12 +88,40 @@ cost of the call.
 Judging from these responsibilities, we added a variety of unit tests
 covering basic and edge cases for each responsibility. For instance,
 for $callInitiated$ and $callCompleted$, we added tests to make
-sure that the specified events were added to the log. Additionally,
+sure that the specified events were added to the log.
+
+We realised that writing a unit test for $createCustomerBills$ would be
+highly cumbersome as it was calling $createBillFor$ for every customer.
+The entire telephony logic of the system resided in this function. After thoroughly reading and understanding the algorithm, we carefully extracted some of the logic out into separate functions. This not only improved the readability of the algorithm but also allowed us to scrutinise the different responsibilities inside the logic. One part of the code which we extracted out was where the call time was being checked to see whether it lied between the peak period and then calculated the cost of the call accordingly. 
+ABZ IS GONNA WORK ON THIS PART
+Once we were able to split out the logic, we carefully started moving it out to new classes and add unit tests as we 
+
+Talk about how i moved 
+DefaultCallCostCalculator - PeakOffPeakTime and tariff to calculate
+TotalBillCalculator
+CustomerBillGenerator
+BillingSystem
+
+Talk about what they took in passing interfaces instead of actual implementation
+and how this actually helped in extensibility - give example of DayPeakPeriod logic and TimeCalculator
+Say why i passed in billing system and also acceptance test
+overloaded constructor
+how we split up the task between me and osama
+
+
+
+
+
+
+Additionally,
 we fabricated some customer calls, with predefined times, and tested
 these making sure that the resulting bill was equivalent to what we
 expected. These calls were designed to cover all of the edge cases
 as well, such as calls over peak time to off peak time and vice versa,
-and calls of zero length, as well as extremely long calls. As an example,
+and calls of zero length, as well as extremely long calls. 
+
+NOT SURE WE NEED THIS OR WE ACTUALLY DID THIS
+As an example,
 here is where we check the functionality of the $Call$ class: 
 \begin{lstlisting}[language=Java]
 final Mockery context = new Mockery(); 	
@@ -201,44 +229,28 @@ to use continuous integration. Also, as we are doing this in an IDE,
 we have the advantages of auto-complete, content assist and syntax
 checking.
 
-
-\subsection*{Adding unit tests for new functionality}
-
-Before we could implement the required changes, we wanted to add unit
-tests to cover what the expected outcome was going to be, as an example
-of Test-Driven Development. This meant that we could repeatedly test
-the code as we implemented it to ensure that the desired goal was
-being fulfilled. In addition writing unit tests first helped us to drive the
-design of our code and as a result we ended up with much more modular
-design. We also had to think carefully about what exactly to test,
-to make sure that it completely covered every aspect of our goals.
-
-
-\paragraph*{How}
-
-\begin{lstlisting}[language=Java]
-@Test     
-public void testCallCostWithStandardTariff() throws Exception {     	
-	PeakOffPeakTime peakOffPeakTime = new PeakOffPeakTime(100, 200);     	
-	Tariff tariff = Tariff.Standard;     	
-	BigDecimal cost = 
-		 new DefaultCallCostCalculator().calculateCost(peakOffPeakTime, tariff); 
-	Assert.assertEquals(cost.longValue(), 90);     
-}	
-\end{lstlisting}
-
-
-
 \subsection*{Implementing new functionality}
 
 By this point we were fairly confident that we had a good grasp of
 the existing functionality that we needed to preserve, cemented by
 unit tests, as well as a good vision of what we needed to add/change,
-supported by the unit tests written in the DSL (which we would have
+supported by the acceptance tests written in the DSL (which we would have
 cleared with Stephen).
+
+We decided to use a test-driven approach to implement the required changes.
+This meant that we could repeatedly test the code as we implemented it to ensure 
+that the desired goal was being fulfilled. In addition writing unit tests first helped us to drive the
+design of our code and as a result produce a modular
+design. 
 
 
 \paragraph*{What}
+
+The task of adding the new functionality was twofold. One to develop an algorithm to
+calculate the peak and off-peak time given the start time and the end time of a call. Secondly clients should easily be allowed to read and specify the peak time periods.
+
+
+OSAMA CAN TALK ABOUT THIS
 
 We needed to tweak how the calls were charged, which involved understanding
 exactly how long a call was in peak and offpeak periods and tallying
