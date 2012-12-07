@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 
 import com.acmetelecom.call.LineItem;
 import com.acmetelecom.customer.Customer;
-import com.acmetelecom.moneyformatters.IMoneyFormatter;
+import com.acmetelecom.moneyformatters.MoneyFormatter;
 
 
 @RunWith(JMock.class)
@@ -21,7 +21,7 @@ public class BillingGeneratorTest {
     final Mockery context = new Mockery();
     final Customer customer = new Customer("Jo King","12345678","xxx");
     final Printer printer = context.mock(Printer.class);
-    final IMoneyFormatter moneyFormatter = context.mock(IMoneyFormatter.class);
+    final MoneyFormatter moneyFormatter = context.mock(MoneyFormatter.class);
 
     @Test
     public void testPrinter() throws Exception {

@@ -6,16 +6,16 @@ import java.util.List;
 import com.acmetelecom.call.Call;
 import com.acmetelecom.call.LineItem;
 import com.acmetelecom.timeutils.PeakOffPeakTime;
-import com.acmetelecom.timeutils.ITimeCalculator;
+import com.acmetelecom.timeutils.TimeCalculator;
 import com.acmetelecom.customer.Tariff;
 
 public class DefaultTotalBillCalculator implements TotalBillCalculator {
 
 	private CallCostCalculator calculateCallCost;
 	private LineItemFactory lineItemFactory; 
-	private ITimeCalculator timeCalculator;
+	private TimeCalculator timeCalculator;
 
-	public DefaultTotalBillCalculator(ITimeCalculator timeCalculator) {
+	public DefaultTotalBillCalculator(TimeCalculator timeCalculator) {
 		this.calculateCallCost = new DefaultCallCostCalculator();
 		this.lineItemFactory = new CallLineItemFactory();
 		this.timeCalculator = timeCalculator;
@@ -23,7 +23,7 @@ public class DefaultTotalBillCalculator implements TotalBillCalculator {
 
 	
 	public DefaultTotalBillCalculator(final CallCostCalculator calculateCallCost, 
-			final LineItemFactory lineItemFactory, ITimeCalculator timeCalculator) {
+			final LineItemFactory lineItemFactory, TimeCalculator timeCalculator) {
 		this.calculateCallCost = calculateCallCost;
 		this.lineItemFactory = lineItemFactory;
 		this.timeCalculator = timeCalculator;

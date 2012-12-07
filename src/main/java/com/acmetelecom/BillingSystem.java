@@ -7,32 +7,39 @@ import java.util.List;
 import org.joda.time.DateTime;
 
 import com.acmetelecom.billcalculator.CustomerBillGenerator;
+import com.acmetelecom.billcalculator.DefaultCustomerBillGenerator;
 import com.acmetelecom.call.Call;
 import com.acmetelecom.customer.CentralCustomerDatabase;
-import com.acmetelecom.customer.CentralTariffDatabase;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.customer.Tariff;
 import com.acmetelecom.printer.HtmlPrinter;
 import com.acmetelecom.printer.Printer;
-import com.acmetelecom.timeutils.ITimeCalculator;
 import com.acmetelecom.timeutils.TimeCalculator;
+import com.acmetelecom.timeutils.DefaultTimeCalculator;
 
 public class BillingSystem {
 
 	private final HashMap<String, List<Call>> customerCurrentCallLog;
 	private final CustomerBillGenerator customerBillGenerator;
+	private final TariffStore tariffStore;
+	private final List<Customer> customers;
 
 	public BillingSystem() {
-		this(HtmlPrinter.getInstance());
+		this(HtmlPrinter.getInstance(), new DefaultTimeCalculator(), new DefaultTariffStore(), 
+				CentralCustomerDatabase.getInstance().getCustomers());
 	}
 
-	public BillingSystem(Printer printer) {		
-		this(printer, new TimeCalculator());
+	public BillingSystem(Printer printer, TimeCalculator timeCalculator,
+			TariffStore tariffStore, List<Customer> customers) {
+		this(new DefaultCustomerBillGenerator(printer, timeCalculator), tariffStore, customers);
 	}
 	
-	public BillingSystem(Printer printer, ITimeCalculator timeCalculator) {
+	public BillingSystem(CustomerBillGenerator customerBillGenerator,
+			TariffStore tariffStore, List<Customer> customers) {
 		this.customerCurrentCallLog = new HashMap<String, List<Call>>();
-		this.customerBillGenerator = new CustomerBillGenerator(printer, timeCalculator);
+		this.customerBillGenerator = customerBillGenerator;
+		this.tariffStore = tariffStore;
+		this.customers = customers;
 	}
 
 	public void callInitiated(String caller, String callee){
@@ -52,14 +59,10 @@ public class BillingSystem {
 		}
 	}
 	
-	public void createCustomerBills(){
-		createCustomerBills(CentralCustomerDatabase.getInstance().getCustomers());
-	}
-
-	public void createCustomerBills(final List<Customer> customers) {
-		for (final Customer customer : customers) {
-			final List<Call> calls = customerCurrentCallLog.get(customer.getPhoneNumber());
-			final Tariff tariff = CentralTariffDatabase.getInstance().tarriffFor(customer);
+	public void createCustomerBills() {		
+		for (final Customer customer : this.customers) {
+			final List<Call> calls = customerCurrentCallLog.get(customer.getPhoneNumber());			
+			final Tariff tariff = tariffStore.getTariffFor(customer);
 			customerBillGenerator.createBillFor(customer, calls, tariff);
 			customerCurrentCallLog.put(customer.getPhoneNumber(), new ArrayList<Call>());
 		}
