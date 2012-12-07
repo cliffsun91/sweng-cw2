@@ -11,7 +11,7 @@ public class TimeCalculatorTest {
     private PeakOffPeakPeriods peakOffPeakPeriods;
     private DefaultTimeCalculator timeCalculator;
     public  TimeCalculatorTest() throws  FileParseException{
-        peakOffPeakPeriods =  DefaultPeakOffPeakPeriods.
+        peakOffPeakPeriods =  TimeConfigurationReader.
                 loadPeakOffPeakPeriods(new File("src/test/java/com/acmetelecom/timeutils/timesTest.xml"));
         timeCalculator = new DefaultTimeCalculator(peakOffPeakPeriods);
     }
@@ -116,7 +116,7 @@ public class TimeCalculatorTest {
         DateTime endTime = startTime.plusSeconds(3);
 
         PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
-        Assert.assertEquals(time.getPeakTime(),3);
-        Assert.assertEquals(time.getOffPeakTime(),0);
+        Assert.assertEquals(time.getPeakTime(),0);
+        Assert.assertEquals(time.getOffPeakTime(),3);
     }
 }

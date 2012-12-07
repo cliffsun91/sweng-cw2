@@ -1,16 +1,8 @@
 package com.acmetelecom.timeutils;
 
-/**
- * Created with IntelliJ IDEA.
- * User: deewar
- * Date: 05/12/12
- * Time: 02:42
- * To change this template use File | Settings | File Templates.
- */
+
 public class FileParseException extends Throwable {
-    /**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	public FileParseException(String s, Exception e) {

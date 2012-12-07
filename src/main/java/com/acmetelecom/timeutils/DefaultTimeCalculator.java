@@ -14,7 +14,7 @@ public class DefaultTimeCalculator implements TimeCalculator {
 
 
     public DefaultTimeCalculator() {
-        peakOffPeakPeriods = DefaultPeakOffPeakPeriods.getDefaultPeakOffPeakPeriods();
+        peakOffPeakPeriods = TimeConfigurationReader.getDefaultPeakOffPeakPeriods();
     }
 
     public DefaultTimeCalculator(PeakOffPeakPeriods peakOffPeakPeriods) {
@@ -57,7 +57,7 @@ public class DefaultTimeCalculator implements TimeCalculator {
         }
         }
         offpeak -= peakTime;
-        return new PeakOffPeakTime((long) peakTime / 1000, (long) offpeak / 1000);
+        return new PeakOffPeakTime(peakTime / 1000, offpeak / 1000);
     }
 
 

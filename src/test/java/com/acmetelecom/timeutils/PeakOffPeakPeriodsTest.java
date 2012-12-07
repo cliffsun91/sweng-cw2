@@ -7,18 +7,12 @@ import org.junit.Test;
 
 import java.io.File;
 
-/**
- * Created with IntelliJ IDEA.
- * User: deewar
- * Date: 05/12/12
- * Time: 03:45
- * To change this template use File | Settings | File Templates.
- */
+
 public class PeakOffPeakPeriodsTest {
     @Test
     public void testLoadBadFile() throws Exception {
         try{            
-        	DefaultPeakOffPeakPeriods.loadPeakOffPeakPeriods(new File("src/test/java/com/acmetelecom/timeutils/timesbad.xml"));
+        	TimeConfigurationReader.loadPeakOffPeakPeriods(new File("src/test/java/com/acmetelecom/timeutils/timesbad.xml"));
         }catch ( FileParseException e){
             return;
         }
@@ -29,7 +23,7 @@ public class PeakOffPeakPeriodsTest {
     public void testLoadGoodFile() throws Exception {
         try{
            PeakOffPeakPeriods peakOffPeakPeriods =
-                DefaultPeakOffPeakPeriods.loadPeakOffPeakPeriods(new File("src/test/java/com/acmetelecom/timeutils/timesTest.xml"));
+                TimeConfigurationReader.loadPeakOffPeakPeriods(new File("src/test/java/com/acmetelecom/timeutils/timesTest.xml"));
             Assert.assertEquals(peakOffPeakPeriods.getJodaTimes().size(), 3);
             DateTime startTime = DateTime.parse("0800", DateTimeFormat.forPattern("HHmm"));
             DateTime endTime = DateTime.parse("1000", DateTimeFormat.forPattern("HHmm"));
@@ -45,7 +39,7 @@ public class PeakOffPeakPeriodsTest {
     public void testGetDefaultPeakOffPeakPeriods() throws Exception {
 
             PeakOffPeakPeriods peakOffPeakPeriods =
-                    DefaultPeakOffPeakPeriods.getDefaultPeakOffPeakPeriods();
+                    TimeConfigurationReader.getDefaultPeakOffPeakPeriods();
             Assert.assertNotNull(peakOffPeakPeriods);
 
     }

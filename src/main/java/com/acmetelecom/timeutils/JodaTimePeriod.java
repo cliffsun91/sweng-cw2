@@ -2,13 +2,6 @@ package com.acmetelecom.timeutils;
 
 import org.joda.time.DateTime;
 
-/**
- * Created with IntelliJ IDEA.
- * User: deewar
- * Date: 05/12/12
- * Time: 01:08
- * To change this template use File | Settings | File Templates.
- */
 public class JodaTimePeriod {
     public JodaTimePeriod(DateTime startTime,DateTime endTime)throws Exception{
         this.startTime = startTime;
