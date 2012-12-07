@@ -17,14 +17,12 @@ import java.io.File;
 public class PeakOffPeakPeriodsTest {
     @Test
     public void testLoadBadFile() throws Exception {
-        try{
-            IPeakOffPeakPeriods peakOffPeakPeriods =
-                    PeakOffPeakPeriods.loadPeakOffPeakPeriods(new File("src/test/java/com/acmetelecom/timeutils/timesbad.xml"));
+        try{            
+        	PeakOffPeakPeriods.loadPeakOffPeakPeriods(new File("src/test/java/com/acmetelecom/timeutils/timesbad.xml"));
         }catch ( FileParseException e){
             return;
         }
         Assert.fail("Loaded the incorrect file!");
-
     }
 
     @Test

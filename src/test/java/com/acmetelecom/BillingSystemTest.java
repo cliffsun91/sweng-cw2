@@ -1,42 +1,58 @@
 package com.acmetelecom;
 
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
+import java.util.HashMap;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
+import com.acmetelecom.call.CallTime;
 
-// Is it possible to use mocking here?
-// Yes it's needed to fabricate customer calls.
-@RunWith(JMock.class)
 public class BillingSystemTest {
 
-  final Mockery context = new Mockery();
-  //final Customer customer = context.mock(Customer.class);
-  //final Tariff tariff = context.mock(Tariff.class);
+	private BillingSystem billingSystem;
+	
+	@Before
+	public void setup(){
+		billingSystem = new BillingSystem();
+	}
+	
+	@Test
+	public void testCallInitiatedOnly() throws Exception {		
+		billingSystem.callInitiated("Abz", "Cliff");
+		
+		HashMap<String, List<CallTime>> customerCallLog = billingSystem.getCustomersCallLog();
+		List<CallTime> calls = customerCallLog.get("Abz");
+		CallTime call = calls.get(0);
+		Assert.assertEquals("Abz", call.getCaller());
+		Assert.assertEquals("Cliff", call.getCallee());
+		Assert.assertNotNull(call.getStartTime());
+		Assert.assertNull(call.getEndTime());
+	}
 
-  @Test
-  public void testPeakRate() throws Exception {
-    // Test that when a call is made peakrate,
-    // the call is charged completely on peak
-    //fail("Not yet implemented");
-  }
-
-  @Test
-  public void testOffPeakRate() throws Exception {
-    // Test that when a call is made offpeak,
-    // the whole call is charged off peak
-    //fail("Not yet implemented");
-  }
-
-  @Test
-  public void testOffPeakToPeakRate() throws Exception {
-    //fail("Not yet implemented");
-  }
-
-  @Test
-  public void testPeakToOffPeakRate() throws Exception {
-    //fail("Not yet implemented");
-  }
+	
+	@Test
+	public void testCallCompletedOnly() throws Exception {
+		billingSystem.callCompleted("Abz", "Cliff");
+		
+		HashMap<String, List<CallTime>> customerCallLog = billingSystem.getCustomersCallLog();
+		List<CallTime> calls = customerCallLog.get("Abz");
+		Assert.assertNull(calls);
+	}
+	
+	@Test
+	public void testCallInitiatedAndCompleted() throws Exception {
+		billingSystem.callInitiated("Abz", "Cliff");
+		billingSystem.callCompleted("Abz", "Cliff");
+		
+		HashMap<String, List<CallTime>> customerCallLog = billingSystem.getCustomersCallLog();
+		List<CallTime> calls = customerCallLog.get("Abz");
+		CallTime call = calls.get(0);
+		Assert.assertEquals("Abz", call.getCaller());
+		Assert.assertEquals("Cliff", call.getCallee());
+		Assert.assertNotNull(call.getStartTime());
+		Assert.assertNotNull(call.getEndTime());
+	}
 
 }

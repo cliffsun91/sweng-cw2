@@ -73,4 +73,8 @@ public class BillingSystem {
 		List<CallTime> calls = customerCurrentCallLog.get(caller);
 		calls.add(call);
 	}
+	
+	public HashMap<String, List<CallTime>> getCustomersCallLog(){
+		return customerCurrentCallLog;
+	}
 }
