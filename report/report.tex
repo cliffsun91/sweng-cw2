@@ -228,29 +228,6 @@ to write our acceptance test (JUnit). Also, as we are doing this in an IDE,
 we have the advantages of auto-complete, content assist and syntax
 checking. 
 
-\subsection*{Adding unit tests for new functionality}
-
-Before we could implement the required changes, we wanted to add unit
-tests to cover what the expected outcome was going to be, as an example
-of Test-Driven Development. This meant that we could repeatedly test
-the code as we implemented it to ensure that the desired goal was
-being fulfilled. In addition writing unit tests before implementing the actual
-code helped us to drive the design of our code and as a result we ended 
-up with much more modular design. We also had to think carefully about 
-what exactly to test, to make sure that it completely covered every aspect 
-of our goals.
-
-\begin{lstlisting}[language=Java]
-@Test     
-public void testCallCostWithStandardTariff() throws Exception {     	
-	PeakOffPeakTime peakOffPeakTime = new PeakOffPeakTime(100, 200);     	
-	Tariff tariff = Tariff.Standard;     	
-	BigDecimal cost = 
-		 new DefaultCallCostCalculator().calculateCost(peakOffPeakTime, tariff); 
-	Assert.assertEquals(cost.longValue(), 90);     
-}	
-\end{lstlisting}
-
 \subsection*{Implementing new functionality}
 
 By this point we were fairly confident that we had a good grasp of
@@ -262,52 +239,34 @@ cleared with Stephen).
 We decided to use a test-driven approach to implement the required changes.
 This meant that we could repeatedly test the code as we implemented it to ensure 
 that the desired goal was being fulfilled. In addition writing unit tests first helped us to drive the
-design of our code and as a result produce a modular
-design. 
+design of our code and as a result produce a modular design. 
 
 
 \paragraph*{What}
+The task of adding the new functionality was twofold. One to develop an algorithm to calculate the peak and off-peak times given the start time and the end time of a call. Sencondly we wanted a more robust mechanism for specifying peak and off peak times so that a change in these does not require the whole system to be recompiled.
 
-The task of adding the new functionality was twofold. One to develop an algorithm to
-calculate the peak and off-peak time given the start time and the end time of a call. Secondly clients should easily be allowed to read and specify the peak time periods.
-
-
-OSAMA CAN TALK ABOUT THIS
-
-We needed to tweak how the calls were charged, which involved understanding
-exactly how long a call was in peak and offpeak periods and tallying
-the results accordingly. This involved recoding how $BillingSystem$
-worked, as well as moving and/or adding functionality to $DaytimePeakPeriod$.
-
+As refactoring of the $BillingSystem$ was performed previously, we had to simply create a new implementation of $TimeCalculator$ which calculated the peak and off-peak time as required by the new feature. We then had to simply make this new class our default implementation for $TimeCalculator$.
 
 \paragraph*{How}
 
-We created a new package called timeutils, which abstracted the required
-peak/offpeak time calculations out from the billing system. Careful
-consideration went into building the package, making sure that it
-would be easily scalable and configurable. For instance, we added
-the ability to define different xml files for peak/offpeak configuration,
-which are read in at run-time, and they also allow multiple peak and
-offpeak times to be specified for the same day.
+We created a new package called $timeutils$, which abstracted the required peak and off-peak time calculations out from the billing system. Careful consideration went into building the package, making sure that it would be easily scalable and configurable. For instance, we added the ability to define different XML files for the peak and off-peak configuration, which are read in at run-time, and they also allow multiple peak time periods to be specified for the same day.
 
-Originally we considered making the time calculation methods static,
-to improve performance - however after rethinking the issue we decided
-to use interfaces and objects as this is much easier to scale and
-extend. If the underlying implementation needs to change at any point
-(eg. implementing a different kind of calculator), as long as they
-abide by the interface rules everything will still work. 
+We used JAXB to parse XML files to Java objects. JAXB did not support parsing $JodaTime$ objects by default therefore we decided to parse simple strings into a container class called $TimePeriod$. After the parsing was complete, we converted all the strings to $JodaTime$ and stored them as $JodaTimePeriods$. During the conversion process we also performed some validations and merged overlapping timeperiods together. We could have written a converter for 
+JAXB to do this for us but we did not think that writing a full blown converter was that necessary. A default configuration file for time periods is loaded in the static constructor and the system also supports the functionality to load other files as required which was useful for testing.
 
-This package was developed in a test-driven-development style - unit
-tests were specified once the planning had finished, and were coded
-to cover the entire scope of the specification. The result of this
-was that we could be confident that the required functionality was
-intact as we went about developing the package.
+\begin{lstlisting}[language=Java,showstringspaces=false]
+@XmlRootElement(name = "PeakOffPeakPeriods")
+@XmlSeeAlso({TimePeriod.class})
+@XmlAccessorType(XmlAccessType.FIELD)
+public class TimeConfigurationReader {  
+	public  final List<TimePeriod> times = new ArrayList<TimePeriod>() ;
+	...
+}
+\end{lstlisting}
 
-The end result was a change in how $BillingSystem$ worked, as well
-as removing a lot of the responsibility that it previously had. It
-fundamentally performed the same task, however it now did so more
-efficiently, and in a much clearer and concise manner.
+These changes enabled us to test and implement the required new functionality. We also added some other general improvments that we talk about in the next section that enabled the system to perform more efficiently and the codebase to be in much cleaner and consise manner.
 
+Using interfaces also opened up the possibility of using dependency injection but due to the time constrains, we did not investigate this. 
 
 \subsection*{Refactoring and improving code to aid maintainability and code health}
 
@@ -334,11 +293,6 @@ to $sleep$ inbetween calling and ending the call, which would make
 the testing process very slow indeed! This occurs in the $Runner$
 example provided in the specification - it takes a full 1 minute and
 50 seconds to complete!
-\item The $BillingSystem$ was responsible for registering and handling
-$CallEvent$ happenings, which we felt was somewhat outside of its
-domain of responsibility. We felt that a system that is designed for
-billing should handle just that - it should take a list of pre-assembled
-calls, and work out the bills from that. 
 \item Additionally, the $BillingSystem$ was woefully inefficient at creating
 the bills for customers. In the original state, it would iterate through
 every customer, and then through every $CallEvent$ that had been
@@ -457,17 +411,7 @@ of changes made to allow rollbacks.
 
 \subsection*{Architecture changes}
 
-We made multiple architectural changes to the code over the course
-of the project - we altered where some of the files were placed, based
-on responsibilities, as well as adding testing (acceptance or unit-based)
-and resource directories. For instance, we moved calling-based and
-call-event-based classes away from normal telecom-based classes into
-a seperate package, moved the entirety of offpeak/peak cal calculations
-out to a seperate utils class, amongst other things, modularising
-the codebase and making it easier for multiple people to work on different
-areas of the program, as well as making the code conceptually easier
-to understand. 
-
+We made multiple architectural changes to the code over the course of the project. We altered where the location of files, based on their responsibilities and modified how resource directories were handled. We moved classes with related functionality into their own packages. For example, all call based classes were moved into the $call$ package and the entirety of off-peak and peak call calculations was similiarly moved to its own $billcalculator$ package. This amongst other things, made the code more modular and easier to understand and allowed easier splitting of tasks amongnst our group.
 
 \paragraph*{Wrappers}
 
@@ -485,13 +429,7 @@ and we need to do tests!
 
 \subsection*{Multi-Threading}
 
-The act of generating multiple bills appears to lend itself quite
-well to a multi-threaded approach. Each bill being generated could
-be classified as a unit of operation, and the whole process could
-be split across multiple computers. We did not get around to implementing
-multithreading to the system, but it would certainly be something
-to consider in the future if running time ever became a problem. 
-
+The act of generating multiple bills appears to lend itself quite well to a multi-threaded approach. Each bill being generated could be classified as a unit of operation, and the whole process could be split across multiple computers. We did not get around to adding a distributed architecture to the system, but it would certainly be something to consider in the future if running time ever became a problem. Furthermore we thought that this was beyond the scope of what was required by Stephen.
 
 \subsection*{Licensing}
 
@@ -510,9 +448,7 @@ and only requires that derivative work contains notifications of what
 was changed, as well as retaining all other copyright, patent, trademark
 notices etc. that existed in the original.
 
-Maven also helps us with licensing - it can keep track of license
-for different parts of the projects, and notify us of clashes in licensing. 
-
+Maven can potentially be used to keep a track of licencing dependencies of the project allowing us to ensure that none of the requirements are broken.
 
 \subsection*{Building}
 
@@ -523,6 +459,7 @@ Additionally, it allowed the import of our project as a dependency,
 so it could be easily used in other projects (such as extensions of
 the billing system or similar).
 
+For build automation we decided to use Maven, as the team was already mostly familiar with its usage from previous tutorials, and because of how well it tied in with TeamCity for continuous integration. Additionally, it can also be used to expose the finished jar in a maven repository. Other AcmeTelecom systems could then potentially use the billing system by adding a dependency to the billingSystem in their own pom.xml files.
 
 \subsection*{Deployment}
 
