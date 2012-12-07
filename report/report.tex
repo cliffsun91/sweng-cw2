@@ -5,8 +5,10 @@
 \usepackage[latin9]{inputenc}
 \usepackage{listings}
 \usepackage{geometry}
-\geometry{verbose,tmargin=3cm,bmargin=3cm,lmargin=2cm,rmargin=2cm}
+\geometry{verbose,tmargin=2.2cm,bmargin=3cm,lmargin=1.6cm,rmargin=1.6cm}
 \usepackage{url}
+\usepackage[pdftex]{graphicx}
+\usepackage{capt-of}
 
 \lstset{
 	basicstyle=\small
@@ -33,7 +35,7 @@
 \usepackage{babel}
 \begin{document}
 
-\title{Software Engineering CW2}
+\title{Software Engineering Coursework 2}
 
 
 \author{Abhijit Chandgadkar, Osama Javed, Joseph Slade, Cliff Sun, Luke Tomlin}
@@ -92,54 +94,60 @@ sure that the specified events were added to the log.
 
 We realised that writing a unit test for $createCustomerBills$ would be
 highly cumbersome as it was calling $createBillFor$ for every customer.
-The entire telephony logic of the system resided in this function. After thoroughly reading and understanding the algorithm, we carefully extracted some of the logic out into separate functions. This not only improved the readability of the algorithm but also allowed us to scrutinise the different responsibilities inside the logic. One part of the code which we extracted out was where the call time was being checked to see whether it lied between the peak period and then calculated the cost of the call accordingly. 
-ABZ IS GONNA WORK ON THIS PART
-Once we were able to split out the logic, we carefully started moving it out to new classes and add unit tests as we 
+The entire telephony logic of the system resided in this function. 
 
-Talk about how i moved 
-DefaultCallCostCalculator - PeakOffPeakTime and tariff to calculate
-TotalBillCalculator
-CustomerBillGenerator
-BillingSystem
+After thoroughly reading and understanding the algorithm, we carefully extracted some of the logic out into separate private functions. Although this was not necessary but it significantly improved the readability of the algorithm and also allowed us to scrutinise the different responsibilities inside the logic. After this, we carefully started refactoring the different parts of the logic into new classes. This allowed us to write tests for each aspect of the logic separately and thus we eventually finished testing out the entire billing algorithm. For example one part of the logic which we refactored was where the call time was being checked to see whether it lied between the peak period using $DaytimePeakPeriod$ and then calculated the cost of the call accordingly. We split this functionality out into two interfaces, $TimeCalculator$ and $CallCostCalculator$. We also introduced $PeakOffPeakTime$ with the sole purpose of storing a value for peak time and off-peak time.
 
-Talk about what they took in passing interfaces instead of actual implementation
-and how this actually helped in extensibility - give example of DayPeakPeriod logic and TimeCalculator
-Say why i passed in billing system and also acceptance test
-overloaded constructor
-how we split up the task between me and osama
-
-
-
-
-
-
-Additionally,
-we fabricated some customer calls, with predefined times, and tested
-these making sure that the resulting bill was equivalent to what we
-expected. These calls were designed to cover all of the edge cases
-as well, such as calls over peak time to off peak time and vice versa,
-and calls of zero length, as well as extremely long calls. 
-
-NOT SURE WE NEED THIS OR WE ACTUALLY DID THIS
-As an example,
-here is where we check the functionality of the $Call$ class: 
 \begin{lstlisting}[language=Java]
-final Mockery context = new Mockery(); 	
-final CallEvent callStart = context.mock(CallEvent.class, "CallEvent1"); 	
-final CallEvent callEnd = context.mock(CallEvent.class, "CallEvent2"); 	
-final Call call = new Call(callStart, callEnd); 
-	
-@Test 	
-public void testGetCalleeGetsCalleeFromCallStart(){ 		
-	final String callee = "Cliff"; 	
-	context.checking(new Expectations() {{             
-		oneOf(callStart).getCallee(); 
-		will(returnValue(callee));         
-	}}); 	
-	Assert.assertThat(call.callee(), CoreMatchers.equalTo(callee));	 	
+public interface TimeCalculator{
+PeakOffPeakTime calculateTimes(long startTime, long endTime);
 }
+
+public interface CallCostCalculator {
+BigDecimal calculateCost(final PeakOffPeakTime peakOffPeakTime,
+final Tariff tariff);
+}
+
+public class PeakOffPeakTime{
+private final long peakTime;
+private final long offPeakTime;
+}
+
+.
+..
+PeakOffPeakTime peakOffPeakTime = timeCalculator.calculateTimes(call.getStartTime(), call.getEndTime());
+BigDecimal callCost = callCostCalculator. calculateCost(peakOffPeakTime, tariff);
+..
+.
+
 \end{lstlisting}
 
+The implementation for $TimeCalculator$ would contain $DaytimePeakPeriod$ which would be used to calculate and return the total number of time the call was in the peak period and off-peak period. In the case of the original algorithm, one of these values would be 0 because if a call overlapped on to a peak period the whole call was treated as peak call. The implementation of $CallCostCalculator$
+would then return the cost of the call given the peak and off-peak duration. The advantage of this refactoring step was twofold. One it allowed us to easily write unit tests for each aspect of the logic, i.e. it became much simpler to think of test cases and also to write them instantly. Having tested legacy code gave us enough confidence to make further refactoring including making use of DateTime and optimising the current solution. Secondly it allowed us to efficiently split the work between our team members. For example, a new implementation of $TimeCalculator$ was being developed concurrently which would calculate the total peak and off-peak time in a call based on the new requirements. This would then be passed on to $CallCostCalculator$ to calculate the cost of the call based on the tariff. 
+
+We previously had not planned on using interfaces but our design evolved as we started writing unit tests. This was because we were using mocks as we didn't want to test every part of the logic functionally. In many places we simply wanted to see whether the correct classes were making the correct function calls with the correct parameters. An example code-snippet of a test for $TimeCalculator$ was as follows:
+
+\begin{lstlisting}[language=Java]
+context.checking(new Expectations(){{
+oneOf(timeCalculator).calculateTimes(startTime, endTime); will(returnValue(peakOffPeakTime));
+oneOf(callCostCalculator).calculateCost(peakOffPeakTime, tariff); will(returnValue(callCost));
+oneOf(lineItemFactory).createCallLineItem(call, "callee", callCost, peakOffPeakTime); will(returnValue(lineItem));
+}});
+new DefaultTotalBillCalculator(callCostCalculator, lineItemFactory, timeCalculator).calculateTotalBill(calls, tariff, lineItems);
+\end{lstlisting}
+
+Nevertheless, for testing $CallCostCalculator$, we didn't feel it was necessary to use mocks as we simply wanted to see whether it correctly returned the expected result.
+
+\begin{lstlisting}[language=Java]
+public void testCallCostWithStandardTariff() throws Exception {
+PeakOffPeakTime peakOffPeakTime = new PeakOffPeakTime(100, 200);
+    Tariff tariff = Tariff.Standard;
+    BigDecimal cost = new DefaultCallCostCalculator().calculateCost(peakOffPeakTime, tariff);
+    Assert.assertEquals(cost.longValue(), 90);
+ } 
+\end{lstlisting}
+
+While making these modifications, an important consideration other than preserving original behaviour was to not modify the public interface of $BillingSystem$. We ensured that the signature of the public methods remained the same and that no new exceptions were thrown. This was because all the clients that use of our jars would then have to modify the way they would be calling our billing system as otherwise their system would break. In real life, if there were were several users using our classes, it would be very expensive to make such changes. However in order to test our billing system, we overloaded the constructor to take in the necessary parameters and also created a function $fullCompletedCall$ to avoid having to use $Thread.sleep$ in our tests.
 
 
 \subsection*{Forming specifications for new functionality}
@@ -164,10 +172,10 @@ has been successfully implemented and can be released to production.
 In our case, it is important to write acceptance tests for the new
 functionality that we are required to implement, as it allows our customer
 Stephen to see whether new functionality works and also lets him know
-how development is progressing . However, because we are adding tests to
-the legacy code too, it is also important to write acceptance tests
-for the current functionality as well.
-
+how development is progressing . In addition, as we aimed to refactor the existing 
+codebase to bring it out of legacy (to allow testing to be easily done), it is 
+necessary for us to write acceptance tests for the old functionality. This way we 
+can validate that the existing functionality is still working. 
 
 \paragraph*{How}
 
@@ -221,13 +229,11 @@ and widely used but often come with a lot of setting up and have features
 that are not necessary in our case as we only needed to
 test that we charge the correct amount depending on the peak period.
 So in our case it would be beneficial to write out own DSL to create
-acceptance tests with. We also use the JUnit framework to create our
-internal Domain Specific Language which we then used to write
-the acceptance tests. The advantage is that we can run the acceptance
-tests along with the unit tests and means it works well if we were
-to use continuous integration. Also, as we are doing this in an IDE,
+acceptance tests with. The advantage is that we can write out DSL in the host 
+language and allows us to use a well-known and widely used framework 
+to write our acceptance test (JUnit). Also, as we are doing this in an IDE,
 we have the advantages of auto-complete, content assist and syntax
-checking.
+checking. 
 
 \subsection*{Adding unit tests for new functionality}
 
@@ -416,10 +422,24 @@ if we wanted to implement any sort of multi-threading functionality
 to the code we would have to completely remove $SimpleDateFormat$. 
 
 
-\section*{Statistics}
+\section*{Class and Package Hierarchy}
 
-dependency diagram, test-coverage
+The initial source code we received had all the classes in one package. This makes our package very cohesive and hard to maintain as all the responsibility lies in one single package. In our refactoring process we started to move responsibilities out into separate packages. This was aided by our test driven design process which promoted a more modular package and class design. In figure 1 you can see that the class dependency structure is quite cohesive, BillingSystem and BillGenerator are quite coupled and there are cyclic dependencies between them.
+After refactoring you can see that 
 
+\begin{center}
+  \includegraphics[scale=0.41]{initialclassdependencies.png}
+  \captionof{figure}{Class Dependencies For Initial Source Code}
+  \label{fig:initialclassdependencies}
+\end{center}
+
+
+
+\begin{center}
+  \includegraphics[scale=0.46]{moduledependencies.png}
+  \captionof{figure}{Class Dependencies For Initial Source Code}
+  \label{fig:initialclassdependencies}
+\end{center}
 
 \section*{Considerations}
 
@@ -464,9 +484,7 @@ We considered creating a wrapper around the functionality of the database,
 which we could use as an interface to create dummies of the database
 for testing and mocking without having to touch the 'real' databases
 whilst doing tests. However, we didn't have enough time to fully implement
-these wrappers, as the underlying functionality that it would need
-to fulfill was too complicated for us to get a grasp of in a short
-time-frame. Fortunately this doesn't translate too badly into real
+these wrappers. Fortunately this doesn't translate too badly into real
 life, as the database accesses that are performed from the tests are
 minor, but this could be problematic if the databases are ever down
 and we need to do tests!
