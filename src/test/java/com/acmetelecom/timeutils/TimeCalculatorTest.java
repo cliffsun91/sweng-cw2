@@ -62,7 +62,7 @@ public class TimeCalculatorTest {
         DateTime startTime = DateTime.parse("0300", DateTimeFormat.forPattern("HHmm"));
         DateTime endTime = DateTime.parse("0400", DateTimeFormat.forPattern("HHmm"));
 
-        PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
+        PeakOffPeakTime time = timeCalculator.calculateTimes(startTime, endTime);
 
         Assert.assertEquals(time.getPeakTime(),0);
         Assert.assertEquals(time.getOffPeakTime(),3600);
@@ -112,11 +112,11 @@ public class TimeCalculatorTest {
     
     @Test
     public void callWithSeconds() throws Exception {
-        DateTime startTime = DateTime.now();
+        DateTime startTime = DateTime.parse("0810", DateTimeFormat.forPattern("HHmm"));
         DateTime endTime = startTime.plusSeconds(3);
 
         PeakOffPeakTime time=  timeCalculator.calculateTimes(startTime, endTime);
-        Assert.assertEquals(time.getPeakTime(),0);
-        Assert.assertEquals(time.getOffPeakTime(),3);
+        Assert.assertEquals(time.getPeakTime(),3);
+        Assert.assertEquals(time.getOffPeakTime(),0);
     }
 }
