@@ -8,27 +8,27 @@ import com.acmetelecom.call.Call;
 import com.acmetelecom.call.LineItem;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.customer.Tariff;
-import com.acmetelecom.moneyformatters.IMoneyFormatter;
 import com.acmetelecom.moneyformatters.MoneyFormatter;
+import com.acmetelecom.moneyformatters.DefaultMoneyFormatter;
 import com.acmetelecom.printer.BillGenerator;
 import com.acmetelecom.printer.DefaultBillGenerator;
 import com.acmetelecom.printer.Printer;
-import com.acmetelecom.timeutils.ITimeCalculator;
+import com.acmetelecom.timeutils.TimeCalculator;
 
 public class DefaultCustomerBillGenerator implements CustomerBillGenerator {
 	
 	private TotalBillCalculator totalBillCalculator;
 	private BillGenerator billGenerator;
-	private IMoneyFormatter moneyFormatter;
+	private MoneyFormatter moneyFormatter;
 
-	public DefaultCustomerBillGenerator(Printer printer, ITimeCalculator timeCalculator) {
+	public DefaultCustomerBillGenerator(Printer printer, TimeCalculator timeCalculator) {
 		this.totalBillCalculator = new DefaultTotalBillCalculator(timeCalculator);
-		this.billGenerator = new DefaultBillGenerator(new MoneyFormatter(), printer);
-		this.moneyFormatter = new MoneyFormatter();
+		this.billGenerator = new DefaultBillGenerator(new DefaultMoneyFormatter(), printer);
+		this.moneyFormatter = new DefaultMoneyFormatter();
 	}
 	
 	public DefaultCustomerBillGenerator(TotalBillCalculator totalBillCalculator, 
-			BillGenerator billGenerator, IMoneyFormatter moneyFormatter) {
+			BillGenerator billGenerator, MoneyFormatter moneyFormatter) {
 		this.totalBillCalculator = totalBillCalculator;
 		this.billGenerator = billGenerator;
 		this.moneyFormatter = moneyFormatter;

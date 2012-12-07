@@ -18,7 +18,7 @@ import com.acmetelecom.billcalculator.DefaultTotalBillCalculator;
 import com.acmetelecom.call.Call;
 import com.acmetelecom.call.LineItem;
 import com.acmetelecom.customer.Tariff;
-import com.acmetelecom.timeutils.ITimeCalculator;
+import com.acmetelecom.timeutils.TimeCalculator;
 import com.acmetelecom.timeutils.PeakOffPeakTime;
 
 @RunWith(JMock.class)
@@ -27,7 +27,7 @@ public class DefaultTotalBillCalculatorTest {
 	private final Mockery context = new Mockery();
 	private final LineItemFactory lineItemFactory = context.mock(LineItemFactory.class);
 	private final CallCostCalculator callCostCalculator = context.mock(CallCostCalculator.class);
-	private final ITimeCalculator timeCalculator = context.mock(ITimeCalculator.class);
+	private final TimeCalculator timeCalculator = context.mock(TimeCalculator.class);
 	
     @Test
     public void testCalculateTotalBill() throws Exception {    	
@@ -55,4 +55,16 @@ public class DefaultTotalBillCalculatorTest {
     	
     	Assert.assertEquals(lineItem, lineItems.get(0));
     }
+    
+    @Test
+    public void testCalculateTotalBillForNullCalls() throws Exception {    	
+        final Tariff tariff = Tariff.Business; 
+   	
+        List<LineItem> lineItems = new ArrayList<LineItem>();
+    	BigDecimal result = new DefaultTotalBillCalculator(callCostCalculator, lineItemFactory, timeCalculator)
+    		.calculateTotalBill(null, tariff, lineItems);
+    	
+    	Assert.assertEquals(0, result.intValue());
+    }
+    
 }

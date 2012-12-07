@@ -8,12 +8,12 @@ import org.junit.Test;
 import java.io.File;
 
 public class TimeCalculatorTest {
-    private IPeakOffPeakPeriods peakOffPeakPeriods;
-    private TimeCalculator timeCalculator;
+    private PeakOffPeakPeriods peakOffPeakPeriods;
+    private DefaultTimeCalculator timeCalculator;
     public  TimeCalculatorTest() throws  FileParseException{
-        peakOffPeakPeriods =  PeakOffPeakPeriods.
+        peakOffPeakPeriods =  DefaultPeakOffPeakPeriods.
                 loadPeakOffPeakPeriods(new File("src/test/java/com/acmetelecom/timeutils/timesTest.xml"));
-        timeCalculator = new TimeCalculator(peakOffPeakPeriods);
+        timeCalculator = new DefaultTimeCalculator(peakOffPeakPeriods);
     }
 
     @Test

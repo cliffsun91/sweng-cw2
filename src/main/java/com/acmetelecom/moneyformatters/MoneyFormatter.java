@@ -2,10 +2,13 @@ package com.acmetelecom.moneyformatters;
 
 import java.math.BigDecimal;
 
-public class MoneyFormatter implements IMoneyFormatter {
-
-    public String penceToPounds(BigDecimal pence) {
-        BigDecimal pounds = pence.divide(new BigDecimal(100));
-        return String.format("%.2f", pounds.doubleValue());
-    }
+/**
+ * Created with IntelliJ IDEA.
+ * User: oaj09
+ * Date: 02/12/12
+ * Time: 01:10
+ * To change this template use File | Settings | File Templates.
+ */
+public interface MoneyFormatter {
+    String penceToPounds(BigDecimal pence);
 }

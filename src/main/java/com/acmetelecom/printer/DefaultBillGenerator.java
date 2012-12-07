@@ -2,16 +2,16 @@ package com.acmetelecom.printer;
 
 import java.util.List;
 
-import com.acmetelecom.moneyformatters.IMoneyFormatter;
+import com.acmetelecom.moneyformatters.MoneyFormatter;
 import com.acmetelecom.call.LineItem;
 import com.acmetelecom.customer.Customer;
 
 public class DefaultBillGenerator implements BillGenerator {
 
-	private final IMoneyFormatter moneyFormatter;
+	private final MoneyFormatter moneyFormatter;
 	private final Printer printer;
 
-	public DefaultBillGenerator(final IMoneyFormatter moneyFormatter, final Printer printer){
+	public DefaultBillGenerator(final MoneyFormatter moneyFormatter, final Printer printer){
 		this.moneyFormatter = moneyFormatter;
 		this.printer = printer;
 	}

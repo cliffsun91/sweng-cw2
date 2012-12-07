@@ -14,7 +14,7 @@ import com.acmetelecom.call.Call;
 import com.acmetelecom.call.LineItem;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.customer.Tariff;
-import com.acmetelecom.moneyformatters.IMoneyFormatter;
+import com.acmetelecom.moneyformatters.MoneyFormatter;
 import com.acmetelecom.printer.BillGenerator;
 
 @RunWith(JMock.class)
@@ -23,7 +23,7 @@ public class DefaultCustomerBillGeneratorTest {
 	private final Mockery context = new Mockery();
 	private final TotalBillCalculator totalBillCalculator = context.mock(TotalBillCalculator.class);
 	private final BillGenerator billGenerator = context.mock(BillGenerator.class);
-	private final IMoneyFormatter moneyFormatter = context.mock(IMoneyFormatter.class);
+	private final MoneyFormatter moneyFormatter = context.mock(MoneyFormatter.class);
 
 	@Test
 	public void testCreateBillForACustomer() throws Exception {    	

@@ -14,8 +14,8 @@ import com.acmetelecom.customer.Customer;
 import com.acmetelecom.customer.Tariff;
 import com.acmetelecom.printer.HtmlPrinter;
 import com.acmetelecom.printer.Printer;
-import com.acmetelecom.timeutils.ITimeCalculator;
 import com.acmetelecom.timeutils.TimeCalculator;
+import com.acmetelecom.timeutils.DefaultTimeCalculator;
 
 public class BillingSystem {
 
@@ -25,11 +25,11 @@ public class BillingSystem {
 	private final List<Customer> customers;
 
 	public BillingSystem() {
-		this(HtmlPrinter.getInstance(), new TimeCalculator(), new DefaultTariffStore(), 
+		this(HtmlPrinter.getInstance(), new DefaultTimeCalculator(), new DefaultTariffStore(), 
 				CentralCustomerDatabase.getInstance().getCustomers());
 	}
 
-	public BillingSystem(Printer printer, ITimeCalculator timeCalculator,
+	public BillingSystem(Printer printer, TimeCalculator timeCalculator,
 			TariffStore tariffStore, List<Customer> customers) {
 		this(new DefaultCustomerBillGenerator(printer, timeCalculator), tariffStore, customers);
 	}
