@@ -74,8 +74,7 @@ with some help from $JMock$.
 We had aspirations to restructure the project to make it more easily
 maintainable - this meant that we had to add tests for all of the
 areas that we were planning to touch. As an example, the project specification
-had us editing the $BillingSystem$ class. Upon inspection, we decided
-what responsibilities this class had: 
+had us editing the $BillingSystem$ class. Upon inspection, we identified the responsibilities of this class: 
 \begin{itemize}
 \item Registers calls starting and ending between numbers 
 \item Processes these calls and applies them as bills to the corresponding
@@ -94,36 +93,30 @@ sure that the specified events were added to the log.
 
 We realised that writing a unit test for $createCustomerBills$ would be
 highly cumbersome as it was calling $createBillFor$ for every customer.
-The entire telephony logic of the system resided in this function. 
-
-After thoroughly reading and understanding the algorithm, we carefully extracted some of the logic out into separate private functions. Although this was not necessary but it significantly improved the readability of the algorithm and also allowed us to scrutinise the different responsibilities inside the logic. After this, we carefully started refactoring the different parts of the logic into new classes. This allowed us to write tests for each aspect of the logic separately and thus we eventually finished testing out the entire billing algorithm. For example one part of the logic which we refactored was where the call time was being checked to see whether it lied between the peak period using $DaytimePeakPeriod$ and then calculated the cost of the call accordingly. We split this functionality out into two interfaces, $TimeCalculator$ and $CallCostCalculator$. We also introduced $PeakOffPeakTime$ with the sole purpose of storing a value for peak time and off-peak time.
+The entire telephony logic of the system resided in this function. After thoroughly reading and understanding the algorithm, we carefully extracted some of the logic out into separate private functions. Although this was not necessary but it significantly improved the readability of the algorithm and also allowed us to scrutinise the different responsibilities inside the logic. After this, we carefully started refactoring the different parts of the logic into new classes. This allowed us to write tests for each aspect of the logic separately and thus we eventually finished testing out the entire billing algorithm. For example one part of the logic which we refactored was where the call time was being checked to see whether it lied between the peak period using $DaytimePeakPeriod$ and then calculated the cost of the call accordingly. We split this functionality out into two interfaces, $TimeCalculator$ and $CallCostCalculator$. We also introduced $PeakOffPeakTime$ with the sole purpose of storing a value for peak time and off-peak time.
 
 \begin{lstlisting}[language=Java]
 public interface TimeCalculator{
-PeakOffPeakTime calculateTimes(long startTime, long endTime);
+	PeakOffPeakTime calculateTimes(long startTime, long endTime);
 }
 
 public interface CallCostCalculator {
-BigDecimal calculateCost(final PeakOffPeakTime peakOffPeakTime,
-final Tariff tariff);
+	BigDecimal calculateCost(final PeakOffPeakTime peakOffPeakTime, final Tariff tariff);
 }
 
 public class PeakOffPeakTime{
-private final long peakTime;
-private final long offPeakTime;
+	private final long peakTime;
+	private final long offPeakTime;
 }
 
-.
-..
-PeakOffPeakTime peakOffPeakTime = timeCalculator.calculateTimes(call.getStartTime(), call.getEndTime());
+PeakOffPeakTime peakOffPeakTime = 
+	timeCalculator.calculateTimes(call.getStartTime(), call.getEndTime());
 BigDecimal callCost = callCostCalculator. calculateCost(peakOffPeakTime, tariff);
-..
-.
 
 \end{lstlisting}
 
 The implementation for $TimeCalculator$ would contain $DaytimePeakPeriod$ which would be used to calculate and return the total number of time the call was in the peak period and off-peak period. In the case of the original algorithm, one of these values would be 0 because if a call overlapped on to a peak period the whole call was treated as peak call. The implementation of $CallCostCalculator$
-would then return the cost of the call given the peak and off-peak duration. The advantage of this refactoring step was twofold. One it allowed us to easily write unit tests for each aspect of the logic, i.e. it became much simpler to think of test cases and also to write them instantly. Having tested legacy code gave us enough confidence to make further refactoring including making use of DateTime and optimising the current solution. Secondly it allowed us to efficiently split the work between our team members. For example, a new implementation of $TimeCalculator$ was being developed concurrently which would calculate the total peak and off-peak time in a call based on the new requirements. This would then be passed on to $CallCostCalculator$ to calculate the cost of the call based on the tariff. 
+would then return the cost of the call given the peak and off-peak duration. The advantage of this refactoring step was twofold. One it allowed us to easily write unit tests for each aspect of the logic, i.e. it became much simpler to think of test cases and also to write them instantly. Having tested legacy code gave us enough confidence to make further refactoring including making use of $DateTime$ and optimising the current solution. Secondly it allowed us to efficiently split the work between our team members. For example, a new implementation of $TimeCalculator$ was being developed concurrently which would calculate the total peak and off-peak time in a call based on the new requirements. This would then be passed on to $CallCostCalculator$ to calculate the cost of the call based on the tariff. 
 
 We previously had not planned on using interfaces but our design evolved as we started writing unit tests. This was because we were using mocks as we didn't want to test every part of the logic functionally. In many places we simply wanted to see whether the correct classes were making the correct function calls with the correct parameters. An example code-snippet of a test for $TimeCalculator$ was as follows:
 
