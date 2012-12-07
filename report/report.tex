@@ -208,13 +208,11 @@ Before we could implement the required changes, we wanted to add unit
 tests to cover what the expected outcome was going to be, as an example
 of Test-Driven Development. This meant that we could repeatedly test
 the code as we implemented it to ensure that the desired goal was
-being fulfilled. In addition writing unit tests first helped us to drive the
-design of our code and as a result we ended up with much more modular
-design. We also had to think carefully about what exactly to test,
-to make sure that it completely covered every aspect of our goals.
-
-
-\paragraph*{How}
+being fulfilled. In addition writing unit tests before implementing the actual
+code helped us to drive the design of our code and as a result we ended 
+up with much more modular design. We also had to think carefully about 
+what exactly to test, to make sure that it completely covered every aspect 
+of our goals.
 
 \begin{lstlisting}[language=Java]
 @Test     
@@ -226,7 +224,6 @@ public void testCallCostWithStandardTariff() throws Exception {
 	Assert.assertEquals(cost.longValue(), 90);     
 }	
 \end{lstlisting}
-
 
 
 \subsection*{Implementing new functionality}
