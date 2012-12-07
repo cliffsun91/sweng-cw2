@@ -76,8 +76,17 @@ public class BillingSystem {
 		List<Call> calls = customerCurrentCallLog.get(caller);
 		calls.add(call);
 	}
-	
+
+    //returns a deep clone of the hash map
 	public HashMap<String, List<Call>> getCustomersCallLog(){
-		return customerCurrentCallLog;
+        HashMap<String, List<Call>> clone = new HashMap<String, List<Call>>();
+		for (String s : customerCurrentCallLog.keySet()){
+            List<Call>  clonedList = new ArrayList<Call>();
+            for( Call c : customerCurrentCallLog.get(s)){
+                clonedList.add(c.clone());
+            }
+            clone.put(s,clonedList);
+        }
+        return clone;
 	}
 }

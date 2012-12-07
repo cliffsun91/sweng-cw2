@@ -3,7 +3,7 @@ package com.acmetelecom.call;
 import org.joda.time.DateTime;
 
 
-public class Call {
+public class Call implements Cloneable {
 	private DateTime startTime;
 	private DateTime endTime;
 	private String caller;
@@ -39,4 +39,11 @@ public class Call {
 	public String getCaller() {
 		return caller;
 	}
+
+    @Override
+    public Call clone(){
+        return new Call(startTime ==null?  null:new DateTime(startTime),
+                        endTime == null?   null: new DateTime(endTime),caller,callee);
+    }
+
 }
