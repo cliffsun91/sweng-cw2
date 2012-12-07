@@ -187,7 +187,7 @@ customerDatabase = createNewDatabaseWithCustomers(
 );
 
 // Testing the final bill printed
-	givenAcmeTelecom().hasCustomerDatabase(customerDatabase).
+givenAcmeTelecom().hasCustomerDatabase(customerDatabase).
 	andHasABillingSystem(
 	billingSystem().withTelephoneCalls(telephoneCalls).
 			withABillPrinter(billPrinter)
@@ -200,7 +200,7 @@ customerDatabase = createNewDatabaseWithCustomers(
 				withCost("7.20")).
 		      withBillTotal("7.20"),
 		      //another bill for Fred )).
-	assertResult(billPrinter);
+	assertResultWith(billPrinter);
 	
 \end{lstlisting}
 The benefits of such an acceptance test system are immediately obvious
@@ -218,7 +218,7 @@ of builder patterns (for building the tests from the DSL), fixtures
 We can choose a variety of acceptance test frameworks to write out
 tests with. Frameworks like Behave, FIT and Cucumber are well supported
 and widely used but often come with a lot of setting up and have features
-that are not necessary; in our case as we only needed to
+that are not necessary in our case as we only needed to
 test that we charge the correct amount depending on the peak period.
 So in our case it would be beneficial to write out own DSL to create
 acceptance tests with. We also use the JUnit framework to create our
