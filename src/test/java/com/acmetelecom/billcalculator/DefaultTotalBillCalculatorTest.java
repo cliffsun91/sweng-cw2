@@ -24,10 +24,10 @@ import com.acmetelecom.timeutils.PeakOffPeakTime;
 @RunWith(JMock.class)
 public class DefaultTotalBillCalculatorTest {
 
-    final Mockery context = new Mockery();
-    final LineItemFactory lineItemFactory = context.mock(LineItemFactory.class);
-    final CallCostCalculator callCostCalculator = context.mock(CallCostCalculator.class);
-    final ITimeCalculator timeCalculator = context.mock(ITimeCalculator.class);
+	private final Mockery context = new Mockery();
+	private final LineItemFactory lineItemFactory = context.mock(LineItemFactory.class);
+	private final CallCostCalculator callCostCalculator = context.mock(CallCostCalculator.class);
+	private final ITimeCalculator timeCalculator = context.mock(ITimeCalculator.class);
 	
     @Test
     public void testCalculateTotalBill() throws Exception {    	

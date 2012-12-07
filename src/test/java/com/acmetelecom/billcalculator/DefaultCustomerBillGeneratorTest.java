@@ -20,10 +20,10 @@ import com.acmetelecom.printer.BillGenerator;
 @RunWith(JMock.class)
 public class DefaultCustomerBillGeneratorTest {
 
-	final Mockery context = new Mockery();
-	final TotalBillCalculator totalBillCalculator = context.mock(TotalBillCalculator.class);
-	final BillGenerator billGenerator = context.mock(BillGenerator.class);
-	final IMoneyFormatter moneyFormatter = context.mock(IMoneyFormatter.class);
+	private final Mockery context = new Mockery();
+	private final TotalBillCalculator totalBillCalculator = context.mock(TotalBillCalculator.class);
+	private final BillGenerator billGenerator = context.mock(BillGenerator.class);
+	private final IMoneyFormatter moneyFormatter = context.mock(IMoneyFormatter.class);
 
 	@Test
 	public void testCreateBillForACustomer() throws Exception {    	
@@ -39,7 +39,7 @@ public class DefaultCustomerBillGeneratorTest {
 			oneOf(billGenerator).print(customer, items, "total bill");
 		}});
 
-		new CustomerBillGenerator(totalBillCalculator, billGenerator, moneyFormatter)
+		new DefaultCustomerBillGenerator(totalBillCalculator, billGenerator, moneyFormatter)
 			.createBillFor(customer, calls, tariff);
 	}
 }

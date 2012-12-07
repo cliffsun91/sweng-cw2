@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.acmetelecom.BillingSystem;
+import com.acmetelecom.DefaultTariffStore;
 import com.acmetelecom.call.Call;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.exception.CustomerNameMismatchException;
@@ -40,7 +41,7 @@ public class BillingSystemBuilder implements TelephoneCallsBuilder, WithPrinterB
 	public BillingSystem buildBillingSystem(List<Customer> customers) throws CustomerNameMismatchException, FileParseException {
 		IPeakOffPeakPeriods period = PeakOffPeakPeriods.loadPeakOffPeakPeriods(new File("src/acceptancetest/java/com/acmetelecom/acceptancetest/timesAcceptance.xml"));
 		ITimeCalculator calculator = new TimeCalculator(period);
-		BillingSystem billingSystem = new BillingSystem(printer, calculator);
+		BillingSystem billingSystem = new BillingSystem(printer, calculator, new DefaultTariffStore(), customers);
 		for (Call call : telephoneCalls){
 			billingSystem.fullCompletedCall(call);
 		}
